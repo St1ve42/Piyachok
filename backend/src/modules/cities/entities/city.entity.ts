@@ -8,11 +8,14 @@ import {
 } from 'typeorm';
 import { Region } from '../../regions/entities/region.entity';
 import { User } from '../../users/entities/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class City {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
+  @ApiProperty({ example: 'с. Абрамівська Долина' })
   @Column()
   name: string;
   @Column()

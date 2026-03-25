@@ -5,21 +5,20 @@ import {
   PipeTransform,
   Type,
 } from '@nestjs/common';
-import { Region } from '../../modules/regions/entities/region.entity';
 import { RegionsService } from '../../modules/regions/regions.service';
 
-export interface CanCheckExistence<T> {
-  findById(id: number | string): Promise<T | null>;
+export interface CanCheckExistence {
+  isExistsById(id: number | string): Promise<boolean>;
 }
 
-export function BodyValidationPipe<T>(Service: Type<CanCheckExistence<T>>) {
+export function BodyValidationPipe(Service: Type<CanCheckExistence>) {
   @Injectable()
   class BodyValidationPipeMixin implements PipeTransform {
-    constructor(@Inject(Service) readonly service: CanCheckExistence<T>) {}
+    constructor(@Inject(Service) readonly service: CanCheckExistence) {}
     async transform(value: number | string): Promise<any> {
-      const entity = await this.service.findById(value);
+      const isExistsEntity = await this.service.isExistsById(value);
       const entityName = Service.name.replace('Service', '').replace(/s$/, '');
-      if (!entity) {
+      if (!isExistsEntity) {
         throw new NotFoundException(`${entityName} with ${value} not found`);
       }
       return value;
@@ -29,6 +28,4 @@ export function BodyValidationPipe<T>(Service: Type<CanCheckExistence<T>>) {
 }
 
 @Injectable()
-export class RegionValidationPipe extends BodyValidationPipe<Region>(
-  RegionsService,
-) {}
+export class RegionValidationPipe extends BodyValidationPipe(RegionsService) {}

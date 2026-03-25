@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .content-table { width: 600px; }
+        @media only screen and (max-width: 480px) {
+            .content-table { width: 100% !important; }
+            .mobile-padding { padding: 30px 20px !important; }
+        }
+    </style>
+</head>
+<body style="background-color: #FFFFFF; margin: 0; padding: 0; -webkit-text-size-adjust: 100%;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #FFFFFF;">
+    <tr>
+        <td align="center" style="padding: 50px 0;">
+            <table role="presentation" class="content-table" border="0" cellpadding="0" cellspacing="0"
+                   style="margin: 0 auto; border: 1px solid #EBEBEB; border-radius: 3px; background-color: #FFFFFF;">
+                {{> header }}
+                {{> @partial-block }}
+                {{> footer}}
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

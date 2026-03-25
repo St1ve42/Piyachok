@@ -25,4 +25,7 @@ export class CitiesService {
       this.cityRepository.count({ where: filter }),
     ]);
   }
+  async findById(id: number): Promise<City | null> {
+    return await this.cityRepository.findOneBy({ id });
+  }
 }

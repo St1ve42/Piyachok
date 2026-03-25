@@ -9,10 +9,53 @@ import { CitiesModule } from './modules/cities/cities.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TokensModule } from './modules/tokens/tokens.module';
+import { EmailModule } from './modules/email/email.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import path from 'path';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
+import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    MailerModule.forRootAsync({
+      imports: [SharedModule],
+      useFactory: (envService: EnvService) => ({
+        transport: {
+          host: 'smtp.gmail.com',
+          port: 587,
+          auth: {
+            user: envService.smtpUser,
+            pass: envService.smtpPassword,
+          },
+        },
+        defaults: {
+          from: '"No Reply" <noreply@example.com>',
+        },
+        template: {
+          dir: path.join(__dirname, 'modules', 'email', 'templates', 'views'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+        options: {
+          partials: {
+            dir: path.join(
+              __dirname,
+              'modules',
+              'email',
+              'templates',
+              'partials',
+            ),
+            options: {
+              strict: true,
+            },
+          },
+        },
+      }),
+      inject: [EnvService],
+    }),
     TypeormModule,
     SharedModule,
     UsersModule,
@@ -21,8 +64,15 @@ import { TokensModule } from './modules/tokens/tokens.module';
     RolesModule,
     AuthModule,
     TokensModule,
+    EmailModule,
   ],
   controllers: [],
-  providers: [EnvService],
+  providers: [
+    EnvService,
+    {
+      provide: 'APP_FILTER',
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

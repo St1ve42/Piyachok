@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { EnvService } from '../services/env.service';
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 config();

@@ -4,17 +4,12 @@ import { Repository } from 'typeorm';
 import { Region } from './entities/region.entity';
 import { BaseQueryDto } from '../../shared/dto/base-query.dto';
 
-export interface IRegion {
-  id: number;
-  name: string;
-}
-
 @Injectable()
 export class RegionsService {
   constructor(
     @InjectRepository(Region) private regionRepository: Repository<Region>,
   ) {}
-  async find(query: BaseQueryDto): Promise<[IRegion[], number]> {
+  async find(query: BaseQueryDto): Promise<[Region[], number]> {
     const { limit, page, skip } = query;
     return await Promise.all([
       this.regionRepository.find({
@@ -29,10 +24,7 @@ export class RegionsService {
     return await this.regionRepository.findOneBy({ id });
   }
 
-  // async findCitiesById(id: number): Promise<Region | null> {
-  //   return await this.regionRepository.findOne({
-  //     where: { id },
-  //     relations: { cities: true },
-  //   });
-  // }
+  async isExistsById(id: number): Promise<boolean> {
+    return await this.regionRepository.existsBy({ id });
+  }
 }
