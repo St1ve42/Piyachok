@@ -11,9 +11,9 @@ import { User } from '../../users/entities/user.entity';
 export class Token {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column()
+  @Column({ length: 300 })
   accessToken: string;
-  @Column()
+  @Column({ length: 300 })
   refreshToken: string;
   @Column()
   accessTokenExpiresAt: Date;

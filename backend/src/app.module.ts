@@ -14,6 +14,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import path from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
           },
         },
         defaults: {
-          from: '"No Reply" <noreply@example.com>',
+          from: '"Пиячок" <noreply@example.com>',
         },
         template: {
           dir: path.join(__dirname, 'modules', 'email', 'templates', 'views'),
@@ -65,6 +66,7 @@ import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
     AuthModule,
     TokensModule,
     EmailModule,
+    FirebaseModule,
   ],
   controllers: [],
   providers: [

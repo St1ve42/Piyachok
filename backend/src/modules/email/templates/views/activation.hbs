@@ -1,0 +1,37 @@
+{{#> main}}
+<tr>
+    <td class="mobile-padding" style="padding: 0 42px;">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="border-bottom: 1px solid #EFF1F4; padding-bottom: 18px;">
+                    <h1 style="margin: 0; font-family: 'Montserrat', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #141414;">
+                        Активація акаунту
+                    </h1>
+                </td>
+            </tr>
+            <tr><td height="18" style="font-size: 1px; line-height: 18px;">&nbsp;</td></tr>
+            <tr>
+                <td>
+                    <p style="margin: 0; font-family: 'Open Sans', Arial, sans-serif; font-size: 15px; line-height: 25px; color: #141414;">
+                        Ласкаво просимо на нашій платформі, {{@root.name}}. Для того, щоб завершити реєстрацію, Вам необхідно активувати акаунт. Активуйте його за посилання нижче. Воно дійсне протягом 1 години.
+                    </p>
+                </td>
+            </tr>
+            <tr><td height="24" style="font-size: 1px; line-height: 24px;">&nbsp;</td></tr>
+            <tr>
+                <td align="left">
+                    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="center" bgcolor="#0666EB" style="border-radius: 40px;">
+                                <a href="http://localhost:3001/activate/{{@root.token}}" target="_blank" style="display: inline-block; padding: 10px 25px; font-family: 'Open Sans', Arial, sans-serif; font-size: 16px; font-weight: 700; color: #FFFFFF; text-decoration: none; line-height: 100%;">
+                                    Активувати
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+{{/main}}

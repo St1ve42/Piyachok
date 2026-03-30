@@ -1,11 +1,11 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDto } from './dto/sign-up.dto';
-import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { CitiesService } from '../cities/cities.service';
 import { JwtService } from '@nestjs/jwt';
@@ -15,7 +15,17 @@ import { EmailService } from '../email/email.service';
 import type { IJwtActionPayload } from './interfaces/IJwtActionPayload';
 import { SignInDto } from './dto/sign-in.dto';
 import { ResponseUserWithTokensDto } from './dto/response-user-with-tokens.dto';
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
+import { RecoveryRequestDto } from './dto/recovery-request.dto';
+import { ResponseMessageDto } from './dto/response-message.dto';
+import { EmailTypeEnum } from '../email/enums/email-type.enum';
+import { RecoveryDto } from './dto/recovery.dto';
+import { User } from '../users/entities/user.entity';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ResponseTokensDto } from './dto/response-tokens.dto';
+import { IJwtPayload } from './interfaces/IJwtPayload';
+import { ErrorResponse } from '../../shared/error/error-response';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,86 +37,99 @@ export class AuthService {
     private readonly tokenService: TokensService,
     private readonly emailService: EmailService,
   ) {}
-  async signUp(signUpDto: SignUpDto): Promise<User> {
+  async signUp(signUpDto: SignUpDto): Promise<ResponseMessageDto> {
     const { email, phone, cityId, regionId } = signUpDto;
     let user = await this.userService.findOneByParams({ email });
     if (user) {
-      throw new ConflictException({
-        error: 'AUTH_EXISTS',
-        message:
+      throw new ConflictException(
+        new ErrorResponse(
+          'AUTH_EXISTS',
           'Користувач з такою електронною адресою вже існує. Спробуйте інакший варіант',
-      });
+        ),
+      );
     }
     user = phone ? await this.userService.findOneByParams({ phone }) : null;
     if (user) {
-      throw new ConflictException({
-        error: 'AUTH_EXISTS',
-        message:
+      throw new ConflictException(
+        new ErrorResponse(
+          'AUTH_EXISTS',
           'Користувач з таким телефоном вже існує. Спробуйте інакший варіант',
-      });
+        ),
+      );
     }
     const city = await this.cityService.findById(cityId);
     if (!city) {
-      throw new NotFoundException({
-        error: 'AUTH_NOT_FOUND',
-        message: `Не існує міста з id ${cityId}`,
-      });
+      throw new NotFoundException(
+        new ErrorResponse('AUTH_NOT_FOUND', 'Не існує міста з id ${cityId}'),
+      );
     }
     const isSameRegion = city.regionId === regionId;
     if (!isSameRegion) {
-      throw new NotFoundException({
-        error: 'AUTH_NOT_FOUND',
-        message: `Регіона з айді ${regionId} не знайдено або місто з id ${cityId} не знаходиться в цьому регіоні `,
-      });
+      throw new NotFoundException(
+        new ErrorResponse(
+          'AUTH_NOT_FOUND',
+          `Регіона з айді ${regionId} не знайдено або місто з id ${cityId} не знаходиться в цьому регіоні `,
+        ),
+      );
     }
     const createdUser = await this.userService.create(signUpDto);
     const payload: IJwtActionPayload = {
       userId: createdUser.id,
     };
     const activateToken = this.tokenService.generateAction(payload, 'activate');
-    await this.emailService.sendWelcomeEmail(email, activateToken);
-    return createdUser;
+    await this.emailService.sendEmail(EmailTypeEnum.ACTIVATION, email, {
+      name: createdUser.name,
+      token: activateToken,
+    });
+    return {
+      message: `Лист був надісланий на пошту за адресою ${createdUser.email}. Активуйте акаунт за посиланням в ньому`,
+    };
   }
 
   async activate(token: string): Promise<ResponseUserWithTokensDto> {
-    try {
-      const { userId }: { userId: string } = this.jwtService.verify(token, {
-        secret: this.envService.activateSecret,
-      });
-      const user = await this.userService.update(userId, { isActive: true });
-      const tokens = await this.tokenService.generate({ user });
-      return { user, tokens };
-    } catch {
-      throw new UnauthorizedException({
-        error: 'AUTH_INVALID_TOKEN',
-        message: 'Токен є невалідний або його час вичерпався',
-      });
-    }
+    const { userId } = this.tokenService.verify(token, 'activate');
+    const user = await this.userService.update(userId, { isActive: true });
+    const tokens = await this.tokenService.generate({ user });
+    return { user, tokens };
   }
 
   async signIn(signInDto: SignInDto): Promise<ResponseUserWithTokensDto> {
     const { email, password } = signInDto;
     const user = await this.userService.findOneByParams({ email });
-    if (!user) {
-      throw new UnauthorizedException({
-        error: 'AUTH_CREDENTIALS',
-        message: 'Неправильний емейл або пароль. Введіть коректні дані.',
-      });
+    if (!user || user.isDeleted) {
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'AUTH_CREDENTIALS',
+          'Неправильний імейл або пароль. Введіть коректні дані.',
+        ),
+      );
     }
     const userPassword = user.password;
     if (!userPassword) {
-      throw new UnauthorizedException({
-        error: 'AUTH_METHOD_OAUTH',
-        message: 'Цей акаунт зареєстрований через соціальні мережі.',
-        provider: 'google.com',
-      });
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'AUTH_METHOD_OAUTH',
+          'Цей акаунт зареєстрований через соціальні мережі.',
+          { provider: 'google.com' },
+        ),
+      );
     }
     const isValidPassword = await compare(password, userPassword);
     if (!isValidPassword) {
-      throw new UnauthorizedException({
-        error: 'AUTH_CREDENTIALS',
-        message: 'Неправильний емейл або пароль. Введіть коректні дані.',
-      });
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'AUTH_CREDENTIALS',
+          'Неправильний імейл або пароль. Введіть коректні дані.',
+        ),
+      );
+    }
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'USER_NOT_ACTIVE',
+          'Ваш акаунт не активований. Будь ласка, активуйте його за посиланням в листі, яке надійшло Вам на пошту під час реєстрації.',
+        ),
+      );
     }
     const tokens = await this.tokenService.generate({ user });
     return { user, tokens };
@@ -116,23 +139,120 @@ export class AuthService {
     return `This action removes a #${id} auth`;
   }
 
-  logOut(id: number) {
-    return `This action returns a #${id} auth`;
+  async logOut(jti: string): Promise<void> {
+    const tokenEntity = await this.tokenService.findOneBy({
+      jti,
+      isBlocked: false,
+    });
+    if (tokenEntity) {
+      await this.tokenService.update(tokenEntity.id, { isBlocked: true });
+    }
   }
 
-  // logOutAll(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  recoveryRequest(id: number) {
-    return `This action removes a #${id} auth`;
+  async refreshToken(dto: RefreshTokenDto): Promise<ResponseTokensDto> {
+    const { refreshToken } = dto;
+    const { userId } = this.tokenService.verify(
+      refreshToken,
+      'refresh',
+    ) as IJwtPayload;
+    const token = await this.tokenService.findOneBy({
+      refreshToken,
+      isBlocked: false,
+    });
+    if (!token) {
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'AUTH_INVALID_TOKEN',
+          'Токен є невалідний або його час вичерпався',
+        ),
+      );
+    }
+    const user = (await this.userService.findById(userId)) as User;
+    const tokens = await this.tokenService.generate({ user });
+    await this.tokenService.update(token.id, { isBlocked: true });
+    return { ...tokens };
   }
 
-  recovery(id: number) {
-    return `This action removes a #${id} auth`;
+  async recoveryRequest(dto: RecoveryRequestDto): Promise<ResponseMessageDto> {
+    const { email } = dto;
+    const user = await this.userService.findOneByParams({ email });
+    if (user) {
+      const payload: IJwtActionPayload = { userId: user.id };
+      const token = this.tokenService.generateAction(payload, 'recovery');
+      await this.emailService.sendEmail(EmailTypeEnum.FORGOT_PASSWORD, email, {
+        name: user.name,
+        token,
+      });
+    }
+    return {
+      message:
+        'Якщо цей імейл зареєстрований у нашій системі, ми надіслали на нього посилання для відновлення пароля. Будь ласка, перевірте пошту (і папку Спам).',
+    };
   }
 
-  forgot(id: number) {
-    return `This action removes a #${id} auth`;
+  async recovery(
+    dto: RecoveryDto,
+    token: string,
+  ): Promise<ResponseUserWithTokensDto> {
+    const { userId } = this.tokenService.verify(token, 'recovery');
+    const { password } = dto;
+    let user = (await this.userService.findOneByParams({
+      id: userId,
+    })) as User;
+    if (user.password) {
+      const isSamePassword = await compare(password, user.password);
+      if (isSamePassword) {
+        throw new ConflictException(
+          new ErrorResponse(
+            'AUTH_PASSWORD_CONFLICT',
+            'Такий пароль вже встановлений для цього акаунту. Будь ласка, вкажіть інакший.',
+          ),
+        );
+      }
+    }
+    const hashedPassword = await hash(password, 10);
+    user = await this.userService.update(userId, { password: hashedPassword });
+    const tokens = await this.tokenService.generate({ user });
+    return { user, tokens };
+  }
+
+  async changePassword(
+    dto: ChangePasswordDto,
+    userId: string,
+  ): Promise<ResponseMessageDto> {
+    const { password, oldPassword } = dto;
+    const user = (await this.userService.findById(userId)) as User;
+    if (!user.password) {
+      throw new UnauthorizedException(
+        new ErrorResponse(
+          'AUTH_NO_PASSWORD',
+          'Пароль відсутній для цього акаунту, оскільки він зареєстрований через соціальні мережі. Спершу встановіть пароль через опцію "Не пам\'ятаю пароль"',
+        ),
+      );
+    }
+    const isCorrectPassword = await compare(oldPassword, user.password);
+    if (!isCorrectPassword) {
+      throw new ForbiddenException(
+        new ErrorResponse(
+          'AUTH_INVALID_PASSWORD',
+          'Неправильний пароль. Будь ласка, вкажіть коректний.',
+        ),
+      );
+    }
+    if (password === oldPassword) {
+      throw new ConflictException(
+        new ErrorResponse(
+          'AUTH_PASSWORD_CONFLICT',
+          'Такий пароль вже встановлений для цього акаунту. Будь ласка, вкажіть інакший.',
+        ),
+      );
+    }
+    const hashedPassword = await hash(password, 10);
+    await this.userService.update(userId, { password: hashedPassword });
+    await this.tokenService.updateBy({ userId }, { isBlocked: true });
+    return {
+      message:
+        'Ваш пароль успішно змінений! Тепер Вам необхідно знову увійти в систему за допомогою нового паролю.',
+    };
   }
 }
