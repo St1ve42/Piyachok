@@ -26,6 +26,11 @@ import { ResponseTokensDto } from './dto/response-tokens.dto';
 import { IJwtPayload } from './interfaces/IJwtPayload';
 import { ErrorResponse } from '../../shared/error/error-response';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { FirebaseService } from '../firebase/firebase.service';
+import { ProviderEnum } from '../../shared/enums/provider.enum';
+import { ResponseSingInWithService200Dto } from './dto/response-sing-in-with-service-200.dto';
+import { ResponseSingInWithService202Dto } from './dto/response-sing-in-with-service-202.dto';
+import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +41,7 @@ export class AuthService {
     private readonly envService: EnvService,
     private readonly tokenService: TokensService,
     private readonly emailService: EmailService,
+    private readonly firebaseService: FirebaseService,
   ) {}
   async signUp(signUpDto: SignUpDto): Promise<ResponseMessageDto> {
     const { email, phone, cityId, regionId } = signUpDto;
@@ -84,6 +90,41 @@ export class AuthService {
     return {
       message: `Лист був надісланий на пошту за адресою ${createdUser.email}. Активуйте акаунт за посиланням в ньому`,
     };
+  }
+
+  async signUpWithService(
+    signUpWithServiceDto: SignUpWithServiceDto,
+  ): Promise<ResponseUserWithTokensDto | ResponseMessageDto> {
+    const { isActive, email } = signUpWithServiceDto;
+    const isExistsUser = await this.userService.existsBy({ email });
+    if (isExistsUser) {
+      throw new ConflictException(
+        new ErrorResponse(
+          'AUTH_EXISTS',
+          'Користувач з такою електронною адресою вже існує. Спробуйте інакший варіант',
+        ),
+      );
+    }
+    const user = await this.userService.create(signUpWithServiceDto);
+    const { name, id } = user;
+    if (!isActive) {
+      const payload: IJwtActionPayload = {
+        userId: id,
+      };
+      const activateToken = this.tokenService.generateAction(
+        payload,
+        'activate',
+      );
+      await this.emailService.sendEmail(EmailTypeEnum.ACTIVATION, email, {
+        name: name,
+        token: activateToken,
+      });
+      return {
+        message: `Лист був надісланий на пошту за адресою ${email}. Активуйте акаунт за посиланням в ньому`,
+      };
+    }
+    const tokens = await this.tokenService.generate({ user });
+    return { user, tokens };
   }
 
   async activate(token: string): Promise<ResponseUserWithTokensDto> {
@@ -135,8 +176,45 @@ export class AuthService {
     return { user, tokens };
   }
 
-  signInWithService(id: number) {
-    return `This action removes a #${id} auth`;
+  async signInWithService(
+    token: string,
+  ): Promise<
+    ResponseSingInWithService200Dto | ResponseSingInWithService202Dto
+  > {
+    const {
+      email,
+      phone_number,
+      picture,
+      email_verified,
+      firebase: { sign_in_provider },
+    } = await this.firebaseService.verifyToken(token);
+    let user = await this.userService.findOneByParams({ email });
+    if (!user) {
+      return {
+        data: {
+          user: {
+            email: email as string,
+            phone: phone_number,
+            photo: picture,
+            isActive: email_verified,
+            provider: sign_in_provider as ProviderEnum,
+          },
+        },
+        statusCode: 202,
+      };
+    }
+    const isProviderBelongsToUser = user.providers.includes(
+      sign_in_provider as ProviderEnum,
+    );
+    if (!isProviderBelongsToUser) {
+      user.providers.push(sign_in_provider as ProviderEnum);
+      user = await this.userService.save(user);
+    }
+    const tokens = await this.tokenService.generate({ user });
+    return {
+      data: { user, tokens },
+      statusCode: 200,
+    };
   }
 
   async logOut(jti: string): Promise<void> {

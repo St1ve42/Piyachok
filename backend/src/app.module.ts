@@ -14,7 +14,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import path from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
-import { FirebaseModule } from './firebase/firebase.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
 
 @Module({
   imports: [

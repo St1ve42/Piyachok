@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   async validate(payload: IJwtPayload): Promise<IJwtPayload> {
-    const { jti, isActive, isDeleted } = payload;
+    const { jti, isActive, isDeleted, userId } = payload;
     const isExistsToken = await this.tokenService.isExistsBy({
       jti,
       isBlocked: false,

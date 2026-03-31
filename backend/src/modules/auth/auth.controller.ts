@@ -7,6 +7,7 @@ import {
   HttpCode,
   Request,
   UseGuards,
+  Res,
   // Patch,
   // Param,
   // Delete,
@@ -26,6 +27,9 @@ import { RecoveryDto } from './dto/recovery.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import type { Response } from 'express';
+import { instanceToPlain } from 'class-transformer';
+import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -47,6 +51,13 @@ export class AuthController {
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignUpDto): Promise<ResponseMessageDto> {
     return await this.authService.signUp(signUpDto);
+  }
+
+  @Post('/sign-up/service')
+  async signUpWithService(
+    @Body() signUpWithServiceDto: SignUpWithServiceDto,
+  ): Promise<ResponseUserWithTokensDto | ResponseMessageDto> {
+    return await this.authService.signUpWithService(signUpWithServiceDto);
   }
 
   @ApiOperation({ summary: 'Активація користувача' })
@@ -124,23 +135,15 @@ export class AuthController {
     return await this.authService.changePassword(dto, req.user.userId);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-  //
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
+  @Post('/sign-in/service/:token')
+  async signInWithService(
+    @Param('token') token: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const result: { data: any; statusCode: number } =
+      await this.authService.signInWithService(token);
+    res
+      .status(result.statusCode)
+      .json({ ...instanceToPlain(result.data), statusCode: result.statusCode });
+  }
 }

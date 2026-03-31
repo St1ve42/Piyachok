@@ -4,6 +4,8 @@ import {
   Post,
   Body,
   Get,
+  UseGuards,
+  Request,
   // Patch,
   // Param,
   // Delete,
@@ -11,6 +13,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import type { IUserRequest } from '../auth/interfaces/IUserRequest';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -26,6 +30,13 @@ export class UsersController {
   async find(): Promise<User[]> {
     return await this.usersService.find();
   }
+
+  @Get('/me')
+  @UseGuards(AuthGuard('jwt'))
+  async me(@Request() req: IUserRequest): Promise<User> {
+    return (await this.usersService.findById(req.user.userId)) as User;
+  }
+
   //
   // @Get(':id')
   // findOne(@Param('id') id: string) {

@@ -44,8 +44,8 @@ export class User {
   @Exclude()
   providerId?: string;
   @ApiProperty({ example: 'local' })
-  @Column({ type: 'enum', enum: ProviderEnum, default: ProviderEnum.LOCAL })
-  provider: ProviderEnum;
+  @Column({ type: 'json', nullable: true })
+  providers: ProviderEnum[] = [ProviderEnum.LOCAL];
   @ApiProperty({ example: null })
   @Column({ nullable: true })
   photo: string;

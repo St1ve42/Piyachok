@@ -20,6 +20,9 @@ export class EnvService {
   public readonly recoveryExpiresIn: number;
   public readonly smtpUser: string;
   public readonly smtpPassword: string;
+  public readonly firebaseProjectId: string;
+  public readonly firebaseClientEmail: string;
+  public readonly firebasePrivateKey: string;
 
   constructor(private configService: ConfigService) {
     this.appPort = configService.get<number>('APP_PORT', 0);
@@ -45,5 +48,17 @@ export class EnvService {
     );
     this.smtpUser = configService.get<string>('SMTP_USER', '');
     this.smtpPassword = configService.get<string>('SMTP_PASSWORD', '');
+    this.firebaseProjectId = configService.get<string>(
+      'FIREBASE_PROJECT_ID',
+      '',
+    );
+    this.firebaseClientEmail = configService.get<string>(
+      'FIREBASE_CLIENT_EMAIL',
+      '',
+    );
+    this.firebasePrivateKey = configService.get<string>(
+      'FIREBASE_PRIVATE_KEY',
+      '',
+    );
   }
 }

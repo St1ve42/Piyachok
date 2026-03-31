@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ProviderEnum } from '../../shared/enums/provider.enum';
 
 @Injectable()
 export class UsersService {
@@ -11,12 +12,13 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { cityId, regionId, ...restUser } = createUserDto;
+    const { cityId, regionId, provider, ...restUser } = createUserDto;
     const user = this.userRepository.create({
       ...restUser,
       regionId,
       cityId,
       roleId: 1,
+      providers: provider ? [provider] : [ProviderEnum.LOCAL],
     });
     return await this.userRepository.save(user);
   }
@@ -34,9 +36,19 @@ export class UsersService {
     return await this.userRepository.findOneBy({ id });
   }
 
+  async save(user: User): Promise<User> {
+    return await this.userRepository.save(user);
+  }
+
   async findOneByParams(params: Partial<User>): Promise<User | null> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     return await this.userRepository.findOneBy(params);
+  }
+
+  async existsBy(params: Partial<User>): Promise<boolean> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    return await this.userRepository.existsBy(params);
   }
 }

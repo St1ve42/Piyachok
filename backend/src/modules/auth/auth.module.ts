@@ -9,6 +9,7 @@ import { TokensModule } from '../tokens/tokens.module';
 import { CitiesModule } from '../cities/cities.module';
 import { JwtModule } from '@nestjs/jwt';
 import { EmailModule } from '../email/email.module';
+import { FirebaseModule } from '../firebase/firebase.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EmailModule } from '../email/email.module';
     TokensModule,
     CitiesModule,
     EmailModule,
+    FirebaseModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
