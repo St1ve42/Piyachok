@@ -1,0 +1,3 @@
+../client/Dockerfile
+.gitignore
+node_modules

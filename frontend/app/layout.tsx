@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
+import HeaderComponent from "@/components/HeaderComponent/HeaderComponent";
 
 export const metadata: Metadata = {
   title: "Головна",
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <div className="root">
+            <HeaderComponent/>
+            {children}
+        </div>
       </body>
     </html>
   );
