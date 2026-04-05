@@ -1,0 +1,50 @@
+.sign-up-form{
+    border: 2px black solid;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.sign-up-form input {
+    background: white;
+    border-radius: 5px;
+    border: 2px solid;
+    height: 40px;
+    padding-left: 8px;
+}
+.sign-up-form select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    border: 2px solid plum;
+    cursor: pointer;
+    padding: 10px;
+    padding-block: 10px;
+    padding-inline: 10px 30px;
+    background: white;
+}
+.sign-up-form option {
+    color: black;
+}
+.sign-up-btn{
+    border: 2px black solid;
+    border-radius: 15px;
+    padding: 10px;
+}
+.password-icon {
+    display: flex;
+    align-items: center;
+
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 20px;
+
+    color: #f9f9f9;
+    transition: all 0.2s;
+}
+
+.password-icon:hover {
+    cursor: pointer;
+    color: #ff4754;
+}
