@@ -21,7 +21,6 @@ import { ResponseMessageDto } from './dto/response-message.dto';
 import { EmailTypeEnum } from '../email/enums/email-type.enum';
 import { RecoveryDto } from './dto/recovery.dto';
 import { User } from '../users/entities/user.entity';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
 import { IJwtPayload } from './interfaces/IJwtPayload';
 import { ErrorResponse } from '../../shared/error/error-response';
@@ -31,6 +30,7 @@ import { ProviderEnum } from '../../shared/enums/provider.enum';
 import { ResponseSingInWithService200Dto } from './dto/response-sing-in-with-service-200.dto';
 import { ResponseSingInWithService202Dto } from './dto/response-sing-in-with-service-202.dto';
 import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
+import { ActivationResendingDto } from './dto/activation-resending.dto';
 
 @Injectable()
 export class AuthService {
@@ -50,7 +50,7 @@ export class AuthService {
             throw new ConflictException(
                 new ErrorResponse(
                     'AUTH_EXISTS',
-                    'Користувач з такою електронною адресою вже існує. Спробуйте інакший варіант',
+                    'Користувач з такою електронною адресою вже існує. Спробуйте інакший варіант.',
                 ),
             );
         }
@@ -59,7 +59,7 @@ export class AuthService {
             throw new ConflictException(
                 new ErrorResponse(
                     'AUTH_EXISTS',
-                    'Користувач з таким телефоном вже існує. Спробуйте інакший варіант',
+                    'Користувач з таким телефоном вже існує. Спробуйте інакший варіант.',
                 ),
             );
         }
@@ -68,7 +68,7 @@ export class AuthService {
             throw new NotFoundException(
                 new ErrorResponse(
                     'AUTH_NOT_FOUND',
-                    'Не існує міста з id ${cityId}',
+                    `Не існує міста з id ${cityId}.`,
                 ),
             );
         }
@@ -77,24 +77,14 @@ export class AuthService {
             throw new NotFoundException(
                 new ErrorResponse(
                     'AUTH_NOT_FOUND',
-                    `Регіона з айді ${regionId} не знайдено або місто з id ${cityId} не знаходиться в цьому регіоні `,
+                    `Регіона з айді ${regionId} не знайдено або місто з id ${cityId} не знаходиться в цьому регіоні.`,
                 ),
             );
         }
         const createdUser = await this.userService.create(signUpDto);
-        const payload: IJwtActionPayload = {
-            userId: createdUser.id,
-        };
-        const activateToken = this.tokenService.generateAction(
-            payload,
-            'activate',
-        );
-        await this.emailService.sendEmail(EmailTypeEnum.ACTIVATION, email, {
-            name: createdUser.name,
-            token: activateToken,
-        });
+        await this.sendActivationEmail(createdUser);
         return {
-            message: `Лист був надісланий на пошту за адресою ${createdUser.email}. Активуйте акаунт за посиланням в ньому`,
+            message: `Лист був надісланий на пошту за адресою ${createdUser.email}. Активуйте акаунт за посиланням в ньому.`,
         };
     }
 
@@ -112,19 +102,8 @@ export class AuthService {
             );
         }
         const user = await this.userService.create(signUpWithServiceDto);
-        const { name, id } = user;
         if (!isActive) {
-            const payload: IJwtActionPayload = {
-                userId: id,
-            };
-            const activateToken = this.tokenService.generateAction(
-                payload,
-                'activate',
-            );
-            await this.emailService.sendEmail(EmailTypeEnum.ACTIVATION, email, {
-                name: name,
-                token: activateToken,
-            });
+            await this.sendActivationEmail(user);
             return {
                 message: `Лист був надісланий на пошту за адресою ${email}. Активуйте акаунт за посиланням в ньому`,
             };
@@ -135,7 +114,18 @@ export class AuthService {
 
     async activate(token: string): Promise<ResponseUserWithTokensDto> {
         const { userId } = this.tokenService.verify(token, 'activate');
-        const user = await this.userService.update(userId, { isActive: true });
+        const user = (await this.userService.findById(userId)) as User;
+        console.log(user);
+        if (user.isActive) {
+            throw new ConflictException(
+                new ErrorResponse(
+                    'USER_ALREADY_ACTIVE',
+                    'Ваш акаунт вже активований.',
+                ),
+            );
+        }
+        user.isActive = true;
+        await this.userService.save(user);
         const tokens = await this.tokenService.generate({ user });
         return { user, tokens };
     }
@@ -346,5 +336,36 @@ export class AuthService {
             message:
                 'Ваш пароль успішно змінений! Тепер Вам необхідно знову увійти в систему за допомогою нового паролю.',
         };
+    }
+
+    async resendActivationEmail(
+        dto: ActivationResendingDto,
+    ): Promise<ResponseMessageDto> {
+        const { email } = dto;
+        const user = await this.userService.findOneByParams({ email });
+        if (!user) {
+            throw new NotFoundException(
+                new ErrorResponse(
+                    'USER_NOT_FOUND',
+                    'Акаунт, привязаний до цієї пошти, не існує. Вам необхідно зареєструватись.',
+                ),
+            );
+        }
+        await this.sendActivationEmail(user);
+        return {
+            message: 'Лист було повторно надіслано на вказаний імейл.',
+        };
+    }
+
+    private async sendActivationEmail(user: User): Promise<void> {
+        const { id, name, email } = user;
+        const payload: IJwtActionPayload = {
+            userId: id,
+        };
+        const token = this.tokenService.generateAction(payload, 'activate');
+        await this.emailService.sendEmail(EmailTypeEnum.ACTIVATION, email, {
+            name,
+            token,
+        });
     }
 }

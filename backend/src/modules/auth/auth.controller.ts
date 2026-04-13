@@ -27,6 +27,7 @@ import { cookiesOptionsConst } from './const/cookies-options.const';
 import { User } from '../users/entities/user.entity';
 import { ResponseSingInWithService200Dto } from './dto/response-sing-in-with-service-200.dto';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
+import { ActivationResendingDto } from './dto/activation-resending.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,14 +35,17 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Реєстрація користувача' })
     @ApiResponse({
+        description: 'Успіх',
         status: 201,
         type: ResponseMessageDto,
     })
     @ApiResponse({
+        description: 'Дані не пройшли валідацію',
         status: 400,
         type: ResponseBadRequestErrorDto,
     })
     @ApiResponse({
+        description: 'Користувач з такою поштою вже існує',
         status: 409,
         type: ResponseErrorDto,
     })
@@ -59,10 +63,12 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Активація користувача' })
     @ApiResponse({
+        description: 'Дані не пройшли валідацію',
         status: 200,
         type: ResponseUserWithTokensDto,
     })
     @ApiResponse({
+        description: 'Невалідний токен або його час вичерпався',
         status: 401,
         type: ResponseErrorDto,
     })
@@ -79,10 +85,17 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Вхід в систему за допомогою емейлу та пароля' })
     @ApiResponse({
+        description: 'Успіх',
         status: 200,
         type: ResponseUserWithTokensDto,
     })
     @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Неправильний імейл або пароль',
         status: 401,
         type: ResponseErrorDto,
     })
@@ -96,7 +109,17 @@ export class AuthController {
         this.setCookies(res, tokens);
         return user;
     }
-
+    @ApiOperation({ summary: 'Запит на відновлення паролю' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: ResponseMessageDto,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
     @Post('/password/recovery')
     @HttpCode(200)
     async recoveryRequest(
@@ -105,6 +128,27 @@ export class AuthController {
         return await this.authService.recoveryRequest(dto);
     }
 
+    @ApiOperation({ summary: 'Відновлення паролю' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: User,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Невалідний токен або його час вичерпався',
+        status: 401,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Паролі збігаються',
+        status: 409,
+        type: ResponseErrorDto,
+    })
     @Post('/password/recovery/:token')
     @HttpCode(200)
     async recovery(
@@ -117,6 +161,16 @@ export class AuthController {
         return user;
     }
 
+    @ApiOperation({ summary: 'Вихід зі системи' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 204,
+    })
+    @ApiResponse({
+        description: 'Невалідний токен або його час вичерпався',
+        status: 401,
+        type: ResponseErrorDto,
+    })
     @Post('/log-out')
     @UseGuards(AuthGuard('jwt'))
     @HttpCode(204)
@@ -125,6 +179,16 @@ export class AuthController {
         await this.authService.logOut(jti);
     }
 
+    @ApiOperation({ summary: 'Створення нової пари токенів' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 204,
+    })
+    @ApiResponse({
+        description: 'Невалідний токен або його час вичерпався',
+        status: 401,
+        type: ResponseErrorDto,
+    })
     @Post('/refresh')
     @HttpCode(204)
     async refresh(
@@ -136,6 +200,32 @@ export class AuthController {
         this.setCookies(res, tokens);
     }
 
+    @ApiOperation({ summary: 'Зміна паролю' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: ResponseMessageDto,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Користувач залогінений за допомогою сервісів',
+        status: 401,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Старий пароль та пароль користувача не збігаються',
+        status: 403,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Новий пароль збігається зі старим',
+        status: 409,
+        type: ResponseErrorDto,
+    })
     @Post('/password/change')
     @UseGuards(AuthGuard('jwt'))
     @HttpCode(200)
@@ -161,10 +251,29 @@ export class AuthController {
         return result instanceof ResponseSingInWithService200Dto
             ? result.data.user
             : result.data;
-        // res.status(result.statusCode).json({
-        //     ...instanceToPlain(result.data),
-        //     statusCode: result.statusCode,
-        // });
+    }
+
+    @ApiOperation({ summary: 'Надсилання повторного активаційного листа' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: ResponseMessageDto,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Користувача не знайдено',
+        status: 404,
+        type: ResponseErrorDto,
+    })
+    @Post('/activation/resend')
+    async activationResending(
+        @Body() dto: ActivationResendingDto,
+    ): Promise<ResponseMessageDto> {
+        return await this.authService.resendActivationEmail(dto);
     }
 
     private setCookies(res: Response, tokens: ResponseTokensDto): void {

@@ -11,53 +11,61 @@ import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 
 @Controller('regions')
 export class RegionsController {
-  constructor(
-    private readonly regionsService: RegionsService,
-    private readonly citiesService: CitiesService,
-  ) {}
+    constructor(
+        private readonly regionsService: RegionsService,
+        private readonly citiesService: CitiesService,
+    ) {}
 
-  @ApiOperation({ summary: 'Регіони України' })
-  @ApiResponse({
-    status: 200,
-    type: ResponseRegionListDto,
-  })
-  @ApiResponse({
-    status: 400,
-    type: ResponseErrorDto,
-  })
-  @Get()
-  async find(@Query() query: BaseQueryDto): Promise<ResponseRegionListDto> {
-    const [data, total] = await this.regionsService.find(query);
-    return {
-      data,
-      total,
-      ...query,
-    };
-  }
+    @ApiOperation({ summary: 'Регіони України' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: ResponseRegionListDto,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @Get()
+    async find(@Query() query: BaseQueryDto): Promise<ResponseRegionListDto> {
+        const [data, total] = await this.regionsService.find(query);
+        return {
+            data,
+            total,
+            ...query,
+        };
+    }
 
-  @ApiOperation({ summary: 'Міста певного регіону України' })
-  @ApiResponse({
-    status: 200,
-    type: ResponseCityListDto,
-  })
-  @ApiResponse({
-    status: 400,
-    type: ResponseErrorDto,
-  })
-  @ApiResponse({
-    status: 404,
-    type: ResponseErrorDto,
-  })
-  @Get('/:id/cities')
-  async findCitiesByRegionId(
-    @Query() query: BaseQueryDto,
-    @Param('id', IdValidationPipe, RegionValidationPipe) id: number,
-  ): Promise<ResponseCityListDto> {
-    const [data, total] = await this.citiesService.findByRegionId(id, query);
-    return {
-      data,
-      total,
-      ...query,
-    };
-  }
+    @ApiOperation({ summary: 'Міста певного регіону України' })
+    @ApiResponse({
+        description: 'Успіх',
+        status: 200,
+        type: ResponseCityListDto,
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseErrorDto,
+    })
+    @ApiResponse({
+        description: 'Місто не належить поточному регіону',
+        status: 404,
+        type: ResponseErrorDto,
+    })
+    @Get('/:id/cities')
+    async findCitiesByRegionId(
+        @Query() query: BaseQueryDto,
+        @Param('id', IdValidationPipe, RegionValidationPipe) id: number,
+    ): Promise<ResponseCityListDto> {
+        const [data, total] = await this.citiesService.findByRegionId(
+            id,
+            query,
+        );
+        return {
+            data,
+            total,
+            ...query,
+        };
+    }
 }

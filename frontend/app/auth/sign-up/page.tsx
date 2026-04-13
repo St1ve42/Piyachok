@@ -1,4 +1,4 @@
-import SignUpComponent from "@/components/SignUpComponent/sign-up.component";
+import SignUpComponent from "@/src/components/SignUpComponent/SignUpComponent";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
