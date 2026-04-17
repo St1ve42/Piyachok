@@ -1,6 +1,10 @@
 import ForgotPasswordComponent from "@/src/components/ForgotPasswordComponent/ForgotPasswordComponent";
 import RecoveryPasswordComponent from "@/src/components/RecoveryComponent/RecoveryPasswordComponent";
+import type {Metadata} from "next";
 
+export const metadata: Metadata = {
+    title: 'Забув пароль'
+};
 type PropsType = {
     searchParams: Promise<{token: string | undefined}>
 }

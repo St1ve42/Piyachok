@@ -1,9 +1,12 @@
-FROM node:latest
-LABEL authors="Ivan"
+FROM node:23-alpine
 
-RUN mkdir /app
 WORKDIR /app
-COPY package.json ./
-RUN npm i
+
+COPY package.json package-lock.json* ./
+
+RUN npm install
+
 COPY . .
+
+CMD ["npm", "run", "build"]
 

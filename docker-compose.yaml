@@ -11,7 +11,7 @@ services:
       - "3001:3001"
     restart: on-failure
     command: >
-      sh -c "npm run start:dev"
+      sh -c "npm run start"
 
   client:
     build:
