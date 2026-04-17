@@ -18,10 +18,10 @@ const ActivationComponent = ({token}: PropsType) => {
         return <ErrorComponent message='Ви не зареєстровані або ще не завершили реєстрацію.' isImage={true} image={NotFinished} alt={'Не завершена реєстрація'} buttonMessage={'Перейти до реєстрації'}/>
     }
     if(userData && !userData.success && userData.status === 401){
-        return <ErrorComponent message={'error' in userData.data ? userData.data.message : undefined} isImage={true} image={Unauthorized} alt={'Неавторизований'} buttonMessage={'Перейти до реєстрації'}/>
+        return <ErrorComponent message={userData.data.message} isImage={true} image={Unauthorized} alt={'Неавторизований'} buttonMessage={'Перейти до реєстрації'}/>
     }
     if(userData && !userData.success && userData.status === 409){
-        return <ErrorComponent message={'error' in userData.data ? userData.data.message : undefined} isImage={true} image={AlreadyChecked} alt={'Вже активовано'} buttonMessage={'Перейти на головну'}/>
+        return <ErrorComponent message={userData.data.message} isImage={true} image={AlreadyChecked} alt={'Вже активовано'} buttonMessage={'Перейти на головну'}/>
     }
     return (
         <section className="h-[80%] flex justify-center items-center flex-col gap-5">

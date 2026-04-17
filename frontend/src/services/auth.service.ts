@@ -5,10 +5,11 @@ import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {IResendActivation} from "@/src/interfaces/auth/IResendActivation";
 import {IActivate} from "@/src/interfaces/auth/IActivate";
-import {IUser} from "@/src/interfaces/IUser";
+import {IUser} from "@/src/interfaces/users/IUser";
 import {ISignIn} from "@/src/interfaces/auth/ISignIn";
 import {IRecoveryRequest} from "@/src/interfaces/auth/IRecoveryRequest";
 import {IRecovery} from "@/src/interfaces/auth/IRecovery";
+import {fetchApiWithTokenRefresh} from "@/src/lib/fetchApiWithTokenRefresh";
 
 export class AuthService{
     async singUp(dto: ISignUp): Promise<IApiResponse<IResponseMessage>>{
@@ -17,6 +18,7 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.singUp.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -27,6 +29,7 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.resendActivation.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -38,7 +41,8 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
-            return getErrorResponse<IUser>(e)
+            console.log(`Сталась помилка в ${this.activate.name}:`, e)
+            return getErrorResponse(e)
         }
     }
 
@@ -48,16 +52,18 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.signIn.name}:`, e)
             return getErrorResponse(e)
         }
     }
 
     async logOut(): Promise<IApiResponse<null>>{
         try{
-            const response = await fetchApi<null>('/auth/log-out', {method: 'POST'})
+            const response = await fetchApiWithTokenRefresh<null>('/auth/log-out', {method: 'POST'})
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.logOut.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -68,6 +74,7 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.recoveryRequest.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -78,16 +85,7 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch (e){
-            return getErrorResponse(e)
-        }
-    }
-
-    async refresh(): Promise<IApiResponse<IUser>>{
-        try{
-            const response = await fetchApi<IUser>(`/auth/refresh`, {method: 'POST'})
-            return {success: true, ...response}
-        }
-        catch (e){
+            console.log(`Сталась помилка в ${this.recovery.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -98,6 +96,7 @@ export class AuthService{
             return {success: true, ...response}
         }
         catch(e){
+            console.log(`Сталась помилка в ${this.signUpWithSocialNetwork.name}:`, e)
             return getErrorResponse(e)
         }
     }

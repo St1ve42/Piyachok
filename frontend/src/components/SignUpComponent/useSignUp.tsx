@@ -6,13 +6,15 @@ import {useInView} from "react-intersection-observer";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {getSignUpValidator} from "@/src/validators/sign-up.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
-import {ISignUp} from "@/src/interfaces/auth/ISignUp";
+import {IBaseSignUp, ISignUpWithRepeatedPassword} from "@/src/interfaces/auth/ISignUp";
 import {useRouter} from "next/navigation";
 import {useResponseMessageStore, useUserFromSocialNetworkStore} from "@/src/zustand/useSharedStore";
-import {MakeOptional} from "@/src/interfaces/MakeOptional";
 import {authService} from "@/src/services/auth.service";
+import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
+import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
+import {IUser} from "@/src/interfaces/users/IUser";
 
-export type IFormProps = MakeOptional<ISignUp, 'regionId' | 'cityId' | 'email' | 'password'> & {repeatedPassword?: string}
+export type IFormProps = ISignUpWithRepeatedPassword | IBaseSignUp
 
 const useSignUp = () => {
     const [isOpenRegion, setIsOpenRegion] = useState(false);
@@ -30,7 +32,7 @@ const useSignUp = () => {
     const router = useRouter()
 
     //Hook form
-    const {register, setValue, watch, reset, handleSubmit, formState: {isValid, errors}} = useForm<MakeOptional<ISignUp, 'regionId' | 'cityId' | 'email' | 'password'> & {repeatedPassword?: string}>({mode: 'all', reValidateMode: "onChange", resolver: joiResolver(getSignUpValidator(!!previousApiResponse), JoiOptions)})
+    const {register, setValue, watch, reset, handleSubmit, formState: {isValid, errors}} = useForm<ISignUpWithRepeatedPassword | IBaseSignUp>({mode: 'all', reValidateMode: "onChange", resolver: joiResolver(getSignUpValidator(!!previousApiResponse), JoiOptions)})
     // eslint-disable-next-line react-hooks/incompatible-library
     const regionId = watch('regionId')
     const allFields = watch();
@@ -92,9 +94,12 @@ const useSignUp = () => {
     //saving draft to localStorage
     useEffect(() => {
         if(!apiErrorMessage){
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {password, repeatedPassword, ...restSignUp} = allFields
-            localStorage.setItem('formData', JSON.stringify(restSignUp));
+            let fields: IBaseSignUp | ISignUpWithRepeatedPassword = allFields
+            if('repeatedPassword' in allFields){
+                const {password, repeatedPassword, ...restSignUp} = allFields
+                fields = restSignUp
+            }
+            localStorage.setItem('formData', JSON.stringify(fields));
         }
     }, [allFields, apiErrorMessage]);
 
@@ -110,7 +115,7 @@ const useSignUp = () => {
         setCityInputValue(val);
 
         if (val === '') {
-            setValue('cityId', undefined, {shouldValidate: true});
+            setValue('cityId', 0, {shouldValidate: true});
             setIsOpenCity(false);
         } else if (!isOpenCity) {
             setIsOpenCity(true);
@@ -128,7 +133,7 @@ const useSignUp = () => {
         setRegionInputValue(val);
 
         if (val === '') {
-            setValue('regionId', undefined, {shouldValidate: true});
+            setValue('regionId', 0, {shouldValidate: true});
             setIsOpenRegion(false);
         } else if (!isOpenRegion) {
             setIsOpenRegion(true);
@@ -138,32 +143,26 @@ const useSignUp = () => {
     //saving successful api response from endpoint 'auth/activate' to store and redirecting to activation page
     //or saving successful api response from endpoint 'auth/social-network' to store and redirecting to main page with successful sign-up
     const handleFormSubmit = async(formData: IFormProps) => {
-        if(!previousApiResponse && 'email' in formData){
+        let response: IApiResponse<IResponseMessage> | IApiResponse<IResponseMessage | IUser> | null = null
+        if(!previousApiResponse && 'email' in formData) {
             const {repeatedPassword, ...restFormData} = formData
-            const response = await authService.singUp(restFormData)
-            if(response.success && !('error' in response.data)){
+            response = await authService.singUp(restFormData)
+        }
+        else if(previousApiResponse){
+            response = await authService.signUpWithSocialNetwork(formData, previousApiResponse.token)
+        }
+        if(response && response.success){
+            if('message' in response.data){
                 setApiResponse(response.data)
                 router.push('/auth/activate')
             }
             else{
-                setApiErrorMessage(response.data.message)
+                router.push('/')
+                router.refresh()
             }
         }
-        else if(previousApiResponse){
-            const response = await authService.signUpWithSocialNetwork(formData, previousApiResponse.token)
-            if(!('error' in response.data)){
-                if('email' in response.data){
-                    router.push('/')
-                    router.refresh()
-                }
-                else{
-                    setApiResponse(response.data)
-                    router.push('/auth/activate')
-                }
-            }
-            else{
-                setApiErrorMessage(response.data.message)
-            }
+        else if(response){
+            setApiErrorMessage(response.data.message)
         }
     }
 

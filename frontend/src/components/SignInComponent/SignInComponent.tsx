@@ -9,7 +9,7 @@ import {facebookProvider, googleProvider} from "@/src/firebase/firebase.init";
 import useSignIn from "@/src/components/SignInComponent/useSignIn";
 
 const SignInComponent = () => {
-    const {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, signInSocialNetworkHandler, isLoading} = useSignIn()
+    const {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, handleSignInWithSocialNetwork, isLoading} = useSignIn()
     return (
         <section className="h-full flex justify-center items-center ">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-[400px] p-4 sign-in-form gap-6 items-center">
@@ -38,7 +38,7 @@ const SignInComponent = () => {
                     <div className="flex items-center gap-2">
                         <button
                             type="button"
-                            onClick={signInSocialNetworkHandler(googleProvider)}
+                            onClick={handleSignInWithSocialNetwork(googleProvider)}
                             className="flex justify-center items-center gap-1 border-2 border-solid border-black rounded-[20px] p-2 hover:bg-gray-50 transition-all"
                         >
                             <p className="text-xs w-[130px]">Увійти через Google</p>
@@ -52,7 +52,7 @@ const SignInComponent = () => {
 
                         <button
                             type="button"
-                            onClick={signInSocialNetworkHandler(facebookProvider)}
+                            onClick={handleSignInWithSocialNetwork(facebookProvider)}
                             className="flex justify-center items-center gap-1 border-2 border-solid border-black rounded-[20px] p-2 hover:bg-gray-50 transition-all"
                         >
                             <p className="text-xs w-[140px]">Увійти через Facebook</p>

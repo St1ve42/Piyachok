@@ -7,3 +7,6 @@ export type ISignUp = {
     email: string,
     password: string,
 }
+
+export type IBaseSignUp = Omit<ISignUp, "email" | "password">
+export type ISignUpWithRepeatedPassword = ISignUp & {repeatedPassword?: string}

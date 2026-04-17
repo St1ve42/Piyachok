@@ -1,7 +1,7 @@
-import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {ApiError} from "@/src/errors/api.error";
+import {IError} from "@/src/interfaces/shared/IError";
 
-export const getErrorResponse = <T>(e: unknown): IApiResponse<T> => {
+export const getErrorResponse = (e: unknown): {success: false, status: number, data: IError} => {
     if(e instanceof ApiError){
         const {status, data} = e
         return {
@@ -18,3 +18,4 @@ export const getErrorResponse = <T>(e: unknown): IApiResponse<T> => {
     }
     }
 }
+

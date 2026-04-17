@@ -1,6 +1,5 @@
 import { ApiError } from '@/src/errors/api.error';
 import {removeTokens} from "@/src/actions/auth.actions";
-import {redirect} from "next/navigation";
 
 async function customFetch (endpoint: string, options: RequestInit = {}): Promise<Response>{
     return await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}${endpoint}`, {
@@ -32,7 +31,7 @@ async function successResponse<T>(response: Response): Promise<{ data: T; status
  * Enhanced fetch with automatic token refresh
  * Handles 401 responses by attempting token refresh
  */
-export async function fetchWithTokenRefresh<T>(
+export async function fetchApiWithTokenRefresh<T>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<{ data: T; status: number }> {

@@ -9,7 +9,7 @@ import {useRouter} from "next/navigation";
 import {authService} from "@/src/services/auth.service";
 import {AuthProvider} from "@firebase/auth";
 import {firebaseService} from "@/src/services/firebase.service";
-import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/IUserFromSocialNetwork";
+import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/users/IUserFromSocialNetwork";
 
 const useSignIn = () => {
     const {register, watch, reset, handleSubmit, formState: {errors, isValid}} = useForm<ISignIn>({mode: 'all', resolver: joiResolver(signInValidator, JoiOptions)})
@@ -19,6 +19,7 @@ const useSignIn = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const {setApiResponse} = useUserFromSocialNetworkStore()
     const router = useRouter()
+    // eslint-disable-next-line react-hooks/incompatible-library
     const allFields = watch()
 
     useEffect(() => {
@@ -48,28 +49,22 @@ const useSignIn = () => {
         };
     }, []);
 
-    const onSubmit = async (data: ISignIn) => {
+    const onSubmit = async (formData: ISignIn) => {
         setIsLoading(true)
         setErrorMessage(null)
-        try {
-            const result = await authService.signIn(data)
+            const result = await authService.signIn(formData)
             if (result.success) {
                 localStorage.removeItem('signInFormData')
                 setIsSuccessfullySubmitted(true)
                 router.push('/')
                 router.refresh()
             } else {
-                setErrorMessage(result.data && 'message' in result.data ? result.data.message : 'Помилка входу')
+                setErrorMessage(result.data.message)
             }
-        } catch (error) {
-            setErrorMessage('Помилка підключення до сервера')
-            console.error(error)
-        } finally {
-            setIsLoading(false)
-        }
+        setIsLoading(false)
     }
 
-    const signInSocialNetworkHandler = (provider: AuthProvider) => {
+    const handleSignInWithSocialNetwork = (provider: AuthProvider) => {
         return async () => {
             const result = await firebaseService.serviceSignIn(provider)
             if(result.success){
@@ -84,11 +79,11 @@ const useSignIn = () => {
                 }
             }
             else{
-                setErrorMessage(result.data && 'message' in result.data ? result.data.message : 'Помилка входу')
+                setErrorMessage(result.data.message)
             }
         }
     }
-    return {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, signInSocialNetworkHandler, isLoading}
+    return {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, handleSignInWithSocialNetwork, isLoading}
 }
 
 export default useSignIn

@@ -25,7 +25,7 @@ const useForgotPassword = () => {
                 console.log("Помилка парсингу даних: ", e)
             }
         }
-    }, [reset]);
+    }, [reset, formState]);
 
     useEffect(() => {
 

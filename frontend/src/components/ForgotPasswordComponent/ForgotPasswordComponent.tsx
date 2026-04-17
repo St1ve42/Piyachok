@@ -11,8 +11,8 @@ const ForgotPasswordComponent = () => {
                 <h1 className='text-xl'>Введіть пошту для відновлення паролю</h1>
                 <div className="relative w-full">
                     <input type='email' placeholder='Електронна пошта' {...register('email')}></input>
-                    {errors.email && <div className="absolute text-red-600 text-xs leading-none self-start mt-1">{errors.email.message}</div>}
-                    {formState.data && <div className="absolute text-red-600 text-xs leading-none mt-5">{formState.data.message}</div>}
+                    {errors.email && <div className="absolute text-red-600 text-[10px] leading-none self-start mt-1">{errors.email.message}</div>}
+                    {formState.data && <div className="absolute text-red-600 text-[10px] leading-none mt-5">{formState.data.message}</div>}
                 </div>
                 <button type="submit" className="forgot-password-btn bg-black text-white mt-11" disabled={!isValid}
                         style={{opacity: isValid ? 1 : 0.8, cursor: isValid ? 'pointer' : 'default'}}>

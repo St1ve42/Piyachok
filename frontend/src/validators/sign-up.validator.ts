@@ -5,8 +5,12 @@ const baseFields = {
     name: Joi.string().min(3).max(50).trim().required().label('Ім`я'),
     surname: Joi.string().min(3).max(50).trim().required().label('Прізвище'),
     age: Joi.number().integer().min(1).max(100).required().label('Вік'),
-    regionId: Joi.number().required().label('Регіон'),
-    cityId: Joi.number().required().label('Місто'),
+    regionId: Joi.number().not(0).required().label('Регіон').messages({
+        'any.invalid': 'Регіон є необхідний'
+    }),
+    cityId: Joi.number().not(0).required().label('Місто').messages({
+        'any.invalid': 'Місто є необхідним'
+    }),
 };
 
 export const getSignUpValidator = (hasExternalData: boolean) => {

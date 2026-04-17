@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {IUser} from "@/src/interfaces/IUser";
+import {IUser} from "@/src/interfaces/users/IUser";
 import {useRouter} from "next/navigation";
 import {userService} from "@/src/services/users.service";
 import {authService} from "@/src/services/auth.service";
@@ -23,7 +23,7 @@ const useHeader = ({accessTokenCookie} : PropsType) => {
 
         userService.me()
             .then(async (data) => {
-                if (data.success && !('error' in data.data)) {
+                if (data.success) {
                     setUser(data.data);
                 }
             })

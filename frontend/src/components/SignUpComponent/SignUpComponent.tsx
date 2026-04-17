@@ -89,7 +89,7 @@ const SignUpComponent = () => {
                 <input type="hidden" {...register('cityId')} />
                 {!previousApiResponse && <div className='relative w-full'>
                     <input type='email' className='w-full' placeholder='Електронна пошта' {...register('email')}></input>
-                    {errors.email && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.email.message}</div>}
+                    {'email' in errors && errors.email && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.email.message}</div>}
                 </div>}
                 {!previousApiResponse && <div className="relative">
                     <input type={isShownPassword ? 'text' : 'password'} placeholder='Пароль' className='w-full pr-10 psw' {...register('password')}></input>
@@ -100,7 +100,7 @@ const SignUpComponent = () => {
                         <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)}
                                style={{display: isShownPassword ? 'block' : 'none'}}/>
                     </div>
-                    {errors.password && <div className="mt-1 absolute text-red-600 text-[10px] leading-none">{errors.password.message}</div>}
+                    {'password' in errors && errors.password && <div className="mt-1 absolute text-red-600 text-[10px] leading-none">{errors.password.message}</div>}
                 </div>}
                 {!previousApiResponse && <div className="relative mt-[5px]">
                     <input type={isShownRepeatedPassword ? 'text' : 'password'} placeholder='Повторіть пароль'
@@ -112,7 +112,7 @@ const SignUpComponent = () => {
                         <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownRepeatedPassword(false)}
                                style={{display: isShownRepeatedPassword ? 'block' : 'none'}}/>
                     </div>
-                    {errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
+                    {'repeatedPassword' in errors && errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
                     {apiErrorMessage &&
                         <div className="absolute text-red-600 text-xs leading-none mt-6">{apiErrorMessage}</div>}
                 </div>}

@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
-import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/IUserFromSocialNetwork";
+import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/users/IUserFromSocialNetwork";
 
 interface IStore<T> {
     previousApiResponse: T | null,
