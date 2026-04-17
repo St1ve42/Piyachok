@@ -7,9 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { SharedModule } from '../../shared/shared.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Token, User]), JwtModule, SharedModule],
-  controllers: [],
-  providers: [TokensService],
-  exports: [TokensService],
+    imports: [TypeOrmModule.forFeature([Token, User]), JwtModule, SharedModule],
+    controllers: [],
+    providers: [TokensService],
+    exports: [TokensService],
 })
 export class TokensModule {}

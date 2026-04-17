@@ -1,7 +1,7 @@
 export interface IJwtPayload {
-  userId: string;
-  role: string;
-  jti: string;
-  isActive: boolean;
-  isDeleted: boolean;
+    userId: string;
+    role: string;
+    jti: string;
+    isActive: boolean;
+    isDeleted: boolean;
 }

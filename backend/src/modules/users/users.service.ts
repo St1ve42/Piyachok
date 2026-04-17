@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ProviderEnum } from '../../shared/enums/provider.enum';
 
@@ -42,15 +42,9 @@ export class UsersService {
         return await this.userRepository.save(user);
     }
 
-    async findOneByParams(params: Partial<User>): Promise<User | null> {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
+    async findOneByParams(
+        params: FindOptionsWhere<User>,
+    ): Promise<User | null> {
         return await this.userRepository.findOneBy(params);
-    }
-
-    async existsBy(params: Partial<User>): Promise<boolean> {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        return await this.userRepository.existsBy(params);
     }
 }

@@ -7,7 +7,6 @@ export class CreateUserDto {
     age: number;
     email?: string;
     password?: string;
-    providerId?: string;
     provider?: ProviderEnum;
     cityId: number;
     regionId: number;

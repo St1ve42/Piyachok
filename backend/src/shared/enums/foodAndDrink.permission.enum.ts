@@ -1,5 +1,0 @@
-export enum FoodAndDrinkPermissionEnum {
-  READ = 'FOOD_AND_DRINK_READ',
-  MANAGE = 'FOOD_AND_DRINK_MANAGE',
-  MODERATE = 'FOOD_AND_DRINK_MODERATE',
-}

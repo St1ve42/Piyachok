@@ -41,6 +41,12 @@ async function bootstrap() {
         .setTitle('Пиячок API')
         .setDescription('Детальна документація API проєкту "Пиячок"')
         .setVersion('1.0.0')
+        .addCookieAuth('accessToken', {
+            type: 'apiKey',
+            in: 'cookie',
+            name: 'accessToken',
+        })
+        .addServer('http://localhost/api', 'Локальна розробка')
         .build();
     app.use(cookieParser());
     app.enableCors({

@@ -14,6 +14,7 @@ import { ResponseUserWithTokensDto } from './dto/response-user-with-tokens.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import {
     ApiAcceptedResponse,
+    ApiCookieAuth,
     ApiCreatedResponse,
     ApiExtraModels,
     ApiOkResponse,
@@ -30,7 +31,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RecoveryDto } from './dto/recovery.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import type { Request, Response } from 'express';
-import { SignUpWithServiceTestDto } from './dto/sign-up-with-service.dto';
+import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
 import { cookiesOptionsConst } from './const/cookies-options.const';
 import { User } from '../users/entities/user.entity';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
@@ -91,7 +92,7 @@ export class AuthController {
     async signUpWithSocialNetwork(
         @Param('token') token: string,
         @Res({ passthrough: true }) res: Response,
-        @Body() signUpWithServiceTestDto: SignUpWithServiceTestDto,
+        @Body() signUpWithServiceTestDto: SignUpWithServiceDto,
     ): Promise<User> {
         const { user, tokens } = await this.authService.signUpWithSocialNetwork(
             signUpWithServiceTestDto,
@@ -201,6 +202,7 @@ export class AuthController {
         return user;
     }
 
+    @ApiCookieAuth('accessToken')
     @ApiOperation({ summary: 'Вихід зі системи' })
     @ApiResponse({
         description: 'Успіх',

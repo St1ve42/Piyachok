@@ -8,8 +8,8 @@ import { User } from '../users/entities/user.entity';
 import { CitiesModule } from '../cities/cities.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Region, City, User]), CitiesModule],
-  controllers: [RegionsController],
-  providers: [RegionsService],
+    imports: [TypeOrmModule.forFeature([Region, City, User]), CitiesModule],
+    controllers: [RegionsController],
+    providers: [RegionsService],
 })
 export class RegionsModule {}

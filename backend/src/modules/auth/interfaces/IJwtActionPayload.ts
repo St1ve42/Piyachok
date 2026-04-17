@@ -1,3 +1,3 @@
 export interface IJwtActionPayload {
-  userId: string;
+    userId: string;
 }

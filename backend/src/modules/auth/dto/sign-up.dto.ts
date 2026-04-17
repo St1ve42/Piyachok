@@ -15,7 +15,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SignUpDto {
-    //TODO Error about empty value
     @ApiProperty({ example: 'Олександр' })
     @IsString()
     @MinLength(3)

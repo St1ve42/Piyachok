@@ -1,4 +1,4 @@
 export enum EmailTypeEnum {
-  ACTIVATION = 'activation',
-  FORGOT_PASSWORD = 'forgot_password',
+    ACTIVATION = 'activation',
+    FORGOT_PASSWORD = 'forgot_password',
 }

@@ -12,17 +12,17 @@ import { EmailModule } from '../email/email.module';
 import { FirebaseModule } from '../firebase/firebase.module';
 
 @Module({
-  imports: [
-    SharedModule,
-    JwtModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    UsersModule,
-    TokensModule,
-    CitiesModule,
-    EmailModule,
-    FirebaseModule,
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+    imports: [
+        SharedModule,
+        JwtModule,
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        UsersModule,
+        TokensModule,
+        CitiesModule,
+        EmailModule,
+        FirebaseModule,
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

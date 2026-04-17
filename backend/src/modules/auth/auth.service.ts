@@ -27,11 +27,9 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { ProviderEnum } from '../../shared/enums/provider.enum';
 import { ResponseSingInWithService200Dto } from './dto/response-sing-in-with-service-200.dto';
 import { ResponseSingInWithService202Dto } from './dto/response-sing-in-with-service-202.dto';
-import { SignUpWithServiceTestDto } from './dto/sign-up-with-service.dto';
+import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
 import { ActivationResendingDto } from './dto/activation-resending.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-
-//TODO backend joins
 
 @Injectable()
 export class AuthService {
@@ -88,7 +86,7 @@ export class AuthService {
     }
 
     async signUpWithSocialNetwork(
-        signUpWithServiceTestDto: SignUpWithServiceTestDto,
+        signUpWithServiceTestDto: SignUpWithServiceDto,
         token: string,
     ): Promise<ResponseUserWithTokensDto> {
         const payload = await this.firebaseService.verifyToken(token);
@@ -185,8 +183,6 @@ export class AuthService {
             uid,
             name,
         } = await this.firebaseService.verifyToken(token);
-        const payload = await this.firebaseService.verifyToken(token);
-        console.log(payload);
         const userByUid = await this.userService.findOneByParams({
             firebaseUid: uid,
         });

@@ -1,5 +1,0 @@
-export enum CommentaryPermissionEnum {
-  READ = 'COMMENTARY_READ',
-  MANAGE = 'COMMENTARY_MANAGE',
-  MODERATE = 'COMMENTARY_MODERATE',
-}

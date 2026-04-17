@@ -5,15 +5,15 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Region {
-  @ApiProperty({ example: 1 })
-  @PrimaryGeneratedColumn()
-  id: number;
-  @ApiProperty({ example: 'Вінницька область' })
-  @Column()
-  name: string;
+    @ApiProperty({ example: 1 })
+    @PrimaryGeneratedColumn()
+    id: number;
+    @ApiProperty({ example: 'Вінницька область' })
+    @Column()
+    name: string;
 
-  @OneToMany(() => User, (user) => user.region)
-  users: User[];
-  @OneToMany(() => City, (city) => city.region)
-  cities: City[];
+    @OneToMany(() => User, (user) => user.region)
+    users: User[];
+    @OneToMany(() => City, (city) => city.region)
+    cities: City[];
 }
