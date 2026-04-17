@@ -14,5 +14,6 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
         throw new ApiError(errorData, response.status)
     }
 
+
     return {data: response.status !==204 ? await response.json() : null, status: response.status};
 }

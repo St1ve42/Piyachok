@@ -1,5 +1,6 @@
 import {create} from "zustand";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
+import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/IUserFromSocialNetwork";
 
 interface IStore<T> {
     previousApiResponse: T | null,
@@ -14,6 +15,7 @@ const createSharedStore = <T>() => create<IStore<T>>(
 )
 
 export const useResponseMessageStore = createSharedStore<IResponseMessage>()
+export const useUserFromSocialNetworkStore = createSharedStore<IUserFromSocialNetworkWithToken>()
 
 
 

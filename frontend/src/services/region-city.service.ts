@@ -1,7 +1,7 @@
 import {IBaseQuery} from "@/src/interfaces/shared/IBaseQuery";
 import {IRegionData} from "@/src/interfaces/region-city/IRegionData";
 import {ICityData} from "@/src/interfaces/region-city/ICityData";
-import {fetchApi} from "@/src/shared/fetch.api";
+import {fetchApi} from "@/src/lib/fetch.api";
 
 export class RegionCityService {
     async find(query?: IBaseQuery): Promise<IRegionData>{

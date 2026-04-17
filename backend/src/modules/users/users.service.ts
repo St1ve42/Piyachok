@@ -21,7 +21,8 @@ export class UsersService {
             roleId: 1,
             providers: provider ? [provider] : [ProviderEnum.LOCAL],
         });
-        return await this.userRepository.save(user);
+        await this.userRepository.save(user);
+        return (await this.userRepository.findOneBy({ id: user.id })) as User;
     }
 
     async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

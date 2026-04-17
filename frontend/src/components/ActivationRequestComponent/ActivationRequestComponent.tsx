@@ -7,7 +7,6 @@ import NotFinished from "@/src/public/document-checklist.png";
 import ErrorComponent from "@/src/components/ErrorComponent/ErrorComponent";
 
 const ActivationRequestComponent = () => {
-    //timer about enabling button
     const {seconds, previousApiResponse, activationAgainResponse, handleActivationAgain, isLoading} = useActivationRequest()
     if(!previousApiResponse){
         return <ErrorComponent message='Ви не зареєстровані або ще не завершили реєстрацію.' isImage={true} image={NotFinished} alt={'Не завершена реєстрація'} buttonMessage={'Перейти до реєстрації'}/>
@@ -16,7 +15,7 @@ const ActivationRequestComponent = () => {
         <section className="h-full flex justify-center items-center">
             <div className="activation flex flex-col gap-10 items-center">
                 <h1>Активація</h1>
-                <div className="flex justify-between">
+                <div className="w-full flex justify-between">
                     <p className="w-[400px]">{previousApiResponse && previousApiResponse.message}</p>
                     <Image src={Activation} width={80} alt={'Активація'}/>
                 </div>

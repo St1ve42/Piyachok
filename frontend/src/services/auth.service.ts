@@ -1,6 +1,6 @@
 import {ISignUp} from "@/src/interfaces/auth/ISignUp";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
-import {fetchApi} from "@/src/shared/fetch.api";
+import {fetchApi} from "@/src/lib/fetch.api";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {IResendActivation} from "@/src/interfaces/auth/IResendActivation";
@@ -82,12 +82,22 @@ export class AuthService{
         }
     }
 
-    async refresh(dto: IRecovery): Promise<IApiResponse<IUser>>{
+    async refresh(): Promise<IApiResponse<IUser>>{
         try{
-            const response = await fetchApi<IUser>(`/auth/refresh`, {method: 'POST', body: JSON.stringify(dto)})
+            const response = await fetchApi<IUser>(`/auth/refresh`, {method: 'POST'})
             return {success: true, ...response}
         }
         catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async signUpWithSocialNetwork(dto: Omit<ISignUp, 'password' | 'email'>, token: string): Promise<IApiResponse<IUser | IResponseMessage>>{
+        try{
+            const response = await fetchApi<IUser>(`/auth/social-network/sign-up/${token}`, {method: 'POST', body: JSON.stringify(dto)})
+            return {success: true, ...response}
+        }
+        catch(e){
             return getErrorResponse(e)
         }
     }

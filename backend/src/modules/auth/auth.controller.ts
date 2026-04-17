@@ -12,7 +12,15 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ResponseUserWithTokensDto } from './dto/response-user-with-tokens.dto';
 import { SignInDto } from './dto/sign-in.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    ApiAcceptedResponse,
+    ApiCreatedResponse,
+    ApiExtraModels,
+    ApiOkResponse,
+    ApiOperation,
+    ApiResponse,
+    getSchemaPath,
+} from '@nestjs/swagger';
 import { ResponseMessageDto } from './dto/response-message.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
@@ -22,12 +30,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { RecoveryDto } from './dto/recovery.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import type { Request, Response } from 'express';
-import { SignUpWithServiceDto } from './dto/sign-up-with-service.dto';
+import { SignUpWithServiceTestDto } from './dto/sign-up-with-service.dto';
 import { cookiesOptionsConst } from './const/cookies-options.const';
 import { User } from '../users/entities/user.entity';
-import { ResponseSingInWithService200Dto } from './dto/response-sing-in-with-service-200.dto';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
 import { ActivationResendingDto } from './dto/activation-resending.dto';
+import { ResponseUserFromServiceDto } from './dto/response-user-from-service.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -54,11 +62,43 @@ export class AuthController {
         return await this.authService.signUp(signUpDto);
     }
 
-    @Post('/sign-up/service')
-    async signUpWithService(
-        @Body() signUpWithServiceDto: SignUpWithServiceDto,
-    ): Promise<ResponseUserWithTokensDto | ResponseMessageDto> {
-        return await this.authService.signUpWithService(signUpWithServiceDto);
+    @ApiExtraModels(User, ResponseMessageDto)
+    @ApiOperation({
+        summary:
+            'Продовження реєстрації користувача за допомогою даних, отриманих з входу через соціальну мережу',
+    })
+    @ApiCreatedResponse({
+        description:
+            'Користувача створено і або йому видано сесія, або надіслано повідомлення стосовно активації акаунту',
+        schema: {
+            oneOf: [
+                { $ref: getSchemaPath(User) },
+                { $ref: getSchemaPath(ResponseMessageDto) },
+            ],
+        },
+    })
+    @ApiResponse({
+        description: 'Дані не пройшли валідацію',
+        status: 400,
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiResponse({
+        description: 'Користувач з такою поштою вже існує',
+        status: 409,
+        type: ResponseErrorDto,
+    })
+    @Post('/social-network/sign-up/:token')
+    async signUpWithSocialNetwork(
+        @Param('token') token: string,
+        @Res({ passthrough: true }) res: Response,
+        @Body() signUpWithServiceTestDto: SignUpWithServiceTestDto,
+    ): Promise<User> {
+        const { user, tokens } = await this.authService.signUpWithSocialNetwork(
+            signUpWithServiceTestDto,
+            token,
+        );
+        this.setCookies(res, tokens);
+        return user;
     }
 
     @ApiOperation({ summary: 'Активація користувача' })
@@ -236,21 +276,35 @@ export class AuthController {
         return await this.authService.changePassword(dto, req.user.userId);
     }
 
-    @Post('/sign-in/service/:token')
-    async signInWithService(
+    @ApiOperation({
+        summary: 'Вхід через соціальну мережу',
+    })
+    @ApiOkResponse({
+        description: 'Вхід успішний!',
+        type: User,
+    })
+    @ApiAcceptedResponse({
+        description:
+            'Запит прийнятий, проте потребує продовження реєстрації користувача',
+        type: ResponseUserFromServiceDto,
+    })
+    @ApiResponse({
+        description: 'Невалідний токен або його час вичерпався',
+        status: 401,
+        type: ResponseErrorDto,
+    })
+    @Post('/social-network/sign-in/:token')
+    async signInWithSocialNetwork(
         @Param('token') token: string,
         @Res({ passthrough: true }) res: Response,
     ): Promise<any> {
-        const result: { data: any; statusCode: number } =
-            await this.authService.signInWithService(token);
-        if (result instanceof ResponseSingInWithService200Dto) {
+        const result = await this.authService.signInWithSocialNetwork(token);
+        if ('user' in result.data) {
             const tokens = result.data.tokens;
             this.setCookies(res, tokens);
         }
         res.status(result.statusCode);
-        return result instanceof ResponseSingInWithService200Dto
-            ? result.data.user
-            : result.data;
+        return 'user' in result.data ? result.data.user : result.data;
     }
 
     @ApiOperation({ summary: 'Надсилання повторного активаційного листа' })

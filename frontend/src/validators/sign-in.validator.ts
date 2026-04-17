@@ -1,4 +1,7 @@
 import Joi from "joi";
 import {credentialsSchema} from "@/src/validators/credentials.schema";
 
-export const signInValidator = Joi.object(credentialsSchema)
+export const signInValidator = Joi.object({
+    email: credentialsSchema.email,
+    password: credentialsSchema.password
+})

@@ -1,36 +1,19 @@
 'use client'
-import {authService} from "@/src/services/auth.service";
 import Unauthorized from "@/src/public/unauthorized.png"
 import NotFinished from "@/src/public/document-checklist.png"
 import Success from "@/src/public/success_mark.png"
 import AlreadyChecked from "@/src/public/already_checked.png"
-import {useEffect, useState} from "react";
-import {IUser} from "@/src/interfaces/IUser";
-import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import Link from "next/link";
 import Image from "next/image";
-import {useRouter} from "next/navigation";
 import ErrorComponent from "@/src/components/ErrorComponent/ErrorComponent";
+import useActivation from "@/src/components/ActivationComponent/useActivation";
 
 type PropsType = {
     token: string | undefined
 }
 
 const ActivationComponent = ({token}: PropsType) => {
-    const [userData, setUserData] = useState<null | IApiResponse<IUser>>(null)
-    const router = useRouter()
-    useEffect(() => {
-        if(userData){
-            router.refresh()
-        }
-    }, [router, userData]);
-    useEffect(() => {
-        if(token){
-            authService.activate({token}).then(data => {
-                setUserData(data)
-            })
-        }
-    }, [token]);
+    const {userData} = useActivation({token})
     if(!token){
         return <ErrorComponent message='Ви не зареєстровані або ще не завершили реєстрацію.' isImage={true} image={NotFinished} alt={'Не завершена реєстрація'} buttonMessage={'Перейти до реєстрації'}/>
     }

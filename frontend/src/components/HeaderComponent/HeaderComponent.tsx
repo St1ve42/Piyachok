@@ -7,52 +7,17 @@ import Exit from "@/src/public/exit.png"
 import UserAvatar from "@/src/public/default_user_avatar.png"
 import "./HeaderStyle.css"
 import MenuComponent from "@/src/components/MenuComponent/MenuComponent";
-import {useEffect, useState} from "react";
-import {IUser} from "@/src/interfaces/IUser";
-import {userService} from "@/src/services/users.service";
 import type {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
-import {removeTokens} from "@/src/actions/auth.actions";
-import {authService} from "@/src/services/auth.service";
-import {useRouter} from "next/navigation";
+import useHeader from "@/src/components/HeaderComponent/useHeader";
 
 type PropsType = {
     accessTokenCookie: RequestCookie | undefined
 }
 
 const HeaderComponent = ({accessTokenCookie}: PropsType) => {
-    const [user, setUser] = useState<null | IUser>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const router = useRouter()
-    useEffect(() => {
-        if (!accessTokenCookie) {
-            setIsLoading(false);
-            return;
-        }
-
-        userService.me()
-            .then(data => {
-                if (data.success && !('error' in data.data)) {
-                    setUser(data.data);
-                }
-            })
-            .catch(err => {
-                console.error("Помилка профілю:", err);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [accessTokenCookie]);
-
-    const handleExit = async() => {
-        const response = await authService.logOut()
-        if(response.success){
-            await removeTokens()
-            setUser(null)
-            router.refresh()
-        }
-    }
+    const {user, isLoading, handleExit} = useHeader({accessTokenCookie})
     return (
-        <header className="flex justify-between items-center px-6 py-2 shadow-[0_25px_30px_-20px_rgba(0,0,0,0.2)] mb-4">
+        <header className="flex justify-between h-[15%] items-center px-6 py-2 shadow-[0_25px_30px_-20px_rgba(0,0,0,0.2)] mb-4">
             <div className="flex gap-10 items-center">
                 <Link href={'/'}>
                     <Image src={Logo} alt="Logo" width={150} height={150}/>
@@ -61,8 +26,8 @@ const HeaderComponent = ({accessTokenCookie}: PropsType) => {
             </div>
             {!isLoading ? <div className="flex justify-end items-center h-[10%]">
                 {user ? <div className="flex items-center gap-10">
-                    <div className="flex items-center gap-2">
-                        <Image src={UserAvatar} alt={'Аватар'} width={55} height={55}/>
+                    <div className="flex items-center gap-5">
+                        <Image src={user.photo ?? UserAvatar} alt={'Аватар'} width={55} height={55} className="rounded-[30px]"/>
                         <div>{user.name} {user.surname}</div>
                     </div>
                     <Image src={Exit} alt={'Вихід'} width={40} height={40} className="cursor-pointer" onClick={handleExit}/>

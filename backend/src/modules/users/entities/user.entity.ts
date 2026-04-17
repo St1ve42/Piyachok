@@ -34,24 +34,23 @@ export class User {
     @Column()
     age: number;
     @ApiProperty({ example: 'oleksandr.petrenko@example.com' })
-    @Column({ unique: true })
-    email: string;
-
+    @Column({ unique: true, nullable: true })
+    email?: string;
     @Column({ nullable: true })
     @Exclude()
     password?: string;
     @Column({ nullable: true })
     @Exclude()
-    providerId?: string;
+    firebaseUid?: string;
     @ApiProperty({ example: 'local' })
     @Column({ type: 'json', nullable: true })
     providers: ProviderEnum[] = [ProviderEnum.LOCAL];
     @ApiProperty({ example: null })
     @Column({ nullable: true })
-    photo: string;
+    photo?: string;
     @ApiProperty({ example: '+380501234567' })
     @Column({ nullable: true, unique: true })
-    phone: string;
+    phone?: string;
     @ApiProperty({ example: 'male' })
     @Column({ type: 'enum', enum: GenderEnum, nullable: true })
     gender: GenderEnum;
