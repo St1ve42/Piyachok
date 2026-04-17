@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend
     env_file:
-      - .env
+      - ./backend/.env
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -19,14 +19,14 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - ./frontend/.env
     restart: on-failure
 
 
   web:
     image: nginx:alpine
     env_file:
-      - .env
+      - ./frontend/.env
     ports:
       - "80:80"
     volumes:
