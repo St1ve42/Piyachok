@@ -15,9 +15,11 @@ const useRecoveryPassword = ({token}: PropsType) => {
     const {register, handleSubmit, formState: {errors, isValid}} = useForm<IRecoveryWithRepeatedPassword>({mode: 'all', resolver: joiResolver(recoveryValidator, JoiOptions)})
     const [isShownPassword, setIsShownPassword] = useState(false)
     const [isShownRepeatedPassword, setIsShownRepeatedPassword] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const router = useRouter()
     const onSubmit = async (formData: IRecoveryWithRepeatedPassword) => {
+        setIsLoading(true)
         const {password} = formData
         const result = await authService.recovery({password}, token)
         if (result.success) {
@@ -26,8 +28,9 @@ const useRecoveryPassword = ({token}: PropsType) => {
         } else {
             setErrorMessage(result.data.message)
         }
+        setIsLoading(false)
     }
-    return {register, handleSubmit, errors, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, errorMessage, isValid, onSubmit}
+    return {isLoading, register, handleSubmit, errors, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, errorMessage, isValid, onSubmit}
 }
 
 export default useRecoveryPassword

@@ -19,6 +19,7 @@ export type IFormProps = ISignUpWithRepeatedPassword | IBaseSignUp
 const useSignUp = () => {
     const [isOpenRegion, setIsOpenRegion] = useState(false);
     const [isOpenCity, setIsOpenCity] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
     const [isShownPassword, setIsShownPassword] = useState(false)
     const [isShownRepeatedPassword, setIsShownRepeatedPassword] = useState(false)
     const [regionInputValue, setRegionInputValue] = useState('');
@@ -143,6 +144,7 @@ const useSignUp = () => {
     //saving successful api response from endpoint 'auth/activate' to store and redirecting to activation page
     //or saving successful api response from endpoint 'auth/social-network' to store and redirecting to main page with successful sign-up
     const handleFormSubmit = async(formData: IFormProps) => {
+        setIsLoading(true)
         let response: IApiResponse<IResponseMessage> | IApiResponse<IResponseMessage | IUser> | null = null
         if(!previousApiResponse && 'email' in formData) {
             const {repeatedPassword, ...restFormData} = formData
@@ -164,9 +166,10 @@ const useSignUp = () => {
         else if(response){
             setApiErrorMessage(response.data.message)
         }
+        setIsLoading(false)
     }
 
-    return {previousApiResponse, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isOpenCity, setIsOpenCity, regionInputValue, setRegionInputValue, cityInputValue, setCityInputValue, register, setValue, isValid, errors, regionQuery, cityQuery, ref, handleRegionInputChange, handleRegionSelect, handleCityInputChange, handleCitySelect, regionId, regions, cities, handleFormSubmit, handleSubmit, apiErrorMessage}
+    return {isLoading, previousApiResponse, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isOpenCity, setIsOpenCity, regionInputValue, setRegionInputValue, cityInputValue, setCityInputValue, register, setValue, isValid, errors, regionQuery, cityQuery, ref, handleRegionInputChange, handleRegionSelect, handleCityInputChange, handleCitySelect, regionId, regions, cities, handleFormSubmit, handleSubmit, apiErrorMessage}
 }
 
 export default useSignUp
