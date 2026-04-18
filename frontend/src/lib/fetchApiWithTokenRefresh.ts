@@ -2,7 +2,7 @@ import { ApiError } from '@/src/errors/api.error';
 import {removeTokens} from "@/src/actions/auth.actions";
 
 async function customFetch (endpoint: string, options: RequestInit = {}): Promise<Response>{
-    return await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}${endpoint}`, {
+    return await fetch(`${typeof window === 'undefined' ? process.env.NEXT_PUBLIC_INTERNAL_API_URL : process.env.NEXT_PUBLIC_BASE_API_URL}${endpoint}`, {
         ...options,
         credentials: options.credentials || 'include',
         headers: {

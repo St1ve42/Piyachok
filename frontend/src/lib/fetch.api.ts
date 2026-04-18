@@ -1,7 +1,7 @@
 import {ApiError} from "@/src/errors/api.error";
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<{ data: T, status: number }> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}${endpoint}`, {
+    const response = await fetch(`${typeof window === 'undefined' ? process.env.NEXT_PUBLIC_INTERNAL_API_URL : process.env.NEXT_PUBLIC_BASE_API_URL}${endpoint}`, {
         ...options,
         credentials: options.credentials || 'include',
         headers: {
