@@ -15,6 +15,8 @@ import path from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
 import { FirebaseModule } from './modules/firebase/firebase.module';
+import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.module';
+import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
 
 @Module({
     imports: [
@@ -73,6 +75,8 @@ import { FirebaseModule } from './modules/firebase/firebase.module';
         TokensModule,
         EmailModule,
         FirebaseModule,
+        FoodAndDrinkModule,
+        FoodAndDrinkStatisticsModule,
     ],
     controllers: [],
     providers: [

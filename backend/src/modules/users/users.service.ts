@@ -42,6 +42,10 @@ export class UsersService {
         return await this.userRepository.save(user);
     }
 
+    async existsByParams(params: FindOptionsWhere<User>): Promise<boolean> {
+        return await this.userRepository.existsBy(params);
+    }
+
     async findOneByParams(
         params: FindOptionsWhere<User>,
     ): Promise<User | null> {

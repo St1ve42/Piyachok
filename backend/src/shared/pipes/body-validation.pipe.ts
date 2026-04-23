@@ -6,12 +6,13 @@ import {
     Type,
 } from '@nestjs/common';
 import { RegionsService } from '../../modules/regions/regions.service';
+import { FoodAndDrinkService } from '../../modules/food-and-drink/food-and-drink.service';
 
-export interface CanCheckExistence {
+interface CanCheckExistence {
     isExistsById(id: number | string): Promise<boolean>;
 }
 
-export function BodyValidationPipe(Service: Type<CanCheckExistence>) {
+function BodyValidationPipe(Service: Type<CanCheckExistence>) {
     @Injectable()
     class BodyValidationPipeMixin implements PipeTransform {
         constructor(@Inject(Service) readonly service: CanCheckExistence) {}
@@ -22,7 +23,7 @@ export function BodyValidationPipe(Service: Type<CanCheckExistence>) {
                 .replace(/s$/, '');
             if (!isExistsEntity) {
                 throw new NotFoundException(
-                    `${entityName} with ${value} not found`,
+                    `${entityName} з id ${value} не знайдено`,
                 );
             }
             return value;
@@ -32,4 +33,11 @@ export function BodyValidationPipe(Service: Type<CanCheckExistence>) {
 }
 
 @Injectable()
-export class RegionValidationPipe extends BodyValidationPipe(RegionsService) {}
+export class RegionBodyValidationPipe extends BodyValidationPipe(
+    RegionsService,
+) {}
+
+@Injectable()
+export class FoodAndDrinkBodyValidationPipe extends BodyValidationPipe(
+    FoodAndDrinkService,
+) {}

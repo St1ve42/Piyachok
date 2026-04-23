@@ -1,13 +1,13 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { RegionsService } from './regions.service';
 import { BaseQueryDto } from '../../shared/dto/base-query.dto';
-import { IdValidationPipe } from '../../shared/pipes/id-validation.pipe';
-import { RegionValidationPipe } from '../../shared/pipes/body-validation.pipe';
+import { RegionBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
 import { CitiesService } from '../cities/cities.service';
 import { ResponseRegionListDto } from './dto/response-region-list.dto';
 import { ResponseCityListDto } from './dto/response-city-list.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
+import { RegionIdValidationPipe } from '../../shared/pipes/id-validation.pipe';
 
 @Controller('regions')
 export class RegionsController {
@@ -56,7 +56,8 @@ export class RegionsController {
     @Get('/:id/cities')
     async findCitiesByRegionId(
         @Query() query: BaseQueryDto,
-        @Param('id', IdValidationPipe, RegionValidationPipe) id: number,
+        @Param('id', RegionIdValidationPipe, RegionBodyValidationPipe)
+        id: number,
     ): Promise<ResponseCityListDto> {
         const [data, total] = await this.citiesService.findByRegionId(
             id,

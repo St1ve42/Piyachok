@@ -25,7 +25,9 @@ export class Token {
     jti: string;
     @Column({})
     userId: string;
-    @ManyToOne(() => User, (user) => user.tokens)
+    @ManyToOne(() => User, (user) => user.tokens, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({ name: 'userId' })
     user: User;
 }

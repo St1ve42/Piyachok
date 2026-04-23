@@ -42,8 +42,11 @@ export class AuthService {
     ) {}
     async signUp(signUpDto: SignUpDto): Promise<ResponseMessageDto> {
         const { email, phone, cityId, regionId } = signUpDto;
-        let user = await this.userService.findOneByParams({ email });
-        if (user) {
+        let isExistsUser: boolean | null =
+            await this.userService.existsByParams({
+                email,
+            });
+        if (isExistsUser) {
             throw new ConflictException(
                 new ErrorResponse(
                     'AUTH_EXISTS',
@@ -51,8 +54,10 @@ export class AuthService {
                 ),
             );
         }
-        user = phone ? await this.userService.findOneByParams({ phone }) : null;
-        if (user) {
+        isExistsUser = phone
+            ? await this.userService.existsByParams({ phone })
+            : null;
+        if (isExistsUser) {
             throw new ConflictException(
                 new ErrorResponse(
                     'AUTH_EXISTS',

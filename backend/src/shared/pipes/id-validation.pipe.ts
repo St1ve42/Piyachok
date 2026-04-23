@@ -1,15 +1,38 @@
-import { BadRequestException, PipeTransform } from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { isUUID } from 'class-validator';
 
-export class IdValidationPipe implements PipeTransform {
-    transform(value: string): any {
-        const numberId = Number(value);
-        const isNaN = Number.isNaN(numberId);
-        const isNotCorrectId = isNaN || numberId < 1 || !!(numberId % 1);
-        if (isNotCorrectId) {
-            throw new BadRequestException(
-                `Id with ${value} is not correct. It is must be integer number and greater than 1`,
-            );
+function idValidationPipe(strategy: 'increment' | 'uuid') {
+    @Injectable()
+    class IdValidationPipeMixin implements PipeTransform {
+        transform(value: string): any {
+            switch (strategy) {
+                case 'uuid': {
+                    const isUuid = isUUID(value);
+                    if (!isUuid) {
+                        throw new BadRequestException(
+                            `Id ${value} не є коректним. Воно має бути формату uuid (наприклад, e2fecad4-8ca7-4a76-8354-8331309df863)`,
+                        );
+                    }
+                    break;
+                }
+                case 'increment': {
+                    const id: number = +value;
+                    const fraction = id % 1;
+                    const isNotValidId =
+                        Number.isNaN(id) || id < 1 || fraction !== 0;
+                    if (isNotValidId) {
+                        throw new BadRequestException(
+                            `Id ${value} не є коректним. Воно має бути цілим числом, більше 1`,
+                        );
+                    }
+                    break;
+                }
+            }
+            return value;
         }
-        return value;
     }
+    return IdValidationPipeMixin;
 }
+
+export class RegionIdValidationPipe extends idValidationPipe('increment') {}
+export class FoodAndDrinkIdValidationPipe extends idValidationPipe('uuid') {}

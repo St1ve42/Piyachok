@@ -17,12 +17,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class SignUpDto {
     @ApiProperty({ example: 'Олександр' })
     @IsString()
-    @MinLength(3)
+    @MinLength(2)
     @MaxLength(50)
     name: string;
     @ApiProperty({ example: 'Петренко' })
     @IsString()
-    @MinLength(3)
+    @MinLength(2)
     @MaxLength(50)
     surname: string;
     @ApiProperty({ example: 30 })

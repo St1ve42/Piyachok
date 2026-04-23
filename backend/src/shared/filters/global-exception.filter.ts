@@ -25,6 +25,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
                       context?: any;
                   })
                 : { message: exception.message };
+        if (!(exception instanceof HttpException)) {
+            console.log(exception);
+        }
         const responseBody = {
             timestamp: new Date().toISOString(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -18,13 +19,25 @@ async function bootstrap() {
             transformOptions: {
                 enableImplicitConversion: true,
             },
+            validationError: { target: false, value: false },
             exceptionFactory: (errors) => {
-                const result = errors.map((error) => ({
-                    property: error.property,
-                    message: error.constraints
-                        ? Object.values(error.constraints)[0]
-                        : '',
-                }));
+                console.log(JSON.stringify(errors, null, 2));
+                const result = errors.flatMap((error) => {
+                    if (error.children && error.children.length !== 0) {
+                        return error.children.map((children) => ({
+                            property: children.property,
+                            message: children.constraints
+                                ? Object.values(children.constraints)[0]
+                                : '',
+                        }));
+                    }
+                    return {
+                        property: error.property,
+                        message: error.constraints
+                            ? Object.values(error.constraints)[0]
+                            : '',
+                    };
+                });
 
                 return new BadRequestException({
                     statusCode: 400,
@@ -34,6 +47,7 @@ async function bootstrap() {
             },
         }),
     );
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
     app.useGlobalInterceptors(
         new ClassSerializerInterceptor(app.get(Reflector)),
     );
