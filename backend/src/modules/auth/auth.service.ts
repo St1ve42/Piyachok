@@ -191,14 +191,14 @@ export class AuthService {
         const userByUid = await this.userService.findOneByParams({
             firebaseUid: uid,
         });
-        //Якщо користувач вже входив через соціальні мережі
+        //If a user has previously signed in via social media
         if (userByUid) {
             return await this.saveUserAndGenerateTokens(
                 userByUid,
                 sign_in_provider,
             );
         }
-        //Спроба знайти користувача за імейлом за наявності
+        //Try to find a user by the email, if provided
         if (email && email_verified) {
             const userByEmail = await this.userService.findOneByParams({
                 email,
@@ -223,7 +223,7 @@ export class AuthService {
                 );
             }
         }
-        //В інакшому випадку повернення частини даних для продовження реєстрації
+        //Otherwise, return partial data for sign up
         return {
             data: {
                 name: name as string,
@@ -324,10 +324,10 @@ export class AuthService {
 
     async changePassword(
         dto: ChangePasswordDto,
-        userId: string,
+        user: User,
     ): Promise<ResponseMessageDto> {
+        const { id: userId } = user;
         const { password, oldPassword } = dto;
-        const user = (await this.userService.findById(userId)) as User;
         if (!user.password) {
             throw new UnauthorizedException(
                 new ErrorResponse(
@@ -396,7 +396,7 @@ export class AuthService {
         });
     }
 
-    //Додавання провайдера в список провайдерів користувача та видача токенів
+    //Add a provider to the user's provider list and generate tokens
     private async saveUserAndGenerateTokens(
         user: User,
         sign_in_provider: string,

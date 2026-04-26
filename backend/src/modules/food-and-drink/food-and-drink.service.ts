@@ -1,42 +1,126 @@
 import {
     BadRequestException,
     ConflictException,
+    forwardRef,
+    Inject,
     Injectable,
 } from '@nestjs/common';
 import { CreateFoodAndDrinkDto } from './dto/create-food-and-drink.dto';
 import { UpdateFoodAndDrinkDto } from './dto/update-food-and-drink.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FoodAndDrink } from './entities/food-and-drink.entity';
-import { FindOptionsWhere, In, Repository } from 'typeorm';
-import { Tag } from './entities/tag.entity';
+import {
+    DeepPartial,
+    FindOptionsRelations,
+    FindOptionsWhere,
+    LessThan,
+    LessThanOrEqual,
+    Like,
+    MoreThan,
+    MoreThanOrEqual,
+    Repository,
+} from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
+import { Features } from './entities/features.entity';
+import { FoodAndDrinkSearchDto } from './dto/food-and-drink-search.dto';
+import { FoodAndDrinkRangeDto } from './dto/food-and-drink-range.dto';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class FoodAndDrinkService {
     constructor(
         @InjectRepository(FoodAndDrink)
         private readonly foodAndDrinkRepository: Repository<FoodAndDrink>,
-        @InjectRepository(Tag)
-        private readonly tagRepository: Repository<Tag>,
+        @Inject(forwardRef(() => TagsService))
+        private readonly tagsService: TagsService,
     ) {}
 
-    async find(): Promise<FoodAndDrink[]> {
-        return await this.foodAndDrinkRepository.find({});
+    async find(query: FoodAndDrinkQueryDto): Promise<[FoodAndDrink[], number]> {
+        const { page, limit, skip, search, sort, range } = query;
+        const filter: FindOptionsWhere<FoodAndDrink> = {};
+        const allFeatures = ['isWifi', 'isParking', 'is24hrs', 'isLiveMusic'];
+        const features: FindOptionsWhere<Features> = {};
+        if (search) {
+            (
+                Object.entries(search) as [
+                    keyof FoodAndDrinkSearchDto,
+                    FoodAndDrinkSearchDto[keyof FoodAndDrinkSearchDto],
+                ][]
+            ).forEach(([key, value]) => {
+                if (value) {
+                    if (!allFeatures.includes(key)) {
+                        switch (typeof value) {
+                            case 'string':
+                                filter[key] = Like(`%${value}%`);
+                                break;
+                            default:
+                                filter[key] = value;
+                                break;
+                        }
+                    } else {
+                        features[key] = value;
+                    }
+                }
+            });
+        }
+        filter['features'] = features;
+        if (range) {
+            (
+                Object.entries(range) as [
+                    keyof FoodAndDrinkRangeDto,
+                    FoodAndDrinkRangeDto[keyof FoodAndDrinkRangeDto],
+                ][]
+            ).forEach(([key, value]) => {
+                if (value) {
+                    if (value.lt) {
+                        filter[key] = LessThan(value.lt);
+                    }
+                    if (value.lte) {
+                        filter[key] = LessThanOrEqual(value.lte);
+                    }
+                    if (value.gt) {
+                        filter[key] = MoreThan(value.gt);
+                    }
+                    if (value.gte) {
+                        filter[key] = MoreThanOrEqual(value.gte);
+                    }
+                }
+            });
+        }
+        return await Promise.all([
+            this.foodAndDrinkRepository.find({
+                take: limit,
+                skip: (page - 1) * limit + skip,
+                where: filter,
+                order: sort,
+            }),
+            this.foodAndDrinkRepository.countBy(filter),
+        ]);
     }
 
-    async findById(id: string): Promise<FoodAndDrink | null> {
-        return await this.foodAndDrinkRepository.findOneBy({ id });
+    async findById(
+        id: string,
+        relations?: FindOptionsRelations<FoodAndDrink>,
+    ): Promise<FoodAndDrink | null> {
+        return await this.foodAndDrinkRepository.findOne({
+            where: { id },
+            relations,
+        });
     }
 
     async create(
         createFoodAndDrinkDto: CreateFoodAndDrinkDto,
-        ownerId: string,
+        owner: User,
     ): Promise<FoodAndDrink> {
         const { tags } = createFoodAndDrinkDto;
-        await this.checkExisting(createFoodAndDrinkDto, ownerId);
-        const allTags = await this.getAllTags(tags);
+        await this.checkExisting(createFoodAndDrinkDto, owner.id);
+        const allTags = tags
+            ? await this.tagsService.createAndGetTags(tags)
+            : undefined;
         const foodAndDrink = this.foodAndDrinkRepository.create({
             ...createFoodAndDrinkDto,
-            ownerId,
+            owner,
             tags: allTags,
         });
         await this.foodAndDrinkRepository.save(foodAndDrink);
@@ -56,7 +140,9 @@ export class FoodAndDrinkService {
             where: { id },
         })) as FoodAndDrink;
 
-        const allTags = tags ? await this.getAllTags(tags) : undefined;
+        const allTags = tags
+            ? await this.tagsService.createAndGetTags(tags)
+            : undefined;
 
         const updatedEntity = this.foodAndDrinkRepository.merge(entity, {
             ...updateFoodAndDrinkDto,
@@ -72,6 +158,13 @@ export class FoodAndDrinkService {
 
     async save(foodAndDrink: FoodAndDrink): Promise<FoodAndDrink> {
         return await this.foodAndDrinkRepository.save(foodAndDrink);
+    }
+
+    merge(
+        foodAndDrink: FoodAndDrink,
+        entityLike: DeepPartial<FoodAndDrink>,
+    ): FoodAndDrink {
+        return this.foodAndDrinkRepository.merge(foodAndDrink, entityLike);
     }
 
     async findOneByParams(
@@ -119,28 +212,5 @@ export class FoodAndDrinkService {
                 'Ви вже володієте закладом. Користувач не може мати більше, ніж один заклад.',
             );
         }
-    }
-
-    private async getAllTags(tags: string[]): Promise<Tag[]> {
-        const existingTags = await this.tagRepository.findBy({
-            name: In(tags),
-        });
-        let allTags = existingTags;
-        const existingTagNames = existingTags.map(
-            (existingTag) => existingTag.name,
-        );
-        const newTagNames = tags.filter(
-            (tag) => !existingTagNames.includes(tag),
-        );
-        if (newTagNames.length > 0) {
-            const newTagInstances = newTagNames.map((newTagName) =>
-                this.tagRepository.create({
-                    name: newTagName,
-                }),
-            );
-            const savedNewTags = await this.tagRepository.save(newTagInstances);
-            allTags = [...allTags, ...savedNewTags];
-        }
-        return allTags;
     }
 }

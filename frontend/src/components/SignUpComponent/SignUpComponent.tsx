@@ -6,7 +6,7 @@ import useSignUp from "@/src/components/SignUpComponent/useSignUp";
 import Image from "next/image";
 
 const SignUpComponent = () => {
-    const {isLoading, previousApiResponse, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenCity, setIsOpenCity, regionId, regionInputValue, cityInputValue, errors, register, isValid, regionQuery, cityQuery, ref, handleRegionInputChange, handleCityInputChange, handleRegionSelect, handleCitySelect, regions, cities, apiErrorMessage, handleSubmit, handleFormSubmit} = useSignUp()
+    const {isLoading, previousApiResponse, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenCity, setIsOpenCity, regionId, regionInputValue, cityInputValue, errors, register, isValid, regionQuery, cityQuery, ref, handleCityInputChange, handleRegionInputChange, handleRegionSelect, handleCitySelect, regions, cities, apiErrorMessage, handleSubmit, handleFormSubmit} = useSignUp()
     return (
         <section className="h-full flex justify-center items-center ">
             <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-[50%] p-3 sign-up-form gap-5">

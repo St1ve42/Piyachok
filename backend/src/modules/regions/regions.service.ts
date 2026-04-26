@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { Region } from './entities/region.entity';
-import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { StringSearchQueryDto } from '../../shared/dto/base-query.dto';
 
 @Injectable()
 export class RegionsService {
     constructor(
         @InjectRepository(Region) private regionRepository: Repository<Region>,
     ) {}
-    async find(query: BaseQueryDto): Promise<[Region[], number]> {
+    async find(query: StringSearchQueryDto): Promise<[Region[], number]> {
         const { limit, page, skip, search } = query;
         const filter: FindOptionsWhere<Region> = {};
         if (search) {

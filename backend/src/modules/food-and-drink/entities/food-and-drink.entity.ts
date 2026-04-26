@@ -21,7 +21,6 @@ import { Features } from './features.entity';
 import { FoodAndDrinkStatistic } from '../../food-and-drink-statistics/entities/food-and-drink-statistic.entity';
 import { FoodAndDrinkViewsPerDay } from '../../food-and-drink-statistics/entities/food-and-drink-views-per-day.entity';
 import { UserView } from '../../food-and-drink-statistics/entities/user-views.entity';
-import { Exclude } from 'class-transformer';
 
 @Index(['name', 'description'])
 @Index(['averageReceipt'])

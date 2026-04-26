@@ -24,6 +24,8 @@ const useSignUp = () => {
     const [isShownRepeatedPassword, setIsShownRepeatedPassword] = useState(false)
     const [regionInputValue, setRegionInputValue] = useState('');
     const [cityInputValue, setCityInputValue] = useState('');
+    const [debouncedRegion, setDebouncedRegion] = useState('');
+    const [debouncedCity, setDebouncedCity] = useState('');
     const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null)
 
     //Zustand api store
@@ -34,14 +36,28 @@ const useSignUp = () => {
 
     //Hook form
     const {register, setValue, watch, reset, handleSubmit, formState: {isValid, errors}} = useForm<ISignUpWithRepeatedPassword | IBaseSignUp>({mode: 'all', reValidateMode: "onChange", resolver: joiResolver(getSignUpValidator(!!previousApiResponse), JoiOptions)})
-    // eslint-disable-next-line react-hooks/incompatible-library
+     
     const regionId = watch('regionId')
     const allFields = watch();
 
     //Tanstack query hooks for implementation list of regions and cities + view hook for detecting if user scrolled to the end of list
-    const regionQuery = useRegionInfinityQuery({search: regionInputValue})
-    const cityQuery = useCityInfinityQuery({regionId, search: cityInputValue})
+    const regionQuery = useRegionInfinityQuery({search: debouncedRegion})
+    const cityQuery = useCityInfinityQuery({regionId, search: debouncedCity})
     const { ref, inView } = useInView();
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedRegion(regionInputValue);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [regionInputValue]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedCity(cityInputValue);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [cityInputValue]);
 
     useEffect(() => {
         if (inView) {
@@ -109,7 +125,7 @@ const useSignUp = () => {
         setValue('cityId', id, {shouldValidate: true});
         setCityInputValue(name);
         setIsOpenCity(false);
-    };
+    }
 
     const handleCityInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -121,13 +137,13 @@ const useSignUp = () => {
         } else if (!isOpenCity) {
             setIsOpenCity(true);
         }
-    };
+    }
 
     const handleRegionSelect = (id: number, name: string) => {
         setValue('regionId', id, {shouldValidate: true});
         setRegionInputValue(name);
         setIsOpenRegion(false);
-    };
+    }
 
     const handleRegionInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;

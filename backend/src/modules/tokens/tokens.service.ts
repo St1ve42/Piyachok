@@ -8,6 +8,7 @@ import { EnvService } from '../../shared/services/env.service';
 import { IJwtPayload } from '../auth/interfaces/IJwtPayload';
 import { ITokens } from '../auth/interfaces/ITokens';
 import { IJwtActionPayload } from '../auth/interfaces/IJwtActionPayload';
+import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
 
 @Injectable()
 export class TokensService {
@@ -24,7 +25,7 @@ export class TokensService {
         const payload: IJwtPayload = {
             userId: id,
             jti,
-            role: role.name,
+            role: role.name as GlobalUserRoleEnum,
             isActive,
             isDeleted,
         };

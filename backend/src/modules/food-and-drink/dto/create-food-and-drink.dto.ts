@@ -1,5 +1,6 @@
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import {
+    ArrayNotEmpty,
     IsArray,
     IsEnum,
     IsNumber,
@@ -19,7 +20,7 @@ import { FeaturesDto } from './features.dto';
 
 export class CreateFoodAndDrinkDto {
     @IsString()
-    @MinLength(3)
+    @MinLength(2)
     @MaxLength(50)
     name: string;
 
@@ -70,6 +71,8 @@ export class CreateFoodAndDrinkDto {
     features?: FeaturesDto;
 
     @IsArray()
+    @ArrayNotEmpty()
+    @IsOptional()
     @IsString({
         each: true,
     })
@@ -79,5 +82,5 @@ export class CreateFoodAndDrinkDto {
     @MaxLength(50, {
         each: true,
     })
-    tags: string[];
+    tags?: string[];
 }

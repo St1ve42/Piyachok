@@ -1,6 +1,6 @@
 import type { Request } from 'express';
-import { IJwtPayload } from './IJwtPayload';
+import { IExtendedJwtPayload } from './IJwtPayload';
 
 export interface IUserRequest extends Request {
-    user: IJwtPayload;
+    user: IExtendedJwtPayload;
 }

@@ -38,7 +38,7 @@ export class UsersController {
     })
     @Get('/me')
     @UseGuards(AuthGuard('jwt'))
-    async me(@Request() req: IUserRequest): Promise<User> {
-        return (await this.usersService.findById(req.user.userId)) as User;
+    me(@Request() req: IUserRequest): User {
+        return req.user.fullData;
     }
 }

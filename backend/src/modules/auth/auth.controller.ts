@@ -275,7 +275,7 @@ export class AuthController {
         @Body() dto: ChangePasswordDto,
         @Req() req: IUserRequest,
     ): Promise<ResponseMessageDto> {
-        return await this.authService.changePassword(dto, req.user.userId);
+        return await this.authService.changePassword(dto, req.user.fullData);
     }
 
     @ApiOperation({

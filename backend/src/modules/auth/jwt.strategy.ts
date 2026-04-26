@@ -1,15 +1,18 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { EnvService } from '../../shared/services/env.service';
-import { IJwtPayload } from './interfaces/IJwtPayload';
+import { IExtendedJwtPayload, IJwtPayload } from './interfaces/IJwtPayload';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { TokensService } from '../tokens/tokens.service';
 import { ErrorResponse } from '../../shared/error/error-response';
 import { Request } from 'express';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
+        private readonly usersService: UsersService,
         private readonly envService: EnvService,
         private readonly tokenService: TokensService,
     ) {
@@ -21,8 +24,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: envService.accessSecret,
         });
     }
-    async validate(payload: IJwtPayload): Promise<IJwtPayload> {
-        const { jti, isActive, isDeleted } = payload;
+    async validate(payload: IJwtPayload): Promise<IExtendedJwtPayload> {
+        const { userId, ...restPayload } = payload;
+        const { jti, isActive, isDeleted } = restPayload;
         const isExistsToken = await this.tokenService.isExistsBy({
             jti,
             isBlocked: false,
@@ -51,6 +55,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                 ),
             );
         }
-        return payload;
+        const user = (await this.usersService.findById(userId)) as User;
+        return { ...restPayload, fullData: user };
     }
 }

@@ -17,6 +17,7 @@ import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { FirebaseModule } from './modules/firebase/firebase.module';
 import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.module';
 import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
+import { TagsModule } from './modules/tags/tags.module';
 
 @Module({
     imports: [
@@ -77,6 +78,7 @@ import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistic
         FirebaseModule,
         FoodAndDrinkModule,
         FoodAndDrinkStatisticsModule,
+        TagsModule,
     ],
     controllers: [],
     providers: [

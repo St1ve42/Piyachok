@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { RegionsService } from './regions.service';
-import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { StringSearchQueryDto } from '../../shared/dto/base-query.dto';
 import { RegionBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
 import { CitiesService } from '../cities/cities.service';
 import { ResponseRegionListDto } from './dto/response-region-list.dto';
@@ -28,7 +28,9 @@ export class RegionsController {
         type: ResponseErrorDto,
     })
     @Get()
-    async find(@Query() query: BaseQueryDto): Promise<ResponseRegionListDto> {
+    async find(
+        @Query() query: StringSearchQueryDto,
+    ): Promise<ResponseRegionListDto> {
         const [data, total] = await this.regionsService.find(query);
         return {
             data,
@@ -55,7 +57,7 @@ export class RegionsController {
     })
     @Get('/:id/cities')
     async findCitiesByRegionId(
-        @Query() query: BaseQueryDto,
+        @Query() query: StringSearchQueryDto,
         @Param('id', RegionIdValidationPipe, RegionBodyValidationPipe)
         id: number,
     ): Promise<ResponseCityListDto> {

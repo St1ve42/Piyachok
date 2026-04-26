@@ -3,7 +3,7 @@ import { FoodAndDrink } from '../entities/food-and-drink.entity';
 import { Expose, Type } from 'class-transformer';
 import { FeaturePresenter } from './feature-presenter';
 
-export class FoodAndDrinkListPresenter {
+export class FoodAndDrinkResponseFindOnePresenter {
     @Expose()
     private id: string;
     @Expose()
@@ -23,8 +23,6 @@ export class FoodAndDrinkListPresenter {
     public features: FeaturePresenter;
 
     constructor(foodAndDrink: Partial<FoodAndDrink>) {
-        Object.assign(this, {
-            foodAndDrink,
-        });
+        Object.assign(this, foodAndDrink);
     }
 }

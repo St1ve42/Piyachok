@@ -11,10 +11,13 @@ export class SocialNetworkDto {
 
     @IsOptional()
     @IsString()
-    @Matches(/^https:\/\/(www\.)?telegram\.org\/[a-zA-Z0-9_.]+\/?$/, {
-        message:
-            'Посилання на соціальну мережу має бути вигляду https://www.telegram.org/...',
-    })
+    @Matches(
+        /^(https?:\/\/)?(www\.)?(t\.me|telegram\.me)\/[a-zA-Z0-9_]{5,}\/?$/,
+        {
+            message:
+                'Посилання на соціальну мережу має бути вигляду https://www.telegram.org/...',
+        },
+    )
     telegram?: string;
 
     @IsOptional()

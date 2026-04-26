@@ -8,9 +8,10 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
     app.useGlobalPipes(
         new ValidationPipe({
             forbidNonWhitelisted: true,
@@ -63,6 +64,7 @@ async function bootstrap() {
         .addServer('http://localhost/api', 'Локальна розробка')
         .build();
     app.use(cookieParser());
+    app.set('query parser', 'extended');
     app.enableCors({
         origin: 'http://localhost:3000',
         credentials: true,

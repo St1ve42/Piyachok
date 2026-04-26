@@ -19,7 +19,9 @@ export class BaseQueryDto {
     @Min(0)
     @IsOptional()
     skip: number = 0;
+}
 
+export class StringSearchQueryDto extends BaseQueryDto {
     @ApiProperty({ example: 'Закарпатська', required: false })
     @IsString()
     @IsOptional()
