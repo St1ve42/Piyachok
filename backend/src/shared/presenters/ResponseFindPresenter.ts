@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { ClassConstructor } from 'class-transformer/types/interfaces';
 import { BaseQueryPresenter } from './BaseQueryPresenter';
 import { FoodAndDrinkResponseFindOnePresenter } from '../../modules/food-and-drink/presenters/food-and-drink-response-find-one.presenter';
+import { FoodAndDrinkAdminResponseFindOnePresenter } from '../../modules/protected-food-and-drink/presenters/food-and-drink-admin-response-find-one.presenter';
 
 function createResponseFindPresenter<T>(DataCls: ClassConstructor<T>) {
     class ResponseFindPresenter extends BaseQueryPresenter {
@@ -28,4 +29,9 @@ function createResponseFindPresenter<T>(DataCls: ClassConstructor<T>) {
 export const FoodAndDrinkResponseFindPresenter =
     createResponseFindPresenter<FoodAndDrinkResponseFindOnePresenter>(
         FoodAndDrinkResponseFindOnePresenter,
+    );
+
+export const FoodAndDrinkSuperadminResponseFindPresenter =
+    createResponseFindPresenter<FoodAndDrinkAdminResponseFindOnePresenter>(
+        FoodAndDrinkAdminResponseFindOnePresenter,
     );

@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponseBadRequestErrorDto {
     @ApiProperty({ example: 400 })
-    statusCode: number;
+    status: number;
     @ApiProperty({ example: 'BAD_REQUEST' })
-    errorCode: string;
+    error: string;
     @ApiProperty({
         example: [
             {

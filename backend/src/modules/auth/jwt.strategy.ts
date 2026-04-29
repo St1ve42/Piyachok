@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { EnvService } from '../../shared/services/env.service';
-import { IExtendedJwtPayload, IJwtPayload } from './interfaces/IJwtPayload';
+import { IJwtPayload, IValidatePayload } from './interfaces/IJwtPayload';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { TokensService } from '../tokens/tokens.service';
 import { ErrorResponse } from '../../shared/error/error-response';
@@ -24,9 +24,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: envService.accessSecret,
         });
     }
-    async validate(payload: IJwtPayload): Promise<IExtendedJwtPayload> {
+    async validate(payload: IJwtPayload): Promise<IValidatePayload> {
         const { userId, ...restPayload } = payload;
-        const { jti, isActive, isDeleted } = restPayload;
+        const { jti, isActive, isDeleted, role } = restPayload;
         const isExistsToken = await this.tokenService.isExistsBy({
             jti,
             isBlocked: false,
@@ -55,7 +55,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                 ),
             );
         }
-        const user = (await this.usersService.findById(userId)) as User;
-        return { ...restPayload, fullData: user };
+        return {
+            jti,
+            role,
+            data: (await this.usersService.findById(userId)) as User,
+        };
     }
 }

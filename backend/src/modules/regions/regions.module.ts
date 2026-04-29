@@ -11,5 +11,6 @@ import { CitiesModule } from '../cities/cities.module';
     imports: [TypeOrmModule.forFeature([Region, City, User]), CitiesModule],
     controllers: [RegionsController],
     providers: [RegionsService],
+    exports: [RegionsService],
 })
 export class RegionsModule {}

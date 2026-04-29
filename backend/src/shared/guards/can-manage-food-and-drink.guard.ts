@@ -15,7 +15,7 @@ export class CanManageFoodAndDrinkGuard implements CanActivate {
         const { user } = req;
         const foodAndDrinkRequestId = req.params['id'] as string;
         const foodAndDrink = await this.foodAndDrink.findOneByParams({
-            ownerId: user.fullData.id,
+            ownerId: user.data.id,
         });
         const isOwner =
             foodAndDrink && foodAndDrink.id === foodAndDrinkRequestId;

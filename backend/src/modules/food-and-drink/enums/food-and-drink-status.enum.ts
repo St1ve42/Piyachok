@@ -1,5 +1,5 @@
 export enum FoodAndDrinkStatusEnum {
-    ACTIVE = 'активний',
-    PENDING = 'в очікуванні',
-    INACTIVE = 'неактивний',
+    ACTIVE = 'active',
+    PENDING = 'pending',
+    INACTIVE = 'inactive',
 }

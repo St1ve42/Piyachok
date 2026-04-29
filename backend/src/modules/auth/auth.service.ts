@@ -315,7 +315,7 @@ export class AuthService {
             }
         }
         const hashedPassword = await hash(password, 10);
-        user = await this.userService.update(userId, {
+        user = await this.userService.updateById(userId, {
             password: hashedPassword,
         });
         const tokens = await this.tokenService.generate({ user });
@@ -354,7 +354,7 @@ export class AuthService {
             );
         }
         const hashedPassword = await hash(password, 10);
-        await this.userService.update(userId, { password: hashedPassword });
+        await this.userService.updateById(userId, { password: hashedPassword });
         await this.tokenService.updateBy({ userId }, { isBlocked: true });
         return {
             message:

@@ -18,6 +18,10 @@ import { FirebaseModule } from './modules/firebase/firebase.module';
 import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.module';
 import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
 import { TagsModule } from './modules/tags/tags.module';
+import { SuperadminModule } from './modules/superadmin/superadmin.module';
+import { ProtectedUsersModule } from './modules/protected-users/protected-users.module';
+import { RouterModule } from '@nestjs/core';
+import { ProtectedFoodAndDrinkModule } from './modules/protected-food-and-drink/protected-food-and-drink.module';
 
 @Module({
     imports: [
@@ -79,6 +83,25 @@ import { TagsModule } from './modules/tags/tags.module';
         FoodAndDrinkModule,
         FoodAndDrinkStatisticsModule,
         TagsModule,
+        SuperadminModule,
+        ProtectedUsersModule,
+        RouterModule.register([
+            {
+                path: 'superadmin',
+                module: SuperadminModule,
+                children: [
+                    {
+                        path: '/users',
+                        module: ProtectedUsersModule,
+                    },
+                    {
+                        path: '/food-and-drinks',
+                        module: ProtectedFoodAndDrinkModule,
+                    },
+                ],
+            },
+        ]),
+        ProtectedFoodAndDrinkModule,
     ],
     controllers: [],
     providers: [

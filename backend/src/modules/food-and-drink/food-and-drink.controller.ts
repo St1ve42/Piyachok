@@ -1,16 +1,16 @@
 import {
-    Controller,
-    Get,
-    Post,
     Body,
-    Patch,
-    Param,
+    Controller,
     Delete,
-    UseGuards,
-    Req,
+    Get,
     HttpCode,
     HttpStatus,
+    Param,
+    Patch,
+    Post,
     Query,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
 import { FoodAndDrinkService } from './food-and-drink.service';
 import { CreateFoodAndDrinkDto } from './dto/create-food-and-drink.dto';
@@ -27,6 +27,7 @@ import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/Respo
 import { CanManageFoodAndDrinkGuard } from '../../shared/guards/can-manage-food-and-drink.guard';
 import { FoodAndDrinkRemoveTagDto } from './dto/food-and-drink-remove-tag.dto';
 import { TagsService } from '../tags/tags.service';
+import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 
 @Controller('food-and-drinks')
 export class FoodAndDrinkController {
@@ -43,7 +44,7 @@ export class FoodAndDrinkController {
     ): Promise<FoodAndDrinkOwnerInfoPresenter> {
         const foodAndDrink = await this.foodAndDrinkService.create(
             createFoodAndDrinkDto,
-            req.user.fullData,
+            req.user.data,
         );
         return plainToInstance(FoodAndDrinkOwnerInfoPresenter, foodAndDrink, {
             excludeExtraneousValues: true,
@@ -54,8 +55,10 @@ export class FoodAndDrinkController {
     async find(
         @Query() query: FoodAndDrinkQueryDto,
     ): Promise<InstanceType<typeof FoodAndDrinkResponseFindPresenter>> {
-        const [foodAndDrinks, total] =
-            await this.foodAndDrinkService.find(query);
+        const [foodAndDrinks, total] = await this.foodAndDrinkService.find(
+            query,
+            { status: FoodAndDrinkStatusEnum.ACTIVE },
+        );
         return plainToInstance(
             FoodAndDrinkResponseFindPresenter,
             { data: foodAndDrinks, ...query, total },
@@ -74,7 +77,7 @@ export class FoodAndDrinkController {
         )
         id: string,
     ): Promise<FoodAndDrinkInfoPresenter> {
-        const foodAndDrink = await this.foodAndDrinkService.findById(id);
+        const foodAndDrink = await this.foodAndDrinkService.findActiveById(id);
         return plainToInstance(FoodAndDrinkInfoPresenter, foodAndDrink, {
             excludeExtraneousValues: true,
         });

@@ -60,7 +60,7 @@ export class FoodAndDrink {
 
     @Column('enum', {
         enum: FoodAndDrinkStatusEnum,
-        default: FoodAndDrinkStatusEnum.INACTIVE,
+        default: FoodAndDrinkStatusEnum.PENDING,
     })
     status: FoodAndDrinkStatusEnum;
 

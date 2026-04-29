@@ -1,9 +1,11 @@
 import {
     BadRequestException,
     ConflictException,
+    ForbiddenException,
     forwardRef,
     Inject,
     Injectable,
+    NotFoundException,
 } from '@nestjs/common';
 import { CreateFoodAndDrinkDto } from './dto/create-food-and-drink.dto';
 import { UpdateFoodAndDrinkDto } from './dto/update-food-and-drink.dto';
@@ -26,6 +28,9 @@ import { Features } from './entities/features.entity';
 import { FoodAndDrinkSearchDto } from './dto/food-and-drink-search.dto';
 import { FoodAndDrinkRangeDto } from './dto/food-and-drink-range.dto';
 import { TagsService } from '../tags/tags.service';
+import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
+import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
+import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-query.dto';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -36,10 +41,14 @@ export class FoodAndDrinkService {
         private readonly tagsService: TagsService,
     ) {}
 
-    async find(query: FoodAndDrinkQueryDto): Promise<[FoodAndDrink[], number]> {
+    async find(
+        query: FoodAndDrinkQueryDto | SuperadminFoodAndDrinkQueryDto,
+        filterOptions?: FindOptionsWhere<FoodAndDrink>,
+    ): Promise<[FoodAndDrink[], number]> {
         const { page, limit, skip, search, sort, range } = query;
-        const filter: FindOptionsWhere<FoodAndDrink> = {};
+        const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
         const allFeatures = ['isWifi', 'isParking', 'is24hrs', 'isLiveMusic'];
+        const enums = ['status'];
         const features: FindOptionsWhere<Features> = {};
         if (search) {
             (
@@ -52,7 +61,9 @@ export class FoodAndDrinkService {
                     if (!allFeatures.includes(key)) {
                         switch (typeof value) {
                             case 'string':
-                                filter[key] = Like(`%${value}%`);
+                                filter[key] = enums.includes(key)
+                                    ? value
+                                    : Like(`%${value}%`);
                                 break;
                             default:
                                 filter[key] = value;
@@ -88,6 +99,7 @@ export class FoodAndDrinkService {
                 }
             });
         }
+        console.log(filter);
         return await Promise.all([
             this.foodAndDrinkRepository.find({
                 take: limit,
@@ -107,6 +119,23 @@ export class FoodAndDrinkService {
             where: { id },
             relations,
         });
+    }
+
+    async findActiveById(
+        id: string,
+        relations?: FindOptionsRelations<FoodAndDrink>,
+    ): Promise<FoodAndDrink> {
+        const foodAndDrink = await this.foodAndDrinkRepository.findOne({
+            where: {
+                id,
+                status: FoodAndDrinkStatusEnum.ACTIVE,
+            },
+            relations,
+        });
+        if (!foodAndDrink) {
+            throw new NotFoundException('Такого закладу не існує');
+        }
+        return foodAndDrink;
     }
 
     async create(
@@ -181,6 +210,23 @@ export class FoodAndDrinkService {
 
     async isExistsById(id: string): Promise<boolean> {
         return await this.foodAndDrinkRepository.existsBy({ id });
+    }
+
+    async findOneByOwner(user: User): Promise<FoodAndDrink> {
+        const foodAndDrink = await this.findOneByParams({ ownerId: user.id });
+        if (!foodAndDrink) {
+            throw new NotFoundException('Ви не є власником жодного закладу');
+        }
+        return foodAndDrink;
+    }
+
+    async approve(id: string): Promise<FoodAndDrink> {
+        const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
+        if (foodAndDrink.status === FoodAndDrinkStatusEnum.ACTIVE) {
+            throw new ConflictException('Цей заклад вже є активний');
+        }
+        foodAndDrink.status = FoodAndDrinkStatusEnum.ACTIVE;
+        return this.foodAndDrinkRepository.save(foodAndDrink);
     }
 
     private async checkExisting(
