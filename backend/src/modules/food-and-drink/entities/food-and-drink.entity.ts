@@ -21,10 +21,11 @@ import { Features } from './features.entity';
 import { FoodAndDrinkStatistic } from '../../food-and-drink-statistics/entities/food-and-drink-statistic.entity';
 import { FoodAndDrinkViewsPerDay } from '../../food-and-drink-statistics/entities/food-and-drink-views-per-day.entity';
 import { UserView } from '../../food-and-drink-statistics/entities/user-views.entity';
+import { City } from '../../cities/entities/city.entity';
+import { FoodAndDrinkDaysEnum } from '../enums/food-and-drink-days.enum';
 
-@Index(['name', 'description'])
+@Index(['name'])
 @Index(['averageReceipt'])
-@Unique(['location'])
 @Unique(['phone'])
 @Entity()
 export class FoodAndDrink {
@@ -40,11 +41,25 @@ export class FoodAndDrink {
     @Column('enum', { enum: FoodAndDrinkTypeEnum })
     type: FoodAndDrinkTypeEnum;
 
-    @Column()
-    location: string;
+    @Column('json')
+    location: {
+        street: string;
+        coordinates?: { lat: number; lng: number };
+    };
 
     @Column()
-    businessHours: string;
+    cityId: number;
+
+    @ManyToOne(() => City, (city) => city.foodAndDrinks)
+    @JoinColumn({ name: 'cityId' })
+    city: City;
+
+    @Column('json')
+    businessHours: Array<{
+        day: FoodAndDrinkDaysEnum;
+        open: string;
+        close: string;
+    }>;
 
     @Column('json', { nullable: true })
     images?: string[] | null;
@@ -140,4 +155,6 @@ export class FoodAndDrink {
         nullable: true,
     })
     userViews: UserView[] | null;
+
+    distance?: string;
 }

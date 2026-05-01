@@ -9,6 +9,7 @@ import {
 import { Region } from '../../regions/entities/region.entity';
 import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entity';
 
 @Entity()
 export class City {
@@ -25,4 +26,6 @@ export class City {
     region: Region;
     @OneToMany(() => User, (user) => user.city)
     users: User[];
+    @OneToMany(() => FoodAndDrink, (foodAndDrink) => foodAndDrink.city)
+    foodAndDrinks: FoodAndDrink[];
 }

@@ -1,8 +1,10 @@
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import {
+    ArrayMinSize,
     ArrayNotEmpty,
     IsArray,
     IsEnum,
+    IsInt,
     IsNumber,
     IsObject,
     IsOptional,
@@ -10,13 +12,16 @@ import {
     IsString,
     IsUrl,
     MaxLength,
+    Min,
     MinLength,
     ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { SocialNetworkDto } from './social-network.dto';
 import { FeaturesDto } from './features.dto';
+import { LocationDto } from './location.dto';
+import { BusinessHoursDto } from './businessHours.dto';
+import { Type } from 'class-transformer';
 
 export class CreateFoodAndDrinkDto {
     @IsString()
@@ -32,15 +37,20 @@ export class CreateFoodAndDrinkDto {
     @IsEnum(FoodAndDrinkTypeEnum)
     type: FoodAndDrinkTypeEnum;
 
-    @IsString()
-    @MinLength(10)
-    @MaxLength(100)
-    location: string;
+    @IsObject()
+    @ValidateNested()
+    location: LocationDto;
 
-    @IsString()
-    @MinLength(10)
-    @MaxLength(100)
-    businessHours: string;
+    @IsNumber()
+    @IsInt()
+    @Min(1)
+    cityId: number;
+
+    @IsArray()
+    @ArrayMinSize(1)
+    @ValidateNested({ each: true })
+    @Type(() => BusinessHoursDto)
+    businessHours: Array<BusinessHoursDto>;
 
     @ApiProperty({ example: '+380501234567' })
     @IsPhoneNumber(undefined, {
@@ -61,13 +71,11 @@ export class CreateFoodAndDrinkDto {
     @IsOptional()
     @IsObject()
     @ValidateNested()
-    @Type(() => SocialNetworkDto)
     socialNetworks?: SocialNetworkDto;
 
     @IsOptional()
     @IsObject()
     @ValidateNested()
-    @Type(() => FeaturesDto)
     features?: FeaturesDto;
 
     @IsArray()

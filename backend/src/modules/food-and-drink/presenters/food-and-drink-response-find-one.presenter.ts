@@ -1,28 +1,27 @@
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
-import { FoodAndDrink } from '../entities/food-and-drink.entity';
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { FeaturePresenter } from './feature-presenter';
 
 export class FoodAndDrinkResponseFindOnePresenter {
     @Expose()
-    private id: string;
+    id: string;
     @Expose()
-    private name: string;
+    name: string;
     @Expose()
-    private type: FoodAndDrinkTypeEnum;
+    type: FoodAndDrinkTypeEnum;
     @Expose()
-    private location: string;
+    location: string;
     @Expose()
-    private businessHours: string;
+    businessHours: string;
     @Expose()
-    private mainImage: string | null;
+    mainImage: string | null;
     @Expose()
-    private rating: number | null;
+    rating: number | null;
+    @Expose()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    @Transform(({ value }) => (value === undefined ? null : value))
+    distance: string | null;
     @Expose()
     @Type(() => FeaturePresenter)
-    public features: FeaturePresenter;
-
-    constructor(foodAndDrink: Partial<FoodAndDrink>) {
-        Object.assign(this, foodAndDrink);
-    }
+    features: FeaturePresenter;
 }

@@ -1,7 +1,6 @@
 import {
     BadRequestException,
     ConflictException,
-    ForbiddenException,
     forwardRef,
     Inject,
     Injectable,
@@ -28,9 +27,9 @@ import { Features } from './entities/features.entity';
 import { FoodAndDrinkSearchDto } from './dto/food-and-drink-search.dto';
 import { FoodAndDrinkRangeDto } from './dto/food-and-drink-range.dto';
 import { TagsService } from '../tags/tags.service';
-import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-query.dto';
+import { CoordinatesDto } from './dto/location.dto';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -45,7 +44,8 @@ export class FoodAndDrinkService {
         query: FoodAndDrinkQueryDto | SuperadminFoodAndDrinkQueryDto,
         filterOptions?: FindOptionsWhere<FoodAndDrink>,
     ): Promise<[FoodAndDrink[], number]> {
-        const { page, limit, skip, search, sort, range } = query;
+        const { page, limit, skip, search, range, lng, lat } = query;
+        let { sort } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
         const allFeatures = ['isWifi', 'isParking', 'is24hrs', 'isLiveMusic'];
         const enums = ['status'];
@@ -99,7 +99,45 @@ export class FoodAndDrinkService {
                 }
             });
         }
-        console.log(filter);
+        if (sort && sort.distance && lng && lat) {
+            const queryBuilder = this.foodAndDrinkRepository
+                .createQueryBuilder(`foodAndDrink`)
+                .addSelect(
+                    `ST_Distance_Sphere(point(CAST(foodAndDrink.location -> '$.coordinates.lng' as DECIMAL(10,8)), CAST(foodAndDrink.location -> '$.coordinates.lat' as DECIMAL(10,8))), point(:userLng, :userLat))`,
+                    'distance',
+                )
+                .setParameters({
+                    userLng: lng,
+                    userLat: lat,
+                })
+                .where(filter)
+                .orderBy('distance', 'ASC');
+            const { distance, ...restSort } = sort;
+            Object.entries(restSort).forEach(([key, value]) => {
+                const order = value === 'asc' ? 'ASC' : 'DESC';
+                queryBuilder.addOrderBy(key, order);
+            });
+            const { entities, raw } = await queryBuilder.getRawAndEntities();
+            const count = await this.foodAndDrinkRepository.countBy(filter);
+
+            // Мапимо дистанцію назад у об'єкти (опціонально)
+            const result = entities.map((entity, index) => {
+                const distance = (raw[index] as { distance: number }).distance;
+                return {
+                    ...entity,
+                    distance:
+                        distance < 1000
+                            ? `${distance} м`
+                            : `${Number((distance / 1000).toFixed(2))} км`,
+                };
+            });
+
+            return [result, count];
+        }
+        if (sort && sort.distance) {
+            const { distance, ...restSort } = sort;
+            sort = restSort;
+        }
         return await Promise.all([
             this.foodAndDrinkRepository.find({
                 take: limit,
@@ -142,7 +180,7 @@ export class FoodAndDrinkService {
         createFoodAndDrinkDto: CreateFoodAndDrinkDto,
         owner: User,
     ): Promise<FoodAndDrink> {
-        const { tags } = createFoodAndDrinkDto;
+        const { tags, cityId } = createFoodAndDrinkDto;
         await this.checkExisting(createFoodAndDrinkDto, owner.id);
         const allTags = tags
             ? await this.tagsService.createAndGetTags(tags)
@@ -151,6 +189,7 @@ export class FoodAndDrinkService {
             ...createFoodAndDrinkDto,
             owner,
             tags: allTags,
+            cityId,
         });
         await this.foodAndDrinkRepository.save(foodAndDrink);
         return (await this.findById(foodAndDrink.id)) as FoodAndDrink;
@@ -208,6 +247,15 @@ export class FoodAndDrinkService {
         return await this.foodAndDrinkRepository.existsBy(params);
     }
 
+    async existsByCoordinates(coordinates: CoordinatesDto): Promise<boolean> {
+        return await this.foodAndDrinkRepository
+            .createQueryBuilder('foodAndDrink')
+            .where('foodAndDrink.location -> "$.coordinates.lat" = :lat')
+            .andWhere('foodAndDrink.location -> "$.coordinates.lng" = :lng')
+            .setParameters(coordinates)
+            .getExists();
+    }
+
     async isExistsById(id: string): Promise<boolean> {
         return await this.foodAndDrinkRepository.existsBy({ id });
     }
@@ -242,9 +290,10 @@ export class FoodAndDrinkService {
                 'Цей телефон вже прив`язаний до інакшого закладу. Виберіть інакший варіант.',
             );
         }
-        isExistsFoodAndDrink = location
-            ? await this.existsByParams({ location })
-            : false;
+        isExistsFoodAndDrink =
+            location && location.coordinates
+                ? await this.existsByCoordinates(location.coordinates)
+                : false;
         if (isExistsFoodAndDrink) {
             throw new ConflictException(
                 'За цією адресою вже роозташований інакший заклад. Виберіть інакший варіант.',

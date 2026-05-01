@@ -20,4 +20,8 @@ export class FoodAndDrinkSortDto implements FindOptionsOrder<FoodAndDrink> {
     @IsOptional()
     @IsIn(allowedSortValues)
     name?: 'asc' | 'desc';
+
+    @IsOptional()
+    @IsIn(['asc'])
+    distance?: 'asc';
 }
