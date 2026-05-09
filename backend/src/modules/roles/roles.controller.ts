@@ -1,17 +1,21 @@
 import { Controller, Get } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Role } from './entities/role.entity';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { User } from '../users/entities/user.entity';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@Controller('roles')
+@ApiTags('Ролі')
+@Controller()
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
 
-    @ApiOperation({ summary: 'Список всіх ролей' })
+    @ApiOperation({
+        summary: 'Отримання списку всіх ролей',
+        description:
+            'Повертає список всіх доступних ролей в системі. Ролі використовуються для розподілу прав доступу користувачів.',
+    })
     @ApiOkResponse({
-        description: 'Успіх',
-        type: User,
+        description: 'Успішно отримано список ролей',
+        type: [Role],
     })
     @Get()
     async find(): Promise<Role[]> {

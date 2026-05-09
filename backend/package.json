@@ -40,17 +40,18 @@
     "dotenv": "^17.3.1",
     "firebase-admin": "^13.7.0",
     "handlebars": "4.7.9",
+    "multer": "^2.1.1",
     "mysql2": "^3.20.0",
     "nodemailer": "8.0.5",
     "nodemailer-express-handlebars": "^7.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "qs": "^6.15.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.28",
-    "uuid": "^14.0.0",
-    "qs": "^6.15.1"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
@@ -62,6 +63,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^2.1.0",
     "@types/node": "^25.5.0",
     "@types/nodemailer": "^7.0.11",
     "@types/passport-jwt": "^4.0.1",

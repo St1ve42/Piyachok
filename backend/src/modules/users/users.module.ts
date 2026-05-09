@@ -7,9 +7,11 @@ import { Role } from '../roles/entities/role.entity';
 import { CitiesModule } from '../cities/cities.module';
 import { RegionsModule } from '../regions/regions.module';
 import { FoodAndDrinkModule } from '../food-and-drink/food-and-drink.module';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
     imports: [
+        StorageModule,
         TypeOrmModule.forFeature([User, Role]),
         CitiesModule,
         RegionsModule,

@@ -8,7 +8,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ProviderEnum } from '../../shared/enums/provider.enum';
 import { ErrorResponse } from '../../shared/error/error-response';
@@ -17,6 +17,10 @@ import { RegionsService } from '../regions/regions.service';
 import { Region } from '../regions/entities/region.entity';
 import { City } from '../cities/entities/city.entity';
 import { GlobalUserRoleEnum } from './enums/global.user.role.enum';
+import { StorageService } from '../storage/storage.service';
+import { itemNameEnum } from '../storage/enums/itemNameEnum';
+import { UserQueryDto } from '../protected-users/dto/user-query.dto';
+import { UserSearchDto } from '../protected-users/dto/user-search.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +29,7 @@ export class UsersService {
         private readonly userRepository: Repository<User>,
         private readonly cityService: CitiesService,
         private readonly regionService: RegionsService,
+        private readonly storageService: StorageService,
     ) {}
     async create(createUserDto: CreateUserDto): Promise<User> {
         const { cityId, regionId, provider, ...restUser } = createUserDto;
@@ -74,8 +79,36 @@ export class UsersService {
         await this.updateById(id, { isDeleted: true });
     }
 
-    async find(): Promise<User[]> {
-        return await this.userRepository.find({});
+    async find(query: UserQueryDto): Promise<[User[], number]> {
+        const { page, limit, skip, search } = query;
+        const filter: FindOptionsWhere<User> = {};
+        if (search) {
+            (
+                Object.entries(search) as [
+                    keyof UserSearchDto,
+                    UserSearchDto[keyof UserSearchDto],
+                ][]
+            ).forEach(([key, value]) => {
+                if (value) {
+                    switch (typeof value) {
+                        case 'string':
+                            filter[key] = Like(`%${value}%`);
+                            break;
+                        default:
+                            filter[key] = value;
+                            break;
+                    }
+                }
+            });
+        }
+        return await Promise.all([
+            this.userRepository.find({
+                take: limit,
+                skip: (page - 1) * limit + skip,
+                where: filter,
+            }),
+            this.userRepository.countBy(filter),
+        ]);
     }
 
     async findById(id: string): Promise<User | null> {
@@ -94,6 +127,29 @@ export class UsersService {
         params: FindOptionsWhere<User>,
     ): Promise<User | null> {
         return await this.userRepository.findOneBy(params);
+    }
+
+    async uploadPhoto(file: Express.Multer.File, user: User): Promise<User> {
+        const { photo } = user;
+        if (photo) {
+            await this.storageService.deleteFile(photo);
+        }
+        user.photo = await this.storageService.uploadFile(
+            file,
+            itemNameEnum.USER,
+            user.id,
+        );
+        return await this.userRepository.save(user);
+    }
+
+    async deletePhoto(user: User): Promise<User> {
+        const { photo } = user;
+        if (!photo) {
+            throw new NotFoundException('У Вас немає фотографії.');
+        }
+        await this.storageService.deleteFile(photo);
+        user.photo = null;
+        return await this.userRepository.save(user);
     }
 
     private async checkPhoneUniqueness(userDto: UpdateUserDto): Promise<void> {

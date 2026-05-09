@@ -22,6 +22,7 @@ import { SuperadminModule } from './modules/superadmin/superadmin.module';
 import { ProtectedUsersModule } from './modules/protected-users/protected-users.module';
 import { RouterModule } from '@nestjs/core';
 import { ProtectedFoodAndDrinkModule } from './modules/protected-food-and-drink/protected-food-and-drink.module';
+import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
     imports: [
@@ -98,10 +99,15 @@ import { ProtectedFoodAndDrinkModule } from './modules/protected-food-and-drink/
                         path: '/food-and-drinks',
                         module: ProtectedFoodAndDrinkModule,
                     },
+                    {
+                        path: '/roles',
+                        module: RolesModule,
+                    },
                 ],
             },
         ]),
         ProtectedFoodAndDrinkModule,
+        StorageModule,
     ],
     controllers: [],
     providers: [

@@ -30,6 +30,11 @@ import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-query.dto';
 import { CoordinatesDto } from './dto/location.dto';
+import { StorageService } from '../storage/storage.service';
+import { itemNameEnum } from '../storage/enums/itemNameEnum';
+import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
+import { UtilsService } from '../../shared/services/utils.service';
+import { SuperadminFoodAndDrinkStatusDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-status.dto';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -38,13 +43,14 @@ export class FoodAndDrinkService {
         private readonly foodAndDrinkRepository: Repository<FoodAndDrink>,
         @Inject(forwardRef(() => TagsService))
         private readonly tagsService: TagsService,
+        private readonly storageService: StorageService,
     ) {}
 
     async find(
         query: FoodAndDrinkQueryDto | SuperadminFoodAndDrinkQueryDto,
         filterOptions?: FindOptionsWhere<FoodAndDrink>,
     ): Promise<[FoodAndDrink[], number]> {
-        const { page, limit, skip, search, range, lng, lat } = query;
+        const { page, limit, skip, search, range, userCoordinates } = query;
         let { sort } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
         const allFeatures = ['isWifi', 'isParking', 'is24hrs', 'isLiveMusic'];
@@ -58,24 +64,28 @@ export class FoodAndDrinkService {
                 ][]
             ).forEach(([key, value]) => {
                 if (value) {
-                    if (!allFeatures.includes(key)) {
-                        switch (typeof value) {
-                            case 'string':
-                                filter[key] = enums.includes(key)
-                                    ? value
-                                    : Like(`%${value}%`);
-                                break;
-                            default:
+                    switch (typeof value) {
+                        case 'string':
+                            if (key === 'tag') {
+                                filter['tags'] = { name: value };
+                            } else if (enums.includes(key)) {
                                 filter[key] = value;
-                                break;
-                        }
-                    } else {
-                        features[key] = value;
+                            } else {
+                                filter[key] = Like(`%${value}%`);
+                            }
+                            break;
+                        default:
+                            if (allFeatures.includes(key)) {
+                                features[key] = value;
+                            } else {
+                                filter[key] = value;
+                            }
+                            break;
                     }
                 }
             });
+            filter['features'] = features;
         }
-        filter['features'] = features;
         if (range) {
             (
                 Object.entries(range) as [
@@ -99,7 +109,8 @@ export class FoodAndDrinkService {
                 }
             });
         }
-        if (sort && sort.distance && lng && lat) {
+        if (sort && sort.distance && userCoordinates) {
+            const { lng, lat } = userCoordinates;
             const queryBuilder = this.foodAndDrinkRepository
                 .createQueryBuilder(`foodAndDrink`)
                 .addSelect(
@@ -120,7 +131,6 @@ export class FoodAndDrinkService {
             const { entities, raw } = await queryBuilder.getRawAndEntities();
             const count = await this.foodAndDrinkRepository.countBy(filter);
 
-            // Мапимо дистанцію назад у об'єкти (опціонально)
             const result = entities.map((entity, index) => {
                 const distance = (raw[index] as { distance: number }).distance;
                 return {
@@ -256,6 +266,78 @@ export class FoodAndDrinkService {
             .getExists();
     }
 
+    async uploadImages(
+        id: string,
+        files: Express.Multer.File[],
+    ): Promise<FoodAndDrink> {
+        const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
+        const { images } = foodAndDrink;
+        if (images) {
+            if (images.length === 10) {
+                throw new ConflictException(
+                    `Вже завантажено максимальну кількість зображень: 10`,
+                );
+            }
+            const amount = images.length + files.length;
+            if (amount > 10) {
+                throw new ConflictException(
+                    `Перевищена максимальна загальна кількість зображень: 10. Приберіть ${amount - 10} зображення`,
+                );
+            }
+        }
+        for (const file of files) {
+            const path = await this.storageService.uploadFile(
+                file,
+                itemNameEnum.FOOD_AND_DRINK,
+                id,
+            );
+            if (foodAndDrink.images) {
+                foodAndDrink.images.push(path);
+            } else {
+                foodAndDrink.images = [path];
+                foodAndDrink.mainImage = path;
+            }
+        }
+        return this.foodAndDrinkRepository.save(foodAndDrink);
+    }
+
+    async removeImages(
+        id: string,
+        removeImagesFoodAndDrinkDto: RemoveImagesFoodAndDrinkDto,
+    ): Promise<FoodAndDrink> {
+        const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
+        const { images } = foodAndDrink;
+        const { images: removeImages } = removeImagesFoodAndDrinkDto;
+        if (!images) {
+            throw new NotFoundException(
+                'Заклад не містить жодного зображення.',
+            );
+        }
+        const notExistingImages = removeImages.filter(
+            (removeImage) => !images.includes(removeImage),
+        );
+        if (notExistingImages.length !== 0) {
+            throw new ConflictException(
+                `Заклад не містить зображення зі шляхом ${UtilsService.outputArray(notExistingImages)}.`,
+            );
+        }
+        for (const removeImage of removeImages) {
+            await this.storageService.deleteFile(removeImage);
+            const imageIndex = images.indexOf(removeImage);
+            if (imageIndex === 0 && images.length !== 1) {
+                foodAndDrink.mainImage = images[1];
+            }
+            images.splice(imageIndex, 1);
+        }
+        if (images.length === 0) {
+            foodAndDrink.images = null;
+            foodAndDrink.mainImage = null;
+        } else {
+            foodAndDrink.images = images;
+        }
+        return await this.save(foodAndDrink);
+    }
+
     async isExistsById(id: string): Promise<boolean> {
         return await this.foodAndDrinkRepository.existsBy({ id });
     }
@@ -268,12 +350,16 @@ export class FoodAndDrinkService {
         return foodAndDrink;
     }
 
-    async approve(id: string): Promise<FoodAndDrink> {
+    async setStatus(
+        id: string,
+        superadminFoodAndDrinkStatusDto: SuperadminFoodAndDrinkStatusDto,
+    ): Promise<FoodAndDrink> {
+        const { status } = superadminFoodAndDrinkStatusDto;
         const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
-        if (foodAndDrink.status === FoodAndDrinkStatusEnum.ACTIVE) {
-            throw new ConflictException('Цей заклад вже є активний');
+        if (foodAndDrink.status === status) {
+            throw new ConflictException(`Цей заклад вже має статус ${status}`);
         }
-        foodAndDrink.status = FoodAndDrinkStatusEnum.ACTIVE;
+        foodAndDrink.status = status;
         return this.foodAndDrinkRepository.save(foodAndDrink);
     }
 

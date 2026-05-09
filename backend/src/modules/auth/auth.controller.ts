@@ -7,6 +7,7 @@ import {
     UseGuards,
     Res,
     Req,
+    SerializeOptions,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
@@ -37,6 +38,8 @@ import { User } from '../users/entities/user.entity';
 import { ResponseTokensDto } from './dto/response-tokens.dto';
 import { ActivationResendingDto } from './dto/activation-resending.dto';
 import { ResponseUserFromServiceDto } from './dto/response-user-from-service.dto';
+import { UserPresenter } from '../users/presenters/user.presenter';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('auth')
 export class AuthController {
@@ -89,6 +92,10 @@ export class AuthController {
         type: ResponseErrorDto,
     })
     @Post('/social-network/sign-up/:token')
+    @SerializeOptions({
+        type: UserPresenter,
+        excludeExtraneousValues: true,
+    })
     async signUpWithSocialNetwork(
         @Param('token') token: string,
         @Res({ passthrough: true }) res: Response,
@@ -115,6 +122,10 @@ export class AuthController {
     })
     @Post('/activate/:token')
     @HttpCode(200)
+    @SerializeOptions({
+        type: UserPresenter,
+        excludeExtraneousValues: true,
+    })
     async activate(
         @Param('token') token: string,
         @Res({ passthrough: true }) res: Response,
@@ -142,6 +153,10 @@ export class AuthController {
     })
     @Post('/sign-in')
     @HttpCode(200)
+    @SerializeOptions({
+        type: UserPresenter,
+        excludeExtraneousValues: true,
+    })
     async signIn(
         @Body() signInDto: SignInDto,
         @Res({ passthrough: true }) res: Response,
@@ -192,6 +207,10 @@ export class AuthController {
     })
     @Post('/password/recovery/:token')
     @HttpCode(200)
+    @SerializeOptions({
+        type: UserPresenter,
+        excludeExtraneousValues: true,
+    })
     async recovery(
         @Param('token') token: string,
         @Body() dto: RecoveryDto,
@@ -306,7 +325,11 @@ export class AuthController {
             this.setCookies(res, tokens);
         }
         res.status(result.statusCode);
-        return 'user' in result.data ? result.data.user : result.data;
+        return 'user' in result.data
+            ? plainToInstance(UserPresenter, result.data.user, {
+                  excludeExtraneousValues: true,
+              })
+            : result.data;
     }
 
     @ApiOperation({ summary: 'Надсилання повторного активаційного листа' })

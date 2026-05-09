@@ -1,3 +1,3 @@
-import { BaseQueryPresenter } from '../../../shared/presenters/BaseQueryPresenter';
+import { BaseQueryPresenter } from '../../../shared/presenters/base-query.presenter';
 
 export class FoodAndDrinkQueryPresenter extends BaseQueryPresenter {}

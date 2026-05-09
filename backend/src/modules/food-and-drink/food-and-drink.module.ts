@@ -8,6 +8,7 @@ import { FoodAndDrinkStatistic } from '../food-and-drink-statistics/entities/foo
 import { FoodAndDrinkViewsPerDay } from '../food-and-drink-statistics/entities/food-and-drink-views-per-day.entity';
 import { UserView } from '../food-and-drink-statistics/entities/user-views.entity';
 import { TagsModule } from '../tags/tags.module';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { TagsModule } from '../tags/tags.module';
             UserView,
         ]),
         forwardRef(() => TagsModule),
+        StorageModule,
     ],
     controllers: [FoodAndDrinkController],
     providers: [FoodAndDrinkService],

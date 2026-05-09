@@ -23,6 +23,10 @@ export class EnvService {
     public readonly firebaseProjectId: string;
     public readonly firebaseClientEmail: string;
     public readonly firebasePrivateKey: string;
+    public readonly r2AccountId: string;
+    public readonly r2AccessKeyId: string;
+    public readonly r2SecretAccessKey: string;
+    public readonly r2BucketName: string;
 
     constructor(private configService: ConfigService) {
         this.appPort = configService.get<number>('APP_PORT', 0);
@@ -69,5 +73,12 @@ export class EnvService {
             'FIREBASE_PRIVATE_KEY',
             '',
         );
+        this.r2AccountId = configService.get<string>('R2_ACCOUNT_ID', '');
+        this.r2AccessKeyId = configService.get<string>('R2_ACCESS_KEY_ID', '');
+        this.r2SecretAccessKey = configService.get<string>(
+            'R2_SECRET_ACCESS_KEY',
+            '',
+        );
+        this.r2BucketName = configService.get<string>('R2_BUCKET_NAME', '');
     }
 }
