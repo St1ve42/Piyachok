@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { ResponseUserWithTokensDto } from './dto/response-user-with-tokens.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import {
     ApiAcceptedResponse,
@@ -66,7 +65,7 @@ export class AuthController {
         return await this.authService.signUp(signUpDto);
     }
 
-    @ApiExtraModels(User, ResponseMessageDto)
+    @ApiExtraModels(UserPresenter, ResponseMessageDto)
     @ApiOperation({
         summary:
             'Продовження реєстрації користувача за допомогою даних, отриманих з входу через соціальну мережу',
@@ -76,7 +75,7 @@ export class AuthController {
             'Користувача створено і або йому видано сесія, або надіслано повідомлення стосовно активації акаунту',
         schema: {
             oneOf: [
-                { $ref: getSchemaPath(User) },
+                { $ref: getSchemaPath(UserPresenter) },
                 { $ref: getSchemaPath(ResponseMessageDto) },
             ],
         },
@@ -111,9 +110,9 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Активація користувача' })
     @ApiResponse({
-        description: 'Дані не пройшли валідацію',
+        description: 'Успіх',
         status: 200,
-        type: ResponseUserWithTokensDto,
+        type: UserPresenter,
     })
     @ApiResponse({
         description: 'Невалідний токен або його час вичерпався',
@@ -139,7 +138,7 @@ export class AuthController {
     @ApiResponse({
         description: 'Успіх',
         status: 200,
-        type: ResponseUserWithTokensDto,
+        type: UserPresenter,
     })
     @ApiResponse({
         description: 'Дані не пройшли валідацію',
@@ -165,6 +164,7 @@ export class AuthController {
         this.setCookies(res, tokens);
         return user;
     }
+
     @ApiOperation({ summary: 'Запит на відновлення паролю' })
     @ApiResponse({
         description: 'Успіх',
@@ -188,7 +188,7 @@ export class AuthController {
     @ApiResponse({
         description: 'Успіх',
         status: 200,
-        type: User,
+        type: UserPresenter,
     })
     @ApiResponse({
         description: 'Дані не пройшли валідацію',
@@ -302,7 +302,7 @@ export class AuthController {
     })
     @ApiOkResponse({
         description: 'Вхід успішний!',
-        type: User,
+        type: UserPresenter,
     })
     @ApiAcceptedResponse({
         description:
