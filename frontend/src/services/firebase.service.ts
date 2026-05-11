@@ -1,12 +1,11 @@
 import {AuthProvider, signInWithPopup, User} from "@firebase/auth";
 import {auth} from "@/src/firebase/firebase.init"
-import {fetchApi} from "@/src/lib/fetch.api";
 import {IUser} from "@/src/interfaces/users/IUser";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {IUserFromSocialNetwork, IUserFromSocialNetworkWithToken} from "@/src/interfaces/users/IUserFromSocialNetwork";
 import {FirebaseError} from "@firebase/app";
 import {IError} from "@/src/interfaces/shared/IError";
-
+import {fetchApi} from "@/src/lib/fetch.api";
 
 
 class FirebaseService{

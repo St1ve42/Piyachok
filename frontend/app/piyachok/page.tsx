@@ -4,6 +4,6 @@ export const metadata: Metadata = {
     title: 'Пиячок'
 };
 
-export default function Piyachok() {
+export default function PiyachokPage() {
     return <div>Пиячок</div>
 }

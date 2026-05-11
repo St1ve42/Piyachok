@@ -4,6 +4,6 @@ export const metadata: Metadata = {
     title: 'Топ закладів'
 };
 
-export default function TopFoodAndDrink() {
+export default function TopFoodAndDrinkPage() {
     return <div>Топ закладів</div>
 }

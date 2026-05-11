@@ -1,6 +1,6 @@
 import {IError} from "@/src/interfaces/shared/IError";
 
-interface FailedApiResponse {
+export interface FailedApiResponse {
     success: false,
     status: number,
     data: IError

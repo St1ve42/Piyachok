@@ -12,7 +12,6 @@ const eslintConfig = defineConfig([
                 {
                     "argsIgnorePattern": "^_",
                     "varsIgnorePattern": "^_",
-                    // Це правило ігнорує змінні, які витягуються для деструктуризації ...rest
                     "ignoreRestSiblings": true
                 }
             ]

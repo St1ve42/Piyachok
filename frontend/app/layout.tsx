@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
-import HeaderComponent from "@/src/components/HeaderComponent/HeaderComponent";
+import Header from "@/src/components/layout/Header/Header";
 import Providers from "@/src/providers/providers";
 import {cookies} from "next/headers";
 
@@ -21,7 +21,7 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <div className="root">
-            <HeaderComponent accessTokenCookie={accessTokenCookie}/>
+            <Header accessTokenCookie={accessTokenCookie}/>
             <main className="h-[80%]">
                 <Providers>
                     {children}

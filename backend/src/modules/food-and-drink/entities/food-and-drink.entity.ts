@@ -50,7 +50,7 @@ export class FoodAndDrink {
     @Column()
     cityId: number;
 
-    @ManyToOne(() => City, (city) => city.foodAndDrinks)
+    @ManyToOne(() => City, (city) => city.foodAndDrinks, { eager: true })
     @JoinColumn({ name: 'cityId' })
     city: City;
 

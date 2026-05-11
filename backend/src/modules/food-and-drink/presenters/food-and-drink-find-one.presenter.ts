@@ -3,6 +3,8 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { FeaturePresenter } from './feature-presenter';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocationPresenter } from './location.presenter';
+import { CityPresenter } from '../../cities/presenters/city.presenter';
+import { City } from '../../cities/entities/city.entity';
 
 export class FoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -32,6 +34,17 @@ export class FoodAndDrinkFindOnePresenter {
     })
     @Expose()
     location: LocationPresenter;
+
+    @ApiProperty({
+        description: 'Місто розташування закладу',
+        example: 'м. Львів',
+    })
+    @Expose()
+    @Transform(({ value }: { value: City }) => value.name, {
+        toPlainOnly: true,
+    })
+    @Type(() => CityPresenter)
+    city: CityPresenter;
 
     @ApiProperty({
         example: 'uploads/restaurant-ukraine.jpg',

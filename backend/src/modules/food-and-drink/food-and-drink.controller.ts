@@ -50,6 +50,8 @@ import {
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
+import { FoodAndDrinkTypeEnum } from './enums/food-and-drink-type.enum';
+import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -115,6 +117,32 @@ export class FoodAndDrinkController {
             { status: FoodAndDrinkStatusEnum.ACTIVE },
         );
         return { data: foodAndDrinks, ...query, total };
+    }
+
+    @ApiOperation({
+        summary: 'Список типів закладу',
+        description: 'Отримує список типів закладу',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список типів закладу',
+        example: FoodAndDrinkTypeEnum,
+    })
+    @Get('/types')
+    findTypes(): typeof FoodAndDrinkTypeEnum {
+        return FoodAndDrinkTypeEnum;
+    }
+
+    @ApiOperation({
+        summary: 'Список особливостей закладу',
+        description: 'Отримує список особливостей закладу',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список особливості закладу',
+        example: FoodAndDrinkFeaturesEnum,
+    })
+    @Get('/features')
+    findFeatures(): typeof FoodAndDrinkFeaturesEnum {
+        return FoodAndDrinkFeaturesEnum;
     }
 
     @ApiOperation({

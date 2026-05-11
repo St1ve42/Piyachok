@@ -1,21 +1,25 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
     IsBoolean,
     IsNumber,
     IsOptional,
     IsString,
     Max,
-    MaxLength,
     Min,
-    MinLength,
 } from 'class-validator';
 import { UpdateFoodAndDrinkDto } from './update-food-and-drink.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class FoodAndDrinkSearchDto extends PickType(UpdateFoodAndDrinkDto, [
-    'name',
     'type',
 ]) {
+    @ApiProperty({
+        example: 'Ресторан Україна',
+        description: 'Назва закладу (2-50 символів)',
+    })
+    @IsString()
+    name: string;
+
     @ApiPropertyOptional({
         example: 8.5,
         description: 'Мінімальний рейтинг закладу (від 0 до 10)',
@@ -65,12 +69,6 @@ export class FoodAndDrinkSearchDto extends PickType(UpdateFoodAndDrinkDto, [
     })
     @IsOptional()
     @IsString({
-        each: true,
-    })
-    @MinLength(3, {
-        each: true,
-    })
-    @MaxLength(50, {
         each: true,
     })
     tag?: string;

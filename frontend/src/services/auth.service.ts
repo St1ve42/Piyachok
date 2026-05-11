@@ -1,6 +1,5 @@
 import {ISignUp} from "@/src/interfaces/auth/ISignUp";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
-import {fetchApi} from "@/src/lib/fetch.api";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {IResendActivation} from "@/src/interfaces/auth/IResendActivation";
@@ -9,7 +8,7 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {ISignIn} from "@/src/interfaces/auth/ISignIn";
 import {IRecoveryRequest} from "@/src/interfaces/auth/IRecoveryRequest";
 import {IRecovery} from "@/src/interfaces/auth/IRecovery";
-import {fetchApiWithTokenRefresh} from "@/src/lib/fetchApiWithTokenRefresh";
+import {fetchApi} from "@/src/lib/fetch.api";
 
 export class AuthService{
     async singUp(dto: ISignUp): Promise<IApiResponse<IResponseMessage>>{
@@ -59,7 +58,7 @@ export class AuthService{
 
     async logOut(): Promise<IApiResponse<null>>{
         try{
-            const response = await fetchApiWithTokenRefresh<null>('/auth/log-out', {method: 'POST'})
+            const response = await fetchApi<null>('/auth/log-out', {method: 'POST'})
             return {success: true, ...response}
         }
         catch (e){

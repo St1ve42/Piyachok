@@ -5,6 +5,8 @@ import { FeaturePresenter } from './feature-presenter';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationPresenter } from './location.presenter';
 import { BusinessHoursPresenter } from './business-hours.presenter';
+import { City } from '../../cities/entities/city.entity';
+import { CityPresenter } from '../../cities/presenters/city.presenter';
 
 export class FoodAndDrinkInfoPresenter {
     @ApiProperty({
@@ -42,6 +44,17 @@ export class FoodAndDrinkInfoPresenter {
     })
     @Expose()
     location: LocationPresenter;
+
+    @ApiProperty({
+        description: 'Місто розташування закладу',
+        example: 'м. Львів',
+    })
+    @Expose()
+    @Transform(({ value }: { value: City }) => value.name, {
+        toPlainOnly: true,
+    })
+    @Type(() => CityPresenter)
+    city: CityPresenter;
 
     @ApiProperty({
         type: 'array',
