@@ -17,12 +17,12 @@ import {
 import { FoodAndDrinkStatusEnum } from '../enums/food-and-drink-status.enum';
 import { User } from '../../users/entities/user.entity';
 import { Tag } from './tag.entity';
-import { Features } from './features.entity';
 import { FoodAndDrinkStatistic } from '../../food-and-drink-statistics/entities/food-and-drink-statistic.entity';
 import { FoodAndDrinkViewsPerDay } from '../../food-and-drink-statistics/entities/food-and-drink-views-per-day.entity';
 import { UserView } from '../../food-and-drink-statistics/entities/user-views.entity';
 import { City } from '../../cities/entities/city.entity';
 import { FoodAndDrinkDaysEnum } from '../enums/food-and-drink-days.enum';
+import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 
 @Index(['name'])
 @Index(['averageReceipt'])
@@ -96,6 +96,9 @@ export class FoodAndDrink {
         X?: string;
     };
 
+    @Column({ type: 'json', nullable: true })
+    features?: FoodAndDrinkFeaturesEnum[];
+
     @CreateDateColumn()
     createdAt: Date;
 
@@ -123,14 +126,6 @@ export class FoodAndDrink {
     })
     @JoinTable()
     tags?: Tag[] | null;
-
-    @OneToOne(() => Features, (features) => features.foodAndDrink, {
-        cascade: ['insert', 'update', 'remove'],
-        onDelete: 'CASCADE',
-        nullable: true,
-        eager: true,
-    })
-    features?: Features | null;
 
     @OneToOne(
         () => FoodAndDrinkStatistic,

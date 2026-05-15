@@ -19,10 +19,10 @@ export default async function RootLayout({
     const accessTokenCookie = cookieStore.get('accessToken')
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning={true}>
         <div className="root">
             <Header accessTokenCookie={accessTokenCookie}/>
-            <main className="h-[80%]">
+            <main className="h-[80%] mt-30">
                 <Providers>
                     {children}
                 </Providers>

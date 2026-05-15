@@ -8,7 +8,7 @@ export class QueryDirector {
         private endpoint: string,
         private query?: IGeneralQuery,
     ) {
-        this.queryBuilder = new QueryBuilder(this.endpoint, this.query?.page || 1);
+        this.queryBuilder = new QueryBuilder(this.endpoint, this.query?.page);
     }
 
     build(): string {
@@ -16,7 +16,8 @@ export class QueryDirector {
             return this.queryBuilder.build();
         }
 
-        const { limit, skip, search, sort, range } = this.query;
+        const { page, limit, skip, sort, range, ...search } = this.query;
+
 
         if (limit) {
             this.queryBuilder.addLimit(limit);

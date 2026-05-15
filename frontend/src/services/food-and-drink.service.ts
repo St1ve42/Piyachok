@@ -9,11 +9,10 @@ export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkList>> {
         try{
             const endpoint = '/food-and-drinks';
-
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-expect-error
-            const director = new QueryDirector(endpoint, query);
-            const fullEndpoint = director.build();
+            const queryDirector = new QueryDirector(endpoint, query);
+            const fullEndpoint = queryDirector.build();
             const foodAndDrinkList = await fetchApi<IFoodAndDrinkList>(fullEndpoint, {cache: 'force-cache', next: {revalidate: 15}})
             return {success: true, ...foodAndDrinkList}
         }

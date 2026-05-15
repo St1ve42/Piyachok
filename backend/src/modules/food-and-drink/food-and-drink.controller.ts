@@ -125,11 +125,11 @@ export class FoodAndDrinkController {
     })
     @ApiOkResponse({
         description: 'Успішно отримано список типів закладу',
-        example: FoodAndDrinkTypeEnum,
+        example: Object.values(FoodAndDrinkTypeEnum),
     })
     @Get('/types')
-    findTypes(): typeof FoodAndDrinkTypeEnum {
-        return FoodAndDrinkTypeEnum;
+    findTypes(): FoodAndDrinkTypeEnum[] {
+        return Object.values(FoodAndDrinkTypeEnum);
     }
 
     @ApiOperation({
@@ -138,11 +138,11 @@ export class FoodAndDrinkController {
     })
     @ApiOkResponse({
         description: 'Успішно отримано список особливості закладу',
-        example: FoodAndDrinkFeaturesEnum,
+        example: Object.values(FoodAndDrinkFeaturesEnum),
     })
     @Get('/features')
-    findFeatures(): typeof FoodAndDrinkFeaturesEnum {
-        return FoodAndDrinkFeaturesEnum;
+    findFeatures(): FoodAndDrinkFeaturesEnum[] {
+        return Object.values(FoodAndDrinkFeaturesEnum);
     }
 
     @ApiOperation({

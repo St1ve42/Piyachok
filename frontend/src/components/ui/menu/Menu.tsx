@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Menu = () => {
     return (
-        <ul className="flex gap-10">
+        <ul className="flex gap-10 text-[16px]">
             <li>
                 <Link href="/">Головна</Link>
             </li>

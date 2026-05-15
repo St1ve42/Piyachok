@@ -19,10 +19,10 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SocialNetworkDto } from './social-network.dto';
-import { FeaturesDto } from './features.dto';
 import { LocationDto } from './location.dto';
 import { BusinessHoursDto } from './business-hours.dto';
 import { Type } from 'class-transformer';
+import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 
 export class CreateFoodAndDrinkDto {
     @ApiProperty({
@@ -132,9 +132,10 @@ export class CreateFoodAndDrinkDto {
         description: 'Особливості закладу (опціонально)',
     })
     @IsOptional()
-    @IsObject()
-    @ValidateNested()
-    features?: FeaturesDto;
+    @IsArray()
+    @ArrayMinSize(1)
+    @IsEnum(FoodAndDrinkFeaturesEnum, { each: true })
+    features?: FoodAndDrinkFeaturesEnum[];
 
     @ApiProperty({
         type: 'array',

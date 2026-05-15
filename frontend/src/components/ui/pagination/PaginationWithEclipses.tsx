@@ -50,7 +50,7 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     };
 
     return (
-        <div className="w-full max-w-2xs overflow-x-auto sm:max-w-full">
+        <div className="w-full max-w-2xs overflow-x-auto sm:max-w-full mb-5">
             <Pagination className="justify-center">
                 <Pagination.Content>
                     <Pagination.Item>

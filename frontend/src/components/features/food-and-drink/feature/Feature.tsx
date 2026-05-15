@@ -9,7 +9,7 @@ type PropsType = {
 const Feature = ({ image, alt, featureName }: PropsType) => {
     return (
         <div className="flex flex-col items-center">
-            <Image src={image} alt={alt} width={30} height={30}/>
+            <Image src={image} alt={alt} width={30} height={30} priority={true}/>
             <p>{featureName}</p>
         </div>
     )

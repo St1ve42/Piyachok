@@ -1,12 +1,12 @@
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import { Expose, Transform, Type } from 'class-transformer';
 import { TagsPresenter } from './tags-presenter';
-import { FeaturePresenter } from './feature-presenter';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationPresenter } from './location.presenter';
 import { BusinessHoursPresenter } from './business-hours.presenter';
 import { City } from '../../cities/entities/city.entity';
 import { CityPresenter } from '../../cities/presenters/city.presenter';
+import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 
 export class FoodAndDrinkInfoPresenter {
     @ApiProperty({
@@ -135,11 +135,11 @@ export class FoodAndDrinkInfoPresenter {
     };
 
     @ApiProperty({
+        example: Object.values(FoodAndDrinkFeaturesEnum),
         description: 'Особливості закладу (вай-фай, парковка, музика, 24/7)',
     })
-    @Type(() => FeaturePresenter)
     @Expose()
-    features: FeaturePresenter;
+    features: FoodAndDrinkFeaturesEnum[];
 
     @ApiPropertyOptional({
         type: 'array',

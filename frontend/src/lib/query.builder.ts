@@ -17,7 +17,16 @@ export class QueryBuilder{
 
     addSearch(search: Record<string, unknown>): this {
         Object.entries(search).forEach(([key, value]) => {
-            this.endpoint += `&search[${key}]=${value}`
+            if(value){
+                if(Array.isArray(value)){
+                    value.map((element) => {
+                        this.endpoint += `&${key}=${element}`
+                    })
+                }
+                else{
+                    this.endpoint += `&${key}=${value}`
+                }
+            }
         })
         return this
     }

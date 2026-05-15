@@ -1,9 +1,9 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { FoodAndDrinkTypeEnum } from '../../food-and-drink/enums/food-and-drink-type.enum';
-import { FeaturePresenter } from '../../food-and-drink/presenters/feature-presenter';
 import { FoodAndDrinkStatusEnum } from '../../food-and-drink/enums/food-and-drink-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocationPresenter } from '../../food-and-drink/presenters/location.presenter';
+import { FoodAndDrinkFeaturesEnum } from '../../food-and-drink/enums/food-and-drink-features.enum';
 
 export class ProtectedFoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -65,8 +65,7 @@ export class ProtectedFoodAndDrinkFindOnePresenter {
         description: 'Особливості закладу (вай-фай, парковка, музика, 24/7)',
     })
     @Expose()
-    @Type(() => FeaturePresenter)
-    features: FeaturePresenter;
+    features: FoodAndDrinkFeaturesEnum[];
 
     @ApiProperty({
         example: 'active',

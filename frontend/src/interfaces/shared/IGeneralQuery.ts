@@ -1,7 +1,7 @@
 import {IBaseQuery} from "@/src/interfaces/shared/IBaseQuery";
 
 export interface IGeneralQuery extends IBaseQuery {
-    search?: Record<string, unknown>;
+    [key: string]: unknown
 
     sort?: Record<string, 'asc' | 'desc'>;
 

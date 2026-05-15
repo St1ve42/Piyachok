@@ -1,4 +1,3 @@
-import {IFoodAndDrinkSearch} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSearch";
 import {IFoodAndDrinkSort} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSort";
 import {IFoodAndDrinkRange} from "@/src/interfaces/food-and-drink/IFoodAndDrinkRange";
 
@@ -13,7 +12,7 @@ export interface IRegionCityQuery extends IBaseQuery{
 }
 
 export interface IFoodAndDrinkQuery extends IBaseQuery{
-    search?: IFoodAndDrinkSearch
+    [key: string]: unknown
     sort?: IFoodAndDrinkSort
     range?: IFoodAndDrinkRange
 }

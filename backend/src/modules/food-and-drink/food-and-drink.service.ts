@@ -19,11 +19,10 @@ import {
     Like,
     MoreThan,
     MoreThanOrEqual,
+    Raw,
     Repository,
 } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
-import { Features } from './entities/features.entity';
 import { FoodAndDrinkSearchDto } from './dto/food-and-drink-search.dto';
 import { FoodAndDrinkRangeDto } from './dto/food-and-drink-range.dto';
 import { TagsService } from '../tags/tags.service';
@@ -47,15 +46,28 @@ export class FoodAndDrinkService {
     ) {}
 
     async find(
-        query: FoodAndDrinkQueryDto | SuperadminFoodAndDrinkQueryDto,
+        query: SuperadminFoodAndDrinkQueryDto,
         filterOptions?: FindOptionsWhere<FoodAndDrink>,
     ): Promise<[FoodAndDrink[], number]> {
-        const { page, limit, skip, search, range, userCoordinates } = query;
+        const {
+            page,
+            limit,
+            skip,
+            range,
+            userCoordinates,
+            features,
+            sort: unused_sort,
+            ...search
+        } = query;
         let { sort } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
-        const allFeatures = ['isWifi', 'isParking', 'is24hrs', 'isLiveMusic'];
-        const enums = ['status'];
-        const features: FindOptionsWhere<Features> = {};
+        const enums = ['status', 'type'];
+        if (features) {
+            filter['features'] = Raw(
+                (alias) => `JSON_CONTAINS(${alias}, :feat)`,
+                { feat: JSON.stringify(features) },
+            );
+        }
         if (search) {
             (
                 Object.entries(search) as [
@@ -69,22 +81,21 @@ export class FoodAndDrinkService {
                             if (key === 'tag') {
                                 filter['tags'] = { name: value };
                             } else if (enums.includes(key)) {
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                // @ts-expect-error
                                 filter[key] = value;
                             } else {
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                // @ts-expect-error
                                 filter[key] = Like(`%${value}%`);
                             }
                             break;
                         default:
-                            if (allFeatures.includes(key)) {
-                                features[key] = value;
-                            } else {
-                                filter[key] = value;
-                            }
+                            filter[key] = value;
                             break;
                     }
                 }
             });
-            filter['features'] = features;
         }
         if (range) {
             (

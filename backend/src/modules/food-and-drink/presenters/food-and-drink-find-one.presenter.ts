@@ -1,10 +1,10 @@
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import { Expose, Transform, Type } from 'class-transformer';
-import { FeaturePresenter } from './feature-presenter';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocationPresenter } from './location.presenter';
 import { CityPresenter } from '../../cities/presenters/city.presenter';
 import { City } from '../../cities/entities/city.entity';
+import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 
 export class FoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -74,9 +74,9 @@ export class FoodAndDrinkFindOnePresenter {
     distance: string | null;
 
     @ApiProperty({
+        example: Object.values(FoodAndDrinkFeaturesEnum),
         description: 'Особливості закладу (вай-фай, парковка, музика, 24/7)',
     })
     @Expose()
-    @Type(() => FeaturePresenter)
-    features: FeaturePresenter;
+    features: FoodAndDrinkFeaturesEnum[];
 }
