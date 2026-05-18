@@ -23,6 +23,11 @@ export class QueryBuilder{
                         this.endpoint += `&${key}=${element}`
                     })
                 }
+                else if(typeof value === 'object'){
+                    Object.entries(value).forEach(([rangeKey, rangeValue]) => {
+                        this.endpoint += `&${key}[${rangeKey}]=${rangeValue}`
+                    })
+                }
                 else{
                     this.endpoint += `&${key}=${value}`
                 }
@@ -31,19 +36,13 @@ export class QueryBuilder{
         return this
     }
 
-    addSort(sort: Record<string, 'asc' | 'desc'>): this {
-        Object.entries(sort).forEach(([key, value]) => {
-            this.endpoint += `&sort[${key}]=${value}`
-        })
+    addSort(sort: 'asc' | 'desc'): this {
+        this.endpoint += `&sort=${sort}`
         return this
     }
 
-    addRange(range: Record<string, {gte?: number, lte?: number, gt?: number, lt?: number}>): this {
-        Object.entries(range).forEach(([key, value]) => {
-            Object.entries(value).forEach(([rangeKey, rangeValue]) => {
-                this.endpoint += `&range[${key}][${rangeKey}]=${rangeValue}`
-            })
-        })
+    addSortBy(sortBy: string): this {
+        this.endpoint += `&sortBy=${sortBy}`
         return this
     }
 

@@ -1,55 +1,12 @@
 'use client'
 import {Label, ListBox, Select} from "@heroui/react";
-import {useCallback, useEffect, useState} from "react";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import useFoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/useFoodAndDrinkSort";
 
 const FoodAndDrinkSort = () => {
-    const [sort, setSort] = useState<string | null>(null)
-    const [sortBy, setSortBy] = useState<string | null>(null)
-    const pathname = usePathname()
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const createQueryString = useCallback((name: string, value: string | null, action: "set" | "append" | "delete" = "set", initialSearchParams: string = searchParams.toString()) =>{
-        const query = new URLSearchParams(initialSearchParams)
-        if(value){
-            switch(action){
-                case "set":
-                    query.set(name, value)
-                    break
-                case "delete":
-                    query.delete(name, value)
-                    break
-                case "append":
-                    query.append(name, value)
-                    break
-            }
-        }
-        else{
-            switch(action){
-                case "delete":
-                    query.delete(name)
-                    break
-            }
-        }
-        return query.toString()
-    }, [searchParams])
-    useEffect(() => {
-        if(sortBy){
-            if(!sort){
-                router.push(pathname + '?' + createQueryString(`sort[${sortBy}]`, 'asc'))
-            }
-            else{
-                router.push(pathname + '?' + createQueryString(`sort[${sortBy}]`, sort))
-            }
-        }
-    }, [sort, sortBy]);
+    const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useFoodAndDrinkSort()
     return (
         <div className="flex gap-3">
-            <Select className="w-[180px]" placeholder="Сортувати за" value={sortBy} onChange = {(key) => {
-                if(key){
-                    setSortBy(`${key}`)
-                }
-            }}>
+            <Select className="w-[180px]" placeholder="Сортувати за:" value={sortBy} onChange = {handleChangeSortBy}>
                 <Label/>
                 <Select.Trigger>
                     <Select.Value />
@@ -57,6 +14,10 @@ const FoodAndDrinkSort = () => {
                 </Select.Trigger>
                 <Select.Popover>
                     <ListBox>
+                        <ListBox.Item id="reset" textValue="скинути">
+                            Сортувати за:
+                            <ListBox.ItemIndicator />
+                        </ListBox.Item>
                         <ListBox.Item id="rating" textValue="рейтинг">
                             Рейтингом
                             <ListBox.ItemIndicator />
@@ -80,11 +41,7 @@ const FoodAndDrinkSort = () => {
                     </ListBox>
                 </Select.Popover>
             </Select>
-            <Select className="w-[180px]" placeholder="Сортувати в порядку" value={sort} onChange = {(key) => {
-                if(key){
-                    setSort(`${key}`)
-                }
-            }}>
+            <Select className="w-[180px]" placeholder="Сортувати в порядку:" isDisabled={sortBy === 'distance'} value={sort} onChange = {handleChangeSort}>
                 <Label/>
                 <Select.Trigger>
                     <Select.Value />
@@ -92,12 +49,16 @@ const FoodAndDrinkSort = () => {
                 </Select.Trigger>
                 <Select.Popover>
                     <ListBox>
+                        <ListBox.Item id="reset" textValue="скинути">
+                            Сортувати в порядку:
+                            <ListBox.ItemIndicator />
+                        </ListBox.Item>
                         <ListBox.Item id="asc" textValue="Зростання">
-                            Зростанням
+                            Зростання
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                         <ListBox.Item id="desc" textValue="Спадання">
-                            Спаданням
+                            Спадання
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                     </ListBox>

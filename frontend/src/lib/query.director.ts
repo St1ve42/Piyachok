@@ -16,7 +16,7 @@ export class QueryDirector {
             return this.queryBuilder.build();
         }
 
-        const { page, limit, skip, sort, range, ...search } = this.query;
+        const { page, limit, skip, sort, sortBy, ...search } = this.query;
 
 
         if (limit) {
@@ -31,16 +31,14 @@ export class QueryDirector {
             this.queryBuilder.addSearch(search);
         }
 
-        if (sort && Object.keys(sort).length > 0) {
+        if (sort) {
             this.queryBuilder.addSort(sort);
         }
 
-        if (
-            range &&
-            Object.keys(range).length > 0
-        ) {
-            this.queryBuilder.addRange(range);
+        if (sortBy) {
+            this.queryBuilder.addSortBy(sortBy);
         }
+
 
         return this.queryBuilder.build();
     }

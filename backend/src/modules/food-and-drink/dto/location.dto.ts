@@ -1,34 +1,12 @@
 import {
-    IsNumber,
     IsObject,
     IsString,
-    Max,
     MaxLength,
-    Min,
     MinLength,
     ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
-export class CoordinatesDto {
-    @ApiProperty({
-        example: 50.4501,
-        description: 'Широта (latitude) (-90 до 90)',
-    })
-    @IsNumber()
-    @Min(-90)
-    @Max(90)
-    lat: number;
-
-    @ApiProperty({
-        example: 30.5234,
-        description: 'Довгота (longitude) (-180 до 180)',
-    })
-    @IsNumber()
-    @Min(-180)
-    @Max(180)
-    lng: number;
-}
+import { CoordinatesDto } from './coordinates.dto';
 
 export class LocationDto {
     @ApiProperty({

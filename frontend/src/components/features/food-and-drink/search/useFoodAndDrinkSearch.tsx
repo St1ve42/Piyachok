@@ -1,30 +1,14 @@
-import {ChangeEventHandler, KeyboardEventHandler, useCallback, useEffect, useState} from "react";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import {ChangeEventHandler, KeyboardEventHandler, useEffect, useState} from "react";
 import {useSearch} from "@/src/useQuery/useSearch";
 import {Key} from "@heroui/react";
+import {useURL} from "@/src/shared/hooks/useURL";
 
 export const useFoodAndDrinkSearch = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState<string>('')
     const [debouncedInputValue, setDebouncedInputValue] = useState<string>('')
-    const pathname = usePathname()
-    const router = useRouter()
     const foodAndDrinkResponse = useSearch(debouncedInputValue)
-    const searchParams = useSearchParams()
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams.toString())
-            if(value === ''){
-                params.delete(name)
-            }
-            else{
-                params.set(name, value)
-            }
-
-            return params.toString()
-        },
-        [searchParams]
-    )
+    const {pathname, router, createQueryString} = useURL()
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedInputValue(inputValue), 500)
         return () => clearTimeout(timer)
@@ -36,7 +20,12 @@ export const useFoodAndDrinkSearch = () => {
     }
     const handleOnKeyDownInput: KeyboardEventHandler<HTMLInputElement> = (e) => {
         if(e.key === 'Enter'){
-            router.push(pathname + '?' + createQueryString('name', inputValue))
+            if(!inputValue){
+                router.push(pathname + '?' + createQueryString('name', null, "delete"))
+            }
+            else{
+                router.push(pathname + '?' + createQueryString('name', inputValue))
+            }
             setIsOpen(false);
         }
         else if(e.key === 'Escape'){

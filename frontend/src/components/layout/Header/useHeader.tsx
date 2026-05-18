@@ -26,13 +26,9 @@ const useHeader = ({accessTokenCookie} : PropsType) => {
                 if (data.success) {
                     setUser(data.data);
                 }
-            })
-            .catch(err => {
-                console.error("Помилка профілю:", err);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+            }).finally(() => {
+                setIsLoading(false)
+        })
     }, [accessTokenCookie]);
 
     const handleExit = async() => {

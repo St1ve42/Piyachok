@@ -11,29 +11,29 @@ import { UpdateFoodAndDrinkDto } from './dto/update-food-and-drink.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FoodAndDrink } from './entities/food-and-drink.entity';
 import {
+    Between,
     DeepPartial,
+    FindOptionsOrder,
     FindOptionsRelations,
     FindOptionsWhere,
-    LessThan,
     LessThanOrEqual,
     Like,
-    MoreThan,
     MoreThanOrEqual,
     Raw,
     Repository,
 } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { FoodAndDrinkSearchDto } from './dto/food-and-drink-search.dto';
-import { FoodAndDrinkRangeDto } from './dto/food-and-drink-range.dto';
 import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-query.dto';
-import { CoordinatesDto } from './dto/location.dto';
 import { StorageService } from '../storage/storage.service';
 import { itemNameEnum } from '../storage/enums/itemNameEnum';
 import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
 import { UtilsService } from '../../shared/services/utils.service';
 import { SuperadminFoodAndDrinkStatusDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-status.dto';
+import { FoodAndDrinkSortByEnum } from './enums/food-and-drink-sort-by.enum';
+import { CoordinatesDto } from './dto/coordinates.dto';
+import { SortEnum } from '../../shared/enums/sort.enum';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -53,14 +53,15 @@ export class FoodAndDrinkService {
             page,
             limit,
             skip,
-            range,
-            userCoordinates,
+            lat,
+            lng,
             features,
-            sort: unused_sort,
+            sort,
+            sortBy,
             ...search
         } = query;
-        let { sort } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
+        const order: FindOptionsOrder<FoodAndDrink> = {};
         const enums = ['status', 'type'];
         if (features) {
             filter['features'] = Raw(
@@ -69,25 +70,25 @@ export class FoodAndDrinkService {
             );
         }
         if (search) {
-            (
-                Object.entries(search) as [
-                    keyof FoodAndDrinkSearchDto,
-                    FoodAndDrinkSearchDto[keyof FoodAndDrinkSearchDto],
-                ][]
-            ).forEach(([key, value]) => {
+            Object.entries(search).forEach(([key, value]) => {
                 if (value) {
                     switch (typeof value) {
                         case 'string':
                             if (key === 'tag') {
                                 filter['tags'] = { name: value };
                             } else if (enums.includes(key)) {
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-expect-error
                                 filter[key] = value;
                             } else {
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-expect-error
                                 filter[key] = Like(`%${value}%`);
+                            }
+                            break;
+                        case 'object':
+                            if (value.lte && value.gte) {
+                                filter[key] = Between(value.gte, value.lte);
+                            } else if (value.lte) {
+                                filter[key] = LessThanOrEqual(value.lte);
+                            } else if (value.gte) {
+                                filter[key] = MoreThanOrEqual(value.gte);
                             }
                             break;
                         default:
@@ -97,48 +98,26 @@ export class FoodAndDrinkService {
                 }
             });
         }
-        if (range) {
-            (
-                Object.entries(range) as [
-                    keyof FoodAndDrinkRangeDto,
-                    FoodAndDrinkRangeDto[keyof FoodAndDrinkRangeDto],
-                ][]
-            ).forEach(([key, value]) => {
-                if (value) {
-                    if (value.lt) {
-                        filter[key] = LessThan(value.lt);
-                    }
-                    if (value.lte) {
-                        filter[key] = LessThanOrEqual(value.lte);
-                    }
-                    if (value.gt) {
-                        filter[key] = MoreThan(value.gt);
-                    }
-                    if (value.gte) {
-                        filter[key] = MoreThanOrEqual(value.gte);
-                    }
-                }
-            });
-        }
-        if (sort && sort.distance && userCoordinates) {
-            const { lng, lat } = userCoordinates;
+        if (
+            sortBy &&
+            sortBy === FoodAndDrinkSortByEnum.DISTANCE &&
+            lng &&
+            lat &&
+            sort === SortEnum.ASC
+        ) {
             const queryBuilder = this.foodAndDrinkRepository
                 .createQueryBuilder(`foodAndDrink`)
                 .addSelect(
                     `ST_Distance_Sphere(point(CAST(foodAndDrink.location -> '$.coordinates.lng' as DECIMAL(10,8)), CAST(foodAndDrink.location -> '$.coordinates.lat' as DECIMAL(10,8))), point(:userLng, :userLat))`,
                     'distance',
                 )
+                .innerJoinAndSelect('foodAndDrink.city', 'city')
                 .setParameters({
                     userLng: lng,
                     userLat: lat,
                 })
                 .where(filter)
                 .orderBy('distance', 'ASC');
-            const { distance, ...restSort } = sort;
-            Object.entries(restSort).forEach(([key, value]) => {
-                const order = value === 'asc' ? 'ASC' : 'DESC';
-                queryBuilder.addOrderBy(key, order);
-            });
             const { entities, raw } = await queryBuilder.getRawAndEntities();
             const count = await this.foodAndDrinkRepository.countBy(filter);
 
@@ -155,16 +134,15 @@ export class FoodAndDrinkService {
 
             return [result, count];
         }
-        if (sort && sort.distance) {
-            const { distance, ...restSort } = sort;
-            sort = restSort;
+        if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
+            order[sortBy] = sort;
         }
         return await Promise.all([
             this.foodAndDrinkRepository.find({
                 take: limit,
                 skip: (page - 1) * limit + skip,
                 where: filter,
-                order: sort,
+                order,
             }),
             this.foodAndDrinkRepository.countBy(filter),
         ]);

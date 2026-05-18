@@ -1,6 +1,6 @@
 'use client'
 import {Button, Label, ListBox, SearchField, Header} from "@heroui/react";
-import useFoodAndDrinkSearch from "@/src/components/features/food-and-drink/food-and-drink-search/useFoodAndDrinkSearch";
+import useFoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/useFoodAndDrinkSearch";
 
 const FoodAndDrinkSearch = () => {
     const {inputValue, pathname, router, createQueryString, foodAndDrinkResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useFoodAndDrinkSearch()
@@ -30,7 +30,14 @@ const FoodAndDrinkSearch = () => {
                     </div>
                 )}
             </div>
-            <Button onClick={() => router.push(pathname + '?' + createQueryString('name', inputValue))}>Знайти</Button>
+            <Button onClick={() => {
+                if(!inputValue){
+                    router.push(pathname + '?' + createQueryString('name', null, "delete"))
+                }
+                else{
+                    router.push(pathname + '?' + createQueryString('name', inputValue))
+                }
+            }}>Знайти</Button>
         </div>
     )
 }

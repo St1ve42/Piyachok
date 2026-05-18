@@ -10,6 +10,7 @@ export class UsersService{
             return {success: true, ...response}
         }
         catch (e){
+            console.log(`Сталась помилка в ${this.me.name}: `, e)
             return getErrorResponse(e)
         }
     }

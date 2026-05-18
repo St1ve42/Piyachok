@@ -1,6 +1,6 @@
 'use client'
 import {Button, Checkbox, Label, ListBox, Select, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
-import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/food-and-drink-filtration/useFoodAndDrinkFiltration";
+import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
 
 const FoodAndDrinkFiltration = () => {
     const {formKey, setFormKey, typesQuery, featuresQuery, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
@@ -10,7 +10,7 @@ const FoodAndDrinkFiltration = () => {
     return (
         <div className="flex p-4 flex-col gap-8 fixed z-10" key={formKey}>
             <h1 className="self-center">Фільтрувати</h1>
-            <Select className="w-full" name="type" placeholder="Виберіть тип" onChange = {handleTypeSelect}>
+            <Select className="w-full" name="type" placeholder="Виберіть тип:" onChange = {handleTypeSelect}>
                 <Label>Тип</Label>
                 <Select.Trigger>
                     <Select.Value />
@@ -19,7 +19,7 @@ const FoodAndDrinkFiltration = () => {
                 <Select.Popover className="h-[200px]">
                     <ListBox>
                         <ListBox.Item id={'reset'} textValue={'reset'}>
-                            Виберіть тип
+                            Виберіть тип:
                             <ListBox.ItemIndicator />
                         </ListBox.Item>
                         {typesQuery.data && typesQuery.data.success && typesQuery.data.data.map(type =>

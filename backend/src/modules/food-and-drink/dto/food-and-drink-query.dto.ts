@@ -10,12 +10,12 @@ import {
     Min,
     ValidateNested,
 } from 'class-validator';
-import { FoodAndDrinkSortDto } from './food-and-drink-sort.dto';
-import { FoodAndDrinkRangeDto } from './food-and-drink-range.dto';
-import { CoordinatesDto } from './location.dto';
+import { RangeDto } from './food-and-drink-range.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
+import { FoodAndDrinkSortByEnum } from '../enums/food-and-drink-sort-by.enum';
+import { SortEnum } from '../../../shared/enums/sort.enum';
 
 export class FoodAndDrinkQueryDto extends BaseQueryDto {
     @ApiProperty({
@@ -65,28 +65,53 @@ export class FoodAndDrinkQueryDto extends BaseQueryDto {
     features?: FoodAndDrinkFeaturesEnum[];
 
     @ApiPropertyOptional({
-        description: 'Параметри сортування результатів',
+        description: 'Напрям сортування: за зростанням або спаданням',
+        example: SortEnum.ASC,
+        enum: SortEnum,
     })
     @IsOptional()
-    @ValidateNested()
-    sort?: FoodAndDrinkSortDto;
+    @IsEnum(SortEnum)
+    sort?: SortEnum;
 
     @ApiPropertyOptional({
-        description: 'Діапазони для фільтрації даних',
+        description: 'Сортування за ознакою',
+        example: FoodAndDrinkSortByEnum.DISTANCE,
+        enum: FoodAndDrinkSortByEnum,
     })
     @IsOptional()
-    @ValidateNested()
-    range?: FoodAndDrinkRangeDto;
+    @IsEnum(FoodAndDrinkSortByEnum)
+    sortBy?: FoodAndDrinkSortByEnum;
 
     @ApiPropertyOptional({
         example: {
-            lat: 50.4501,
-            lng: 30.5234,
+            gte: 150,
+            lte: 500,
         },
-        description:
-            'Географічні координати користувача для обчислення відстані',
+        description: 'Діапазон фільтрації за середньою вартістю меню',
     })
     @IsOptional()
     @ValidateNested()
-    userCoordinates?: CoordinatesDto;
+    averageReceipt?: RangeDto;
+
+    @ApiProperty({
+        example: 50.4501,
+        description: 'Широта користувача (latitude) (-90 до 90)',
+        required: false,
+    })
+    @IsOptional()
+    @IsNumber()
+    @Min(-90)
+    @Max(90)
+    lat?: number;
+
+    @ApiProperty({
+        example: 30.5234,
+        description: 'Довгота користувача(longitude) (-180 до 180)',
+        required: false,
+    })
+    @IsOptional()
+    @IsNumber()
+    @Min(-180)
+    @Max(180)
+    lng?: number;
 }
