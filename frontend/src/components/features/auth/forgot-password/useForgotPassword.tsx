@@ -6,7 +6,7 @@ import {JoiOptions} from "@/src/constants/joi.options";
 import {useActionState, useEffect, useState} from "react";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
 import {IError} from "@/src/interfaces/shared/IError";
-import {recoveryRequest} from "@/src/actions/auth.actions";
+import {recoveryRequest} from "@/src/actions/server.actions";
 
 const useForgotPassword = () => {
     const {register, watch, reset, formState: {errors, isValid}} = useForm<IRecoveryRequest>({mode: 'all', resolver: joiResolver(forgotPasswordValidator, JoiOptions)})

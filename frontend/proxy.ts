@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import {userService} from "@/src/services/users.service";
 import {cookies} from "next/headers";
-import {removeTokens} from "@/src/actions/auth.actions";
 import {customFetch} from "@/src/lib/fetch.api";
+import {removeTokens} from "@/src/actions/server.actions";
 
 export async function proxy(request: NextRequest) {
     const cookieStore = await cookies()
     const accessTokenCookie = cookieStore.get('accessToken')
+    if (request.headers.has('next-action')) {
+        return NextResponse.next();
+    }
     if(!accessTokenCookie){
         return NextResponse.redirect(new URL('/auth/sign-in', request.url))
     }
@@ -46,7 +49,7 @@ export async function proxy(request: NextRequest) {
         return response
     }
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-user-data', encodeURIComponent(JSON.stringify(user)));
+    requestHeaders.set('x-user-data', encodeURIComponent(JSON.stringify(user.data)));
     return NextResponse.next({
         request: {
             headers: requestHeaders

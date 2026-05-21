@@ -4,7 +4,6 @@ export interface IUser {
   surname: string;
   age: number;
   email: string;
-  providers: string;
   photo?: string;
   phone?: string;
   gender?: string;

@@ -19,7 +19,11 @@ export const recoveryRequest = async (currentState: {success: boolean, status: n
 }
 
 export const removeTokens = async() => {
-    const cookieStore = await cookies()
-    cookieStore.delete('accessToken')
-    cookieStore.delete('refreshToken')
+    try{
+        const cookieStore = await cookies()
+        cookieStore.delete('accessToken')
+        cookieStore.delete('refreshToken')
+    }catch (e){
+        console.error(e)
+    }
 }

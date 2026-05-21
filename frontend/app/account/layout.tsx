@@ -3,24 +3,29 @@ import React from "react";
 import Sidebar from "@/src/components/features/account/sidebar/Sidebar";
 import {headers} from "next/headers";
 import {IUser} from "@/src/interfaces/users/IUser";
+import {redirect} from "next/navigation";
 
 export const metadata: Metadata = {
-    title: 'Мій акаунт'
+    title: 'Мій профіль'
 };
 
-type Props = { children: React.ReactNode }
+type Props = {
+    children: React.ReactNode,
+}
 
 const AccountLayout = async ({children}: Props) => {
     const allHeaders = await headers()
-    const user: IUser = JSON.parse(decodeURIComponent(await allHeaders.get('x-user-data')))
+    const rawUser = allHeaders.get('x-user-data')
+    if(!rawUser){
+        redirect('/auth/sign-in')
+    }
+    const user: IUser = JSON.parse(decodeURIComponent(rawUser))
     return (
-        <div className="flex h-full justify-center">
-            <div className="w-[80%] flex justify-between">
-                <Sidebar/>
-                <section className="w-[68%]">
-                    {children}
-                </section>
-            </div>
+        <div className="flex h-full justify-between">
+            <Sidebar user={user}/>
+            <section className="w-[76%]">
+                {children}
+            </section>
         </div>
     );
 }
