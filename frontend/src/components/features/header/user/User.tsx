@@ -4,6 +4,7 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {FC} from "react";
 import {Avatar} from "@heroui/react";
 import {Gear} from "@gravity-ui/icons";
+import {utils} from "@/src/utils/utils";
 
 type PropsType = {
     user: IUser
@@ -14,9 +15,8 @@ const User: FC<PropsType> = ({user}) => {
     return (
         <div className="flex items-center gap-10">
             <div className="flex items-center gap-5">
-                {/*<Image src={user.photo ?? UserAvatar} alt={'Аватар'} width={55} height={55} className="rounded-[30px]"/>*/}
                 <Avatar className={'size-14'}>
-                    <Avatar.Image alt="фото" src={photo ?? UserAvatar.src}/>
+                    <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : UserAvatar.src}/>
                 </Avatar>
                 <div>{name} {surname}</div>
                 <Link href={'/account'} className="flex gap-2">

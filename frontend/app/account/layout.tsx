@@ -21,9 +21,9 @@ const AccountLayout = async ({children}: Props) => {
     }
     const user: IUser = JSON.parse(decodeURIComponent(rawUser))
     return (
-        <div className="flex h-full justify-between">
+        <div className="flex h-full justify-evenly">
             <Sidebar user={user}/>
-            <section className="w-[76%]">
+            <section className="w-[65%]">
                 {children}
             </section>
         </div>

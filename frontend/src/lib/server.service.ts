@@ -1,6 +1,6 @@
 import 'server-only'
 import {IUser} from "@/src/interfaces/users/IUser";
-import {headers} from "next/headers";
+import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 
 export const getUserFromHeaders = async (): Promise<IUser> => {
@@ -10,4 +10,13 @@ export const getUserFromHeaders = async (): Promise<IUser> => {
         redirect('/auth/sign-in')
     }
     return JSON.parse(decodeURIComponent(rawUser)) as IUser
+}
+
+export const getAccessCookie = async (): Promise<string> => {
+    const cookieStore = await cookies()
+    const accessTokenCookie = cookieStore.get('accessToken')
+    if(!accessTokenCookie){
+        redirect('/auth/sign-in')
+    }
+    return `${accessTokenCookie.name}=${accessTokenCookie.value}`
 }

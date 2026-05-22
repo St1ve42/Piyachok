@@ -146,7 +146,7 @@ export class UsersController {
     })
     @ApiOkResponse({
         description: 'Успіх',
-        type: FoodAndDrink,
+        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',

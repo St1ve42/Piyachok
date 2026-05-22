@@ -3,12 +3,11 @@ export class Utils{
         return text[0].toUpperCase() + text.slice(1, text.length)
     }
 
-    debounce(func: (...args: unknown[]) => void, time: number){
-        let timeout: ReturnType<typeof setTimeout>;
-        return function (...args: any[]) {
-            clearTimeout(timeout)
-            timeout = setTimeout(() => func(...args), time);
+    buildStorageURL(path: string): string {
+        if(!path.includes('http')){
+            return process.env.NEXT_PUBLIC_STORAGE_URL + path
         }
+        return path
     }
 }
 

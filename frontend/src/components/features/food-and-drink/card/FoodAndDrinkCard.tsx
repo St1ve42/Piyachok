@@ -24,7 +24,7 @@ type PropsType = {
 export const FoodAndDrinkCard = ({foodAndDrinkOneFromList}: PropsType) => {
     const {name, type, location: {street}, city, features, mainImage, distance} = foodAndDrinkOneFromList
     return (<Card className="w-[300px] text-[14px]">
-        {mainImage ? <Image src={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${mainImage}`} alt={'Фото закладу'} width={300} height={50} className="w-full h-auto rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
+        {mainImage ? <Image src={utils.buildStorageURL(mainImage)} alt={'Фото закладу'} width={300} height={50} className="w-full h-auto rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
         <CardHeader>
             <CardTitle className="font-bold">
                 {name}
