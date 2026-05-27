@@ -63,7 +63,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Створення нового закладу',
+        summary: 'Створення',
         description:
             'Дозволяє авторизованому користувачеві створити новий заклад харчування. Закладу буде автоматично привласнено статус "В очікуванні" доки його не схвалить модератор.',
     })
@@ -96,7 +96,7 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Пошук активних закладів',
+        summary: 'Пошук активних',
         description:
             'Отримує список активних закладів харчування з підтримкою фільтрації, сортування та пошуку за різними критеріями.',
     })
@@ -120,7 +120,7 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Список типів закладу',
+        summary: 'Список типів',
         description: 'Отримує список типів закладу',
     })
     @ApiOkResponse({
@@ -133,7 +133,7 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Список особливостей закладу',
+        summary: 'Список особливостей',
         description: 'Отримує список особливостей закладу',
     })
     @ApiOkResponse({
@@ -146,7 +146,7 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Отримання інформації про закладу',
+        summary: 'Отримання інформації',
         description:
             'Отримує детальну інформацію про конкретний активний заклад харчування за його ідентифікатором.',
     })
@@ -181,7 +181,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Оновлення інформації про закладу',
+        summary: 'Оновлення інформації',
         description:
             'Дозволяє власнику або менеджеру закладу оновити його інформацію. Стає можливим тільки для користувача, який є власником або менеджером закладу.',
     })
@@ -230,7 +230,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Видалення закладу',
+        summary: 'Повне видалення',
         description:
             "Дозволяє власнику закладу видалити його. При видаленні закладу видаляються також всі пов'язані дані (зображення, теги, статистика тощо).",
     })
@@ -270,7 +270,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Видалення тегів з закладу',
+        summary: 'Видалення тегів',
         description:
             'Дозволяє власнику видалити вибрані теги з закладу. Теги використовуються для категоризації і пошуку закладів.',
     })
@@ -312,7 +312,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Завантаження зображень закладу',
+        summary: 'Завантаження зображень',
         description:
             'Дозволяє власнику завантажити зображення закладу. Підтримуються формати: PNG, JPEG, JPG. Максимальний розмір файлу: 1 МБ.',
     })
@@ -374,7 +374,7 @@ export class FoodAndDrinkController {
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Видалення зображень закладу',
+        summary: 'Видалення зображень',
         description:
             'Дозволяє власнику видалити вибрані зображення закладу. Передайте масив URL-адрес зображень для видалення.',
     })

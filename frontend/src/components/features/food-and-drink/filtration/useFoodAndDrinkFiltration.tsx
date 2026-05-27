@@ -1,12 +1,10 @@
 import {useState} from "react";
-import {useTypes} from "@/src/useQuery/useTypes";
-import {useFeatures} from "@/src/useQuery/useFeatures";
+import {useFeatures} from "@/src/tanstack-query-hooks/useFeatures";
 import {Key} from "@heroui/react";
 import {useURL} from "@/src/shared/hooks/useURL";
 
 export const useFoodAndDrinkFiltration = () => {
     const [formKey, setFormKey] = useState(0);
-    const typesQuery = useTypes()
     const featuresQuery = useFeatures()
     const {pathname, router, createQueryString} = useURL()
     const handleTypeSelect = (key: Key | null) => {
@@ -45,7 +43,7 @@ export const useFoodAndDrinkFiltration = () => {
             router.push(pathname + '?' + createQueryString(`averageReceipt[lte]`, value[1].toString(), "set", query))
         }
     }
-    return {formKey, setFormKey, typesQuery, featuresQuery, pathname, router, handleTypeSelect, handleRatingSelect, handleAverageReceiptSelect, handleFeatureCheck}
+    return {formKey, setFormKey, featuresQuery, pathname, router, handleTypeSelect, handleRatingSelect, handleAverageReceiptSelect, handleFeatureCheck}
 }
 
 export default useFoodAndDrinkFiltration

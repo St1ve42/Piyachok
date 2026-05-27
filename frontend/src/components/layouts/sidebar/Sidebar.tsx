@@ -44,7 +44,7 @@ const Sidebar: FC<PropsType> = ({user}) => {
                     <Star/>
                     Відгуки
                 </ListBox.Item>
-                <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
+                <ListBox.Item href={'/account/food-and-drink/create'} textValue={'Заклад'}>
                     <Plus/>
                     Створити заклад
                 </ListBox.Item>

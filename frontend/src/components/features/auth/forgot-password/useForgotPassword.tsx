@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import {IRecoveryRequest} from "@/src/interfaces/auth/IRecoveryRequest";
 import {joiResolver} from "@hookform/resolvers/joi";
-import {forgotPasswordValidator} from "@/src/validators/forgot-password.validator";
+import {forgotPasswordValidator} from "@/src/validators/auth/forgot-password.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {useActionState, useEffect, useState} from "react";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";

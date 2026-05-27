@@ -1,10 +1,10 @@
 import {useForm} from "react-hook-form";
 import {ISignIn} from "@/src/interfaces/auth/ISignIn";
 import {joiResolver} from "@hookform/resolvers/joi";
-import {signInValidator} from "@/src/validators/sign-in.validator";
+import {signInValidator} from "@/src/validators/auth/sign-in.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {useEffect, useState} from "react";
-import {useUserFromSocialNetworkStore} from "@/src/zustand/useSharedStore";
+import {useUserFromSocialNetworkStore} from "@/src/store/useSharedStore";
 import {useRouter} from "next/navigation";
 import {authService} from "@/src/services/auth.service";
 import {AuthProvider} from "@firebase/auth";

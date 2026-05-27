@@ -1,36 +1,17 @@
 'use client'
-import {Button, Checkbox, Label, ListBox, Select, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
+import {Button, Checkbox, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
 import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
+import FoodAndDrinkTypeSelection from "@/src/components/shared/food-and-drink-type-selection/FoodAndDrinkTypeSelection";
 
 const FoodAndDrinkFiltration = () => {
-    const {formKey, setFormKey, typesQuery, featuresQuery, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
-    if(typesQuery.isLoading || featuresQuery.isLoading){
+    const {formKey, setFormKey, featuresQuery, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
+    if(featuresQuery.isLoading){
         return <div>Завантаження...</div>
     }
     return (
         <div className="flex p-4 flex-col gap-8 fixed z-10" key={formKey}>
             <h1 className="self-center">Фільтрувати</h1>
-            <Select className="w-full" name="type" placeholder="Виберіть тип:" onChange = {handleTypeSelect}>
-                <Label>Тип</Label>
-                <Select.Trigger>
-                    <Select.Value />
-                    <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover className="h-[200px]">
-                    <ListBox>
-                        <ListBox.Item id={'reset'} textValue={'reset'}>
-                            Виберіть тип:
-                            <ListBox.ItemIndicator />
-                        </ListBox.Item>
-                        {typesQuery.data && typesQuery.data.success && typesQuery.data.data.map(type =>
-                            <ListBox.Item key={type} id={type} textValue={type}>
-                                {type}
-                                <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                        )}
-                    </ListBox>
-                </Select.Popover>
-            </Select>
+            <FoodAndDrinkTypeSelection handleTypeSelect={handleTypeSelect}/>
             <div>
                 <Label>Особливості</Label>
                 <div className="grid grid-cols-2 gap-3">

@@ -3,16 +3,11 @@ import Instagram from "@/src/public/instagram.png"
 import Twitter from "@/src/public/twitter.png"
 import Facebook from "@/src/public/facebook_logo.svg"
 import Telegram from "@/src/public/telegram.png"
-import {useRef, useState, useEffect, ChangeEvent} from 'react'
-import {useMyFoodAndDrink} from '@/src/useQuery/useMyFoodAndDrink'
+import {useRef, useState, ChangeEvent} from 'react'
 import {useRouter} from 'next/navigation'
-import {IFoodAndDrinkOwnerInfo} from '@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo'
 import {StaticImport} from "next/dist/shared/lib/get-img-props";
 
 export default function useFoodAndDrink() {
-    // fetch user's foodAndDrink using existing query hook
-    const query = useMyFoodAndDrink()
-    const data = query.data ?? null
     const icons: {[key: string]: StaticImport} = {
         "facebook": Facebook,
         "telegram": Telegram,
@@ -20,20 +15,20 @@ export default function useFoodAndDrink() {
         "X": Twitter
     }
     const [isEditing, setIsEditing] = useState(false)
-    const [local, setLocal] = useState<IFoodAndDrinkOwnerInfo | null>(null)
+    // const [local, setLocal] = useState<IFoodAndDrinkOwnerInfo | null>(null)
     const [galleryFiles, setGalleryFiles] = useState<File[]>([])
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const router = useRouter()
 
-    useEffect(() => {
-        // set local state only if not already initialized to avoid cascading renders
-        // use setTimeout to defer the state update and avoid react-hooks/set-state-in-effect lint
-        if (data && !local) {
-            const t = setTimeout(() => setLocal(data), 0)
-            return () => clearTimeout(t)
-        }
-        return
-    }, [data, local])
+    // useEffect(() => {
+    //     // set local state only if not already initialized to avoid cascading renders
+    //     // use setTimeout to defer the state update and avoid react-hooks/set-state-in-effect lint
+    //     if (data && !local) {
+    //         const t = setTimeout(() => setLocal(data), 0)
+    //         return () => clearTimeout(t)
+    //     }
+    //     return
+    // }, [data, local])
 
     const handleEdit = () => {
         setIsEditing(v => !v)
@@ -50,8 +45,8 @@ export default function useFoodAndDrink() {
             // Store locally; in real app you'd upload to server
             setGalleryFiles(prev => [file, ...prev])
             // update local mainImage preview
-            const url = URL.createObjectURL(file)
-            setLocal(prev => prev ? ({...prev, mainImage: url}) : prev)
+            // const url = URL.createObjectURL(file)
+            // setLocal(prev => prev ? ({...prev, mainImage: url}) : prev)
         }
     }
 
@@ -67,8 +62,6 @@ export default function useFoodAndDrink() {
     }
 
     return {
-        query,
-        data,
         isEditing,
         handleEdit,
         fileInputRef,

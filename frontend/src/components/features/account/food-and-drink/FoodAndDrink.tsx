@@ -5,62 +5,70 @@ import {MapPin, Globe, Pencil} from '@gravity-ui/icons'
 import useFoodAndDrink from './useFoodAndDrink'
 import {utils} from "@/src/utils/utils";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {Navigation} from "swiper/modules";
+import {Navigation, Pagination} from "swiper/modules";
 import Link from "next/link";
+import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
+import {FC} from "react";
+import noImage from "@/src/public/no-image-icon.jpg";
 
-const FoodAndDrink = () => {
-    const {data, isEditing, handleEdit, fileInputRef, handleTriggerFileInput, handleUploadFile, galleryFiles, handleRemoveGallery, handleSave, icons} = useFoodAndDrink()
-    if (!data) return <div>Завантаження...</div>
-    if(!data.success) return <div>Не вдалось завантажити Ваш заклад. Причина: {data.data.message}</div>
-    const {images, name, type, location, city, features, site, phone, averageReceipt, description, rating, tags, status, businessHours, socialNetworks, updatedAt, createdAt} = data.data
-    const date = new Date(createdAt)
-    const options: {[key: string]: string} = {
+type PropsType = {
+    foodAndDrink: IFoodAndDrinkOwnerInfo;
+    isPublic: false
+} | {
+    foodAndDrink: IFoodAndDrink;
+    isPublic: true
+}
+const FoodAndDrink: FC<PropsType> = (props) => {
+    const {isEditing, handleEdit, fileInputRef, handleTriggerFileInput, handleUploadFile, galleryFiles, handleRemoveGallery, handleSave, icons} = useFoodAndDrink()
+    const {images, name, type, location, city, features, site, phone, averageReceipt, description, rating, tags, businessHours, socialNetworks} = props.foodAndDrink
+    const createdAtDate = !props.isPublic ? new Date(props.foodAndDrink.createdAt) : null
+    const createdAtDateOptions: {[key: string]: string} = {
         year: "numeric",
         month: "long",
         day: "numeric",
     };
-
     return (
         <section className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-                <div>Створено: {date.toLocaleDateString('uk-UA', options)}, {date.toLocaleTimeString('uk-UA')}</div>
+            {!props.isPublic && <div className="flex items-center justify-between">
+                {createdAtDate && <div>Створено: {createdAtDate.toLocaleDateString('uk-UA', createdAtDateOptions)}, {createdAtDate.toLocaleTimeString('uk-UA')}</div>}
                 {isEditing ? (
                     <Button className="self-end" onClick={handleSave}>Зберегти</Button>
                 ) : (
                     <Button className="self-end" onClick={handleEdit}><Pencil/>Редагувати</Button>
                 )}
-            </div>
-            <div className="flex justify-between gap-6">
+            </div>}
+            <div className="flex justify-between">
                 <div className="col-span-2 w-[70%]">
-                    <div className="relative rounded-md overflow-hidden">
-                        <Swiper className="relative w-full h-[360px] bg-gray-100"
-                            modules={[Navigation]}
-                            spaceBetween={50}
-                            navigation={true}
-                            loop={true}
-                            slidesPerView={1}
+                    {images ? <div className="relative rounded-md overflow-hidden">
+                        <Swiper className="relative w-full h-[25rem] bg-gray-100"
+                                modules={[Navigation, Pagination]}
+                                spaceBetween={50}
+                                navigation={true}
+                                pagination={true}
+                                loop={true}
+                                slidesPerView={1}
                         >
-                            {images ? images.map((image => <SwiperSlide key={image}><Image src={utils.buildStorageURL(image)} alt={name} fill className="object-cover" /></SwiperSlide>)) : <div className="w-full h-full flex items-center justify-center text-gray-500">Немає фото</div>}
+                            {images.map((image => <SwiperSlide key={image}><Image src={utils.buildStorageURL(image)} alt={name} fill className="object-cover"/></SwiperSlide>))}
                         </Swiper>
-                        <button onClick={handleEdit} className="absolute top-3 right-3 bg-white rounded-md p-2 shadow">
+                        {!props.isPublic && <button onClick={handleEdit} className="absolute top-3 right-3 bg-white rounded-md p-2 shadow">
                             <Pencil/>
-                        </button>
-                    </div>
+                        </button>}
+                    </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
 
-                    <div className="mt-4 grid grid-cols-4 gap-3">
-                        {/*<div className="col-span-1">*/}
-                        {/*    <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUploadFile} />*/}
-                        {/*    <div onClick={handleTriggerFileInput} className="h-20 border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer">Додати фото</div>*/}
-                        {/*</div>*/}
+                    {!props.isPublic && (isEditing && <div className="mt-4 grid grid-cols-4 gap-3">
+                        <div className="col-span-1">
+                            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUploadFile} />
+                            <div onClick={handleTriggerFileInput} className="h-20 border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer">Додати фото</div>
+                        </div>
                         {galleryFiles.map((file, idx) => (
                             <div key={idx} className="h-20 rounded-md overflow-hidden relative">
-                                {/* preview: use native img for blob URL */}
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-full object-cover" />
+                                <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-full object-cover"/>
                                 <button onClick={() => handleRemoveGallery(idx)} className="absolute top-1 right-1 bg-white rounded-full p-1">✕</button>
                             </div>
                         ))}
-                    </div>
+                    </div>)}
                 </div>
                 <aside className="col-span-1">
                     <div className="bg-white p-4 rounded-md shadow-sm">
@@ -77,9 +85,9 @@ const FoodAndDrink = () => {
                     <h1 className="text-2xl font-bold">{name}</h1>
                     <div className="text-sm text-gray-500">{type}</div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Chip color="success">Статус: {status}</Chip>
-                </div>
+                {!props.isPublic && <div className="flex items-center gap-2">
+                    <Chip color="success">Статус: {props.foodAndDrink.status}</Chip>
+                </div>}
             </div>
 
             <p className="mt-4 text-gray-700">{description}</p>

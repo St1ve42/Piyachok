@@ -7,6 +7,7 @@ import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/
 import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
 import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
+import Link from "next/link";
 
 type PropsType = {
     searchParams: Record<'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'features[]' | 'sortBy', string | undefined> & {page: number} & {sort: 'asc' | 'desc'}
@@ -42,8 +43,11 @@ const Home = async ({searchParams}: PropsType) => {
                 </div>}
                 <FoodAndDrinkGeoMessage sortBy={searchParams.sortBy}/>
                     {foodAndDrinkList.length !== 0 ?
-                            <div className="grid grid-cols-3 w-full gap-3 mb-5">{foodAndDrinkList.map(foodAndDrink => <FoodAndDrinkCard
-                            key={foodAndDrink.id} foodAndDrinkOneFromList={foodAndDrink}/>)} </div>
+                            <div className="grid grid-cols-3 w-full gap-3 mb-5">{foodAndDrinkList.map(foodAndDrink =>
+                                <Link href={`/food-and-drink/${foodAndDrink.id}`} key={foodAndDrink.id}>
+                                    <FoodAndDrinkCard foodAndDrinkOneFromList={foodAndDrink}/>
+                                </Link>
+                            )} </div>
                         :
                         <p>За Вашим запитом закладів не знайдено.</p>}
                 {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

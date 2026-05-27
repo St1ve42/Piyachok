@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
-import Header from "@/src/components/layout/Header/Header";
+import Header from "@/src/components/layouts/header/Header";
 import Providers from "@/src/providers/providers";
 import {cookies} from "next/headers";
 

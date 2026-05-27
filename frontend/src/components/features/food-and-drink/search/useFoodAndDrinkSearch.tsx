@@ -1,5 +1,5 @@
 import {ChangeEventHandler, KeyboardEventHandler, useEffect, useState} from "react";
-import {useSearch} from "@/src/useQuery/useSearch";
+import {useSearch} from "@/src/tanstack-query-hooks/useSearch";
 import {Key} from "@heroui/react";
 import {useURL} from "@/src/shared/hooks/useURL";
 

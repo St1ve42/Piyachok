@@ -1,4 +1,4 @@
-import {useResponseMessageStore} from "@/src/zustand/useSharedStore";
+import {useResponseMessageStore} from "@/src/store/useSharedStore";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
 import {useEffect, useState} from "react";
 import {authService} from "@/src/services/auth.service";

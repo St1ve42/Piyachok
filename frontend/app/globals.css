@@ -3,6 +3,7 @@
 @import "@heroui/styles";
 @import "swiper/css";
 @import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
 *{
     font-family: 'Inter', sans-serif;
 }

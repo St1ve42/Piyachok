@@ -1,5 +1,5 @@
 import Joi from "joi";
-import {credentialsSchema} from "@/src/validators/credentials.schema";
+import {credentialsSchema} from "@/src/validators/shared/credentials.schema";
 
 const baseFields = {
     name: Joi.string().min(2).max(50).trim().required().label('Ім`я'),

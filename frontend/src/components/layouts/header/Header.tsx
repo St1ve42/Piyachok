@@ -4,7 +4,7 @@ import Logo from "@/src/public/logo.png"
 import "./HeaderStyle.css"
 import Menu from "@/src/components/ui/menu/Menu";
 import type {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
-import useHeader from "@/src/components/layout/Header/useHeader";
+import useHeader from "@/src/components/layouts/header/useHeader";
 import Link from "next/link";
 import {Button} from "@heroui/react";
 import User from "../../features/header/user/User";

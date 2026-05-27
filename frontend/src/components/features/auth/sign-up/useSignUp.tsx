@@ -1,14 +1,14 @@
 import {ChangeEvent, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {useRegionInfinityQuery} from "@/src/useQuery/useRegionInfinityQuery";
-import {useCityInfinityQuery} from "@/src/useQuery/useCityInfinityQuery";
+import {useRegionInfinityQuery} from "@/src/tanstack-query-hooks/useRegionInfinityQuery";
+import {useCityInfinityQuery} from "@/src/tanstack-query-hooks/useCityInfinityQuery";
 import {useInView} from "react-intersection-observer";
 import {joiResolver} from "@hookform/resolvers/joi";
-import {getSignUpValidator} from "@/src/validators/sign-up.validator";
+import {getSignUpValidator} from "@/src/validators/auth/sign-up.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {IBaseSignUp, ISignUpWithRepeatedPassword} from "@/src/interfaces/auth/ISignUp";
 import {useRouter} from "next/navigation";
-import {useResponseMessageStore, useUserFromSocialNetworkStore} from "@/src/zustand/useSharedStore";
+import {useResponseMessageStore, useUserFromSocialNetworkStore} from "@/src/store/useSharedStore";
 import {authService} from "@/src/services/auth.service";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
