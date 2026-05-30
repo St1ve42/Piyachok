@@ -1,32 +1,16 @@
 'use client'
-import {Button, Checkbox, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
+import {Button, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
 import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
 import FoodAndDrinkTypeSelection from "@/src/components/shared/food-and-drink-type-selection/FoodAndDrinkTypeSelection";
+import FeatureSelection from "@/src/components/shared/feature-selection/FeatureSelection";
 
 const FoodAndDrinkFiltration = () => {
-    const {formKey, setFormKey, featuresQuery, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
-    if(featuresQuery.isLoading){
-        return <div>Завантаження...</div>
-    }
+    const {formKey, setFormKey, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
     return (
         <div className="flex p-4 flex-col gap-8 fixed z-10" key={formKey}>
             <h1 className="self-center">Фільтрувати</h1>
             <FoodAndDrinkTypeSelection handleTypeSelect={handleTypeSelect}/>
-            <div>
-                <Label>Особливості</Label>
-                <div className="grid grid-cols-2 gap-3">
-                    {featuresQuery.data && featuresQuery.data.success && featuresQuery.data.data.map(feature => <div key={feature}>
-                        <Checkbox id={feature} name={'features[]'} value={feature} onChange={handleFeatureCheck(feature)}>
-                            <Checkbox.Control>
-                                <Checkbox.Indicator />
-                            </Checkbox.Control>
-                            <Checkbox.Content>
-                                <Label htmlFor={feature}>{feature}</Label>
-                            </Checkbox.Content>
-                        </Checkbox>
-                    </div>)}
-                </div>
-            </div>
+            <FeatureSelection handleFeatureCheck={handleFeatureCheck}/>
             <Slider
                 maxValue={10}
                 aria-label="Рейтинг"

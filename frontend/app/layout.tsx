@@ -22,7 +22,7 @@ export default async function RootLayout({
       <body suppressHydrationWarning={true}>
         <div className="root">
             <Header accessTokenCookie={accessTokenCookie}/>
-            <main className="h-[80%] mt-30">
+            <main className="h-[80%] mt-[20vh]">
                 <Providers>
                     {children}
                 </Providers>

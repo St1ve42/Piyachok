@@ -5,9 +5,10 @@ import {ICommonData} from "@/src/interfaces/shared/ICommonData";
 
 interface PropsType extends Omit<ComboBoxProps<ICommonData>, 'children'>{
     initialRegionInputValue: string;
+    isRequired?: boolean
 }
 
-const RegionSelection: FC<PropsType> = ({initialRegionInputValue, ...restProps}) => {
+const RegionSelection: FC<PropsType> = ({initialRegionInputValue, isRequired = false, ...restProps}) => {
     const [regionInputValue, setRegionInputValue] = useState<string>(initialRegionInputValue)
     const [debouncedRegionInputValue, setDebouncedRegionInputValue] = useState<string>(initialRegionInputValue)
     const regionQuery = useRegionQuery({search: debouncedRegionInputValue})
@@ -20,7 +21,7 @@ const RegionSelection: FC<PropsType> = ({initialRegionInputValue, ...restProps})
         setRegionInputValue(value)
     }
     return  <ComboBox inputValue={regionInputValue} onInputChange={handleRegionInputChange} {...restProps}>
-        <Label>Регіон</Label>
+        <Label isRequired={isRequired} className="font-bold">Регіон</Label>
         <ComboBox.InputGroup>
             <Input placeholder={'Введіть регіон'}/>
             <ComboBox.Trigger/>

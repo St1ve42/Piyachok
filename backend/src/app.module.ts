@@ -23,6 +23,7 @@ import { ProtectedUsersModule } from './modules/protected-users/protected-users.
 import { RouterModule } from '@nestjs/core';
 import { ProtectedFoodAndDrinkModule } from './modules/protected-food-and-drink/protected-food-and-drink.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { UtilsModule } from './modules/utils/utils.module';
 
 @Module({
     imports: [
@@ -108,6 +109,7 @@ import { StorageModule } from './modules/storage/storage.module';
         ]),
         ProtectedFoodAndDrinkModule,
         StorageModule,
+        UtilsModule,
     ],
     controllers: [],
     providers: [

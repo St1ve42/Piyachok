@@ -1,7 +1,7 @@
 'use client'
 import {Button, Chip} from "@heroui/react";
 import Image from 'next/image'
-import {MapPin, Globe, Pencil} from '@gravity-ui/icons'
+import {MapPin, Globe, Pencil, TrashBin} from '@gravity-ui/icons'
 import useFoodAndDrink from './useFoodAndDrink'
 import {utils} from "@/src/utils/utils";
 import {Swiper, SwiperSlide} from "swiper/react";
@@ -20,7 +20,8 @@ type PropsType = {
     isPublic: true
 }
 const FoodAndDrink: FC<PropsType> = (props) => {
-    const {isEditing, handleEdit, fileInputRef, handleTriggerFileInput, handleUploadFile, galleryFiles, handleRemoveGallery, handleSave, icons} = useFoodAndDrink()
+    const {isEditing, handleEdit, fileInputRef, handleTriggerFileInput, handleUploadFile, galleryFiles, handleRemoveGallery, handleSave, icons, handleRequestDelete,
+        isDeleteRequest, handleReject, handleConfirm} = useFoodAndDrink({id: props.foodAndDrink.id})
     const {images, name, type, location, city, features, site, phone, averageReceipt, description, rating, tags, businessHours, socialNetworks} = props.foodAndDrink
     const createdAtDate = !props.isPublic ? new Date(props.foodAndDrink.createdAt) : null
     const createdAtDateOptions: {[key: string]: string} = {
@@ -32,11 +33,28 @@ const FoodAndDrink: FC<PropsType> = (props) => {
         <section className="flex flex-col gap-6">
             {!props.isPublic && <div className="flex items-center justify-between">
                 {createdAtDate && <div>Створено: {createdAtDate.toLocaleDateString('uk-UA', createdAtDateOptions)}, {createdAtDate.toLocaleTimeString('uk-UA')}</div>}
-                {isEditing ? (
-                    <Button className="self-end" onClick={handleSave}>Зберегти</Button>
-                ) : (
-                    <Button className="self-end" onClick={handleEdit}><Pencil/>Редагувати</Button>
-                )}
+                <div className="flex items-center gap-4">
+                    {isEditing ? (
+                        <Button className="self-end" onClick={handleSave}>Зберегти</Button>
+                    ) : (
+                        <Button className="self-end" onClick={handleEdit}><Pencil/>Редагувати</Button>
+                    )}
+                    <Button variant="danger" onClick={handleRequestDelete}>
+                        <TrashBin/>
+                        Видалити
+                    </Button>
+                </div>
+            </div>}
+            {isDeleteRequest && <div className="flex text-red-600 leading-none">
+                <div className="w-[80%]">Ви впевнені, що хочете видалити заклад? Це безповоротна дія, яка спричинить видалення закладу, включаючи усі пов`язані коментарі, відгуки і новини.</div>
+                <div className="flex gap-4">
+                    <Button variant="danger" onClick={handleConfirm}>
+                        Так
+                    </Button>
+                    <Button onClick={handleReject}>
+                        ні
+                    </Button>
+                </div>
             </div>}
             <div className="flex justify-between">
                 <div className="col-span-2 w-[70%]">

@@ -16,7 +16,7 @@ type PropsType = {
 const Header = ({accessTokenCookie}: PropsType) => {
     const {user, isLoading} = useHeader({accessTokenCookie})
     return (
-        <header className="flex justify-between h-[14.5%] items-center px-6 pb-2 border-b-1 fixed z-10 w-[80%] bg-white">
+        <header className="flex justify-between h-[14.5vh] items-center px-6 pb-2 border-b-1 fixed z-10 w-[80%] bg-white">
             <div className="flex gap-10 items-center">
                 <Link href={'/'}>
                     <Image src={Logo} alt="Logo" width={150} height={150} priority={true} className="w-[150px] h-auto"/>

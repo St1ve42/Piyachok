@@ -81,9 +81,8 @@ export class UsersController {
         description:
             "Дозволяє користувачу оновити інформацію про себе: ім'я, прізвище, вік, місто, регіон, стать та телефон.",
     })
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Профіль успішно оновлено',
-        type: User,
     })
     @ApiBadRequestResponse({
         description: 'Помилка валідації даних',
@@ -99,18 +98,12 @@ export class UsersController {
     })
     @Patch('/me')
     @UseGuards(AuthGuard('jwt'))
-    @SerializeOptions({
-        type: UserPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async updateMe(
         @Request() req: IUserRequest,
         @Body() updateMeDto: UpdateMeDto,
-    ): Promise<User> {
-        return await this.usersService.updateByEntity(
-            req.user.data,
-            updateMeDto,
-        );
+    ): Promise<void> {
+        await this.usersService.updateByEntity(req.user.data, updateMeDto);
     }
 
     @ApiCookieAuth('accessToken')
@@ -173,9 +166,8 @@ export class UsersController {
             'Дозволяє користувачу завантажити або оновити фотографію профілю. Підтримуються формати: PNG, JPEG, JPG. Максимальний розмір: 1 МБ.',
     })
     @ApiConsumes('multipart/form-data')
-    @ApiOkResponse({
-        description: 'Фотографія успішно завантажено',
-        type: User,
+    @ApiNoContentResponse({
+        description: 'Фотографію успішно завантажено',
     })
     @ApiBadRequestResponse({
         description: 'Невалідний формат або розмір файлу',
@@ -186,13 +178,9 @@ export class UsersController {
         type: ResponseErrorDto,
     })
     @Post('/me/photo')
-    @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard('jwt'))
     @UseInterceptors(FileInterceptor('photo'))
-    @SerializeOptions({
-        type: UserPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async uploadPhoto(
         @UploadedFile(
             new ParseFilePipe({
@@ -211,8 +199,8 @@ export class UsersController {
         )
         file: Express.Multer.File,
         @Req() req: IUserRequest,
-    ): Promise<User> {
-        return await this.usersService.uploadPhoto(file, req.user.data);
+    ): Promise<void> {
+        await this.usersService.uploadPhoto(file, req.user.data);
     }
 
     @ApiCookieAuth('accessToken')
@@ -220,9 +208,8 @@ export class UsersController {
         summary: 'Видалення фотографії профілю',
         description: 'Дозволяє користувачу видалити свою фотографію профілю.',
     })
-    @ApiOkResponse({
-        description: 'Фотографія успішно видалено',
-        type: User,
+    @ApiNoContentResponse({
+        description: 'Фотографію успішно видалено',
     })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
@@ -233,13 +220,9 @@ export class UsersController {
         type: ResponseErrorDto,
     })
     @Delete('/me/photo')
-    @HttpCode(HttpStatus.OK)
+    @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(AuthGuard('jwt'))
-    @SerializeOptions({
-        type: UserPresenter,
-        excludeExtraneousValues: true,
-    })
-    async deletePhoto(@Req() req: IUserRequest): Promise<User> {
-        return await this.usersService.deletePhoto(req.user.data);
+    async deletePhoto(@Req() req: IUserRequest): Promise<void> {
+        await this.usersService.deletePhoto(req.user.data);
     }
 }

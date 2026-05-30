@@ -10,7 +10,7 @@ import { In, Repository } from 'typeorm';
 import { FoodAndDrinkService } from '../food-and-drink/food-and-drink.service';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
 import { FoodAndDrinkRemoveTagDto } from '../food-and-drink/dto/food-and-drink-remove-tag.dto';
-import { UtilsService } from '../../shared/services/utils.service';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
 export class TagsService {

@@ -12,7 +12,7 @@ export class FoodAndDrinkService {
             const endpoint = '/food-and-drinks';
             const queryDirector = new QueryDirector(endpoint, query);
             const fullEndpoint = queryDirector.build();
-            const foodAndDrinkList = await fetchApi<IFoodAndDrinkList>(fullEndpoint, {cache: 'force-cache', next: {revalidate: 3600}})
+            const foodAndDrinkList = await fetchApi<IFoodAndDrinkList>(fullEndpoint, {next: {revalidate: 60, tags: ['food-and-drink-list']}})
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
@@ -24,7 +24,7 @@ export class FoodAndDrinkService {
     async findTypes():Promise<IApiResponse<string[]>> {
         try{
             const endpoint = '/food-and-drinks/types';
-            const foodAndDrinkList = await fetchApi<string[]>(endpoint)
+            const foodAndDrinkList = await fetchApi<string[]>(endpoint, {cache: 'force-cache'})
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
@@ -36,7 +36,7 @@ export class FoodAndDrinkService {
     async findFeatures():Promise<IApiResponse<string[]>> {
         try{
             const endpoint = '/food-and-drinks/features';
-            const foodAndDrinkList = await fetchApi<string[]>(endpoint)
+            const foodAndDrinkList = await fetchApi<string[]>(endpoint, {cache: 'force-cache'})
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
@@ -48,8 +48,20 @@ export class FoodAndDrinkService {
     async findById(id: string):Promise<IApiResponse<IFoodAndDrink>> {
         try{
             const endpoint = `/food-and-drinks/${id}`;
-            const foodAndDrinkById = await fetchApi<IFoodAndDrink>(endpoint, {cache: 'force-cache', next: {revalidate: 3600}})
+            const foodAndDrinkById = await fetchApi<IFoodAndDrink>(endpoint, {next: {revalidate: 60}})
             return {success: true, ...foodAndDrinkById}
+        }
+        catch (e){
+            console.log(`Сталась помилка в ${this.find.name}:`, e)
+            return getErrorResponse(e)
+        }
+    }
+
+    async delete(id: string):Promise<IApiResponse<null>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}`;
+            const response = await fetchApi<null>(endpoint, {method: "DELETE"})
+            return {success: true, ...response}
         }
         catch (e){
             console.log(`Сталась помилка в ${this.find.name}:`, e)

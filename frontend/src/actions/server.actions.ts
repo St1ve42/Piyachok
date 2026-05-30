@@ -4,6 +4,7 @@ import {authService} from "@/src/services/auth.service";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
 import {IError} from "@/src/interfaces/shared/IError";
 import {cookies} from "next/headers";
+import {updateTag} from "next/cache";
 
 export const recoveryRequest = async (currentState: {success: boolean, status: number, data: IResponseMessage | IError | null}, formData: FormData) => {
     const email = formData.get('email') as string | null
@@ -26,4 +27,8 @@ export const removeTokens = async() => {
     }catch (e){
         console.error(e)
     }
+}
+
+export const updateTagAction = async (tag: string) => {
+    updateTag(tag)
 }

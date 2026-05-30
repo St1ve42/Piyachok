@@ -16,7 +16,7 @@ const User: FC<PropsType> = ({user}) => {
         <div className="flex items-center gap-10">
             <div className="flex items-center gap-5">
                 <Avatar className={'size-14'}>
-                    <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : UserAvatar.src}/>
+                    <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : UserAvatar.src} width={100} height={100}/>
                 </Avatar>
                 <div>{name} {surname}</div>
                 <Link href={'/account'} className="flex gap-2">

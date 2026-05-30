@@ -5,7 +5,7 @@ import useFoodAndDrinkSearch from "@/src/components/features/food-and-drink/sear
 const FoodAndDrinkSearch = () => {
     const {inputValue, pathname, router, createQueryString, foodAndDrinkResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useFoodAndDrinkSearch()
     return (
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
             <div className="relative w-[280px]">
                 <SearchField name="search">
                     <Label/>

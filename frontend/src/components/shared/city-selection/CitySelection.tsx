@@ -1,6 +1,9 @@
 import {Collection, ComboBox, Input, Label, ListBox} from "@heroui/react";
+import {useCityQuery} from "@/src/tanstack-query-hooks/useCityQuery";
 
 const CitySelection = () => {
+    const cityQuery = useCityQuery({search: debouncedCityInputValue, regionId})
+    const cityData = cityQuery.data
     return <ComboBox inputValue={cityInputValue} onInputChange={handleCityInputChange} isDisabled={!isOpenEdit || !regionInputValue} onSelectionChange={handleCitySelectionChange}>
         <Label>Місто</Label>
         <ComboBox.InputGroup>

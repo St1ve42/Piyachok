@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const FoodAndDrinkPage = async () => {
     const accessToken = await getAccessCookie()
     const foodAndDrink = await userService.findMyFoodAndDrink({headers: {'cookie': accessToken}})
-    if(!foodAndDrink.success) return <div>Не вдалось завантажити Ваш заклад. Причина: {foodAndDrink.data.message}</div>
+    if(!foodAndDrink.success) return <div>{foodAndDrink.data.message}</div>
     return <FoodAndDrink foodAndDrink={foodAndDrink.data} isPublic={false}/>
 }
 

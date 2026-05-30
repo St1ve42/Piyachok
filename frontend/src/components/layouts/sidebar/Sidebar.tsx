@@ -6,7 +6,7 @@ import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {authService} from "@/src/services/auth.service";
 import {removeTokens} from "@/src/actions/server.actions";
 import {useRouter} from "next/navigation";
-import {Comment, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus} from "@gravity-ui/icons";
+import {Comment, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
 
 type PropsType = {
     user: IUser
@@ -44,23 +44,27 @@ const Sidebar: FC<PropsType> = ({user}) => {
                     <Star/>
                     Відгуки
                 </ListBox.Item>
-                <ListBox.Item href={'/account/food-and-drink/create'} textValue={'Заклад'}>
+                <ListBox.Item href={'/account/food-and-drink/create'} textValue={'Створити заклад'}>
                     <Plus/>
                     Створити заклад
                 </ListBox.Item>
-                {role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
+                <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
                     <House/>
                     Заклад
-                </ListBox.Item>}
-                {role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/statistics'} textValue={'Статистика'}>
+                </ListBox.Item>
+                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item href={'/account/statistics'} textValue={'Статистика'}>
                     <ChartColumn/>
                     Статистика
                 </ListBox.Item>}
-                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/food-and-drinks'} textValue={'Заклад'}>
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/food-and-drinks/moderate'} textValue={'Модерація закладів'}>
+                    <Shield/>
+                    Модерація закладів
+                </ListBox.Item>}
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/food-and-drinks'} textValue={'Усі заклади'}>
                     <ListUl/>
                     Усі заклади
                 </ListBox.Item>}
-                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/users'} textValue={'Заклад'}>
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/users'} textValue={'Усі користувачі'}>
                     <Persons/>
                     Усі користувачі
                 </ListBox.Item>}

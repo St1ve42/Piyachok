@@ -52,7 +52,7 @@ export class UsersService {
     async updateByEntity(
         user: User,
         updateUserDto: UpdateUserDto,
-    ): Promise<User> {
+    ): Promise<void> {
         const entityLikes: DeepPartial<User> = { ...updateUserDto };
         await this.checkPhoneUniqueness(updateUserDto);
         const { region, city } =
@@ -60,7 +60,7 @@ export class UsersService {
         entityLikes.region = region;
         entityLikes.city = city;
         const mergedUser = this.userRepository.merge(user, entityLikes);
-        return await this.userRepository.save(mergedUser);
+        await this.userRepository.save(mergedUser);
     }
 
     async softDeleteById(id: string, role: GlobalUserRoleEnum): Promise<void> {
@@ -129,7 +129,7 @@ export class UsersService {
         return await this.userRepository.findOneBy(params);
     }
 
-    async uploadPhoto(file: Express.Multer.File, user: User): Promise<User> {
+    async uploadPhoto(file: Express.Multer.File, user: User): Promise<void> {
         const { photo } = user;
         if (photo) {
             await this.storageService.deleteFile(photo);
@@ -139,17 +139,17 @@ export class UsersService {
             itemNameEnum.USER,
             user.id,
         );
-        return await this.userRepository.save(user);
+        await this.userRepository.save(user);
     }
 
-    async deletePhoto(user: User): Promise<User> {
+    async deletePhoto(user: User): Promise<void> {
         const { photo } = user;
         if (!photo) {
             throw new NotFoundException('У Вас немає фотографії.');
         }
         await this.storageService.deleteFile(photo);
         user.photo = null;
-        return await this.userRepository.save(user);
+        await this.userRepository.save(user);
     }
 
     private async checkPhoneUniqueness(userDto: UpdateUserDto): Promise<void> {

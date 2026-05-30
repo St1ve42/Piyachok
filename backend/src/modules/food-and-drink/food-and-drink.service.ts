@@ -29,11 +29,14 @@ import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/
 import { StorageService } from '../storage/storage.service';
 import { itemNameEnum } from '../storage/enums/itemNameEnum';
 import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
-import { UtilsService } from '../../shared/services/utils.service';
+import { UtilsService } from '../utils/utils.service';
 import { SuperadminFoodAndDrinkStatusDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-status.dto';
 import { FoodAndDrinkSortByEnum } from './enums/food-and-drink-sort-by.enum';
 import { CoordinatesDto } from './dto/coordinates.dto';
 import { SortEnum } from '../../shared/enums/sort.enum';
+import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
+import { RolesService } from '../roles/roles.service';
+import { Role } from '../roles/entities/role.entity';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -43,6 +46,9 @@ export class FoodAndDrinkService {
         @Inject(forwardRef(() => TagsService))
         private readonly tagsService: TagsService,
         private readonly storageService: StorageService,
+        private readonly roleService: RolesService,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
     async find(
@@ -344,11 +350,28 @@ export class FoodAndDrinkService {
         superadminFoodAndDrinkStatusDto: SuperadminFoodAndDrinkStatusDto,
     ): Promise<FoodAndDrink> {
         const { status } = superadminFoodAndDrinkStatusDto;
-        const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
+        const foodAndDrink = (await this.findById(id, {
+            owner: true,
+        })) as FoodAndDrink;
         if (foodAndDrink.status === status) {
             throw new ConflictException(`Цей заклад вже має статус ${status}`);
         }
         foodAndDrink.status = status;
+        if (
+            foodAndDrink.owner.role.name !==
+            GlobalUserRoleEnum.SUPERADMIN.toString()
+        ) {
+            if (status === FoodAndDrinkStatusEnum.ACTIVE) {
+                foodAndDrink.owner.role = (await this.roleService.findBy({
+                    name: GlobalUserRoleEnum.ADMIN,
+                })) as Role;
+            } else {
+                foodAndDrink.owner.role = (await this.roleService.findBy({
+                    name: GlobalUserRoleEnum.USER,
+                })) as Role;
+            }
+            await this.userRepository.save(foodAndDrink.owner);
+        }
         return this.foodAndDrinkRepository.save(foodAndDrink);
     }
 

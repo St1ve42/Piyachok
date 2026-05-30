@@ -6,8 +6,10 @@ import Telegram from "@/src/public/telegram.png"
 import {useRef, useState, ChangeEvent} from 'react'
 import {useRouter} from 'next/navigation'
 import {StaticImport} from "next/dist/shared/lib/get-img-props";
+import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
+import {updateTagAction} from "@/src/actions/server.actions";
 
-export default function useFoodAndDrink() {
+export default function useFoodAndDrink({id}: {id: string}) {
     const icons: {[key: string]: StaticImport} = {
         "facebook": Facebook,
         "telegram": Telegram,
@@ -15,6 +17,7 @@ export default function useFoodAndDrink() {
         "X": Twitter
     }
     const [isEditing, setIsEditing] = useState(false)
+    const [isDeleteRequest, setIsDeleteRequest] = useState(false)
     // const [local, setLocal] = useState<IFoodAndDrinkOwnerInfo | null>(null)
     const [galleryFiles, setGalleryFiles] = useState<File[]>([])
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -32,6 +35,22 @@ export default function useFoodAndDrink() {
 
     const handleEdit = () => {
         setIsEditing(v => !v)
+    }
+
+    const handleRequestDelete = () => {
+        setIsDeleteRequest(true)
+    }
+
+    const handleReject = () => {
+        setIsDeleteRequest(false)
+    }
+
+    const handleConfirm = async () => {
+        const response = await foodAndDrinkService.delete(id)
+        if(response.success){
+            await updateTagAction('food-and-drink-list')
+            router.refresh()
+        }
     }
 
     const handleTriggerFileInput = () => {
@@ -70,7 +89,11 @@ export default function useFoodAndDrink() {
         galleryFiles,
         handleRemoveGallery,
         handleSave,
-        icons
+        icons,
+        handleRequestDelete,
+        isDeleteRequest,
+        handleReject,
+        handleConfirm
     }
 }
 

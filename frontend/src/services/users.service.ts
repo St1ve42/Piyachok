@@ -8,7 +8,7 @@ import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDr
 export class UsersService{
     async me(requestOptions?: RequestInit): Promise<IApiResponse<IUser>>{
         try{
-            const response = await fetchApi<IUser>(`/users/me`, {...requestOptions})
+            const response = await fetchApi<IUser>(`/users/me`, {cache: 'no-store',...requestOptions})
             return {success: true, ...response}
         }
         catch (e){
@@ -52,7 +52,7 @@ export class UsersService{
 
     async findMyFoodAndDrink(requestOptions?: RequestInit): Promise<IApiResponse<IFoodAndDrinkOwnerInfo>>{
         try{
-            const response = await fetchApi<IFoodAndDrinkOwnerInfo>(`/users/me/food-and-drink`, {...requestOptions})
+            const response = await fetchApi<IFoodAndDrinkOwnerInfo>(`/users/me/food-and-drink`, {cache: 'no-store', ...requestOptions})
             return {success: true, ...response}
         }
         catch (e){
