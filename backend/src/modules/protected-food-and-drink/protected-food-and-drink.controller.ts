@@ -15,7 +15,6 @@ import { ProtectedFoodAndDrinkFindPresenter } from '../../shared/presenters/find
 import { SuperadminFoodAndDrinkQueryDto } from './dto/superadmin-food-and-drink-query.dto';
 import { FoodAndDrinkIdValidationPipe } from '../../shared/pipes/id-validation.pipe';
 import { FoodAndDrinkBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
-import { FoodAndDrinkOwnerInfoPresenter } from '../food-and-drink/presenters/food-and-drink-owner-info.presenter';
 import { AuthGuard } from '@nestjs/passport';
 import { IsSuperadminGuard } from '../../shared/guards/is-superadmin.guard';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
@@ -29,6 +28,7 @@ import {
     ApiForbiddenResponse,
     ApiCookieAuth,
     ApiNotFoundResponse,
+    ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 
@@ -80,9 +80,8 @@ export class ProtectedFoodAndDrinkController {
         description: 'UUID ідентифікатор закладу',
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Статус закладу успішно змінено',
-        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
@@ -97,12 +96,8 @@ export class ProtectedFoodAndDrinkController {
         type: ResponseErrorDto,
     })
     @Post(':id/status')
-    @HttpCode(HttpStatus.OK)
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
-    async approve(
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async setStatus(
         @Param(
             'id',
             FoodAndDrinkIdValidationPipe,
@@ -111,8 +106,8 @@ export class ProtectedFoodAndDrinkController {
         id: string,
         @Body()
         superadminFoodAndDrinkStatusDto: SuperadminFoodAndDrinkStatusDto,
-    ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.setStatus(
+    ): Promise<void> {
+        await this.foodAndDrinkService.setStatus(
             id,
             superadminFoodAndDrinkStatusDto,
         );

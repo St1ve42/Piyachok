@@ -11,11 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 import useCreateFoodAndDrink from "@/src/components/features/account/create-food-and-drink/useCreateFoodAndDrink";
 import BusinessHour from "@/src/components/shared/schedule/BusinessHour";
 import RegionSelection from "@/src/components/shared/region-selection/RegionSelection";
+import {ICreateFoodAndDrink} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 
 const CreateFoodAndDrink = () => {
-    const {schedules, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, cityData, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange} = useCreateFoodAndDrink()
-    const onSubmit = (data: unknown) => {
-        console.log(data)
+    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, cityData, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange} = useCreateFoodAndDrink()
+    const onSubmit = (data: ICreateFoodAndDrink) => {
+        const {instagram, facebook, x, telegram, street, ...restData} = data
+        // const coordinates =
         console.log(galleryFiles)
     }
     return (
@@ -78,7 +80,7 @@ const CreateFoodAndDrink = () => {
                         Додати день
                     </div>
                 </div>
-                {schedules.length !== 0 ? schedules.map((schedule, index) => <BusinessHour key={schedule.id} businessHour={schedule} onRemove={handleRemoveSchedule} control={control} errors={errors} register={register} index={index}/>) : <div className="text-sm">Додайте графік</div>}
+                {businessHoursFields.length !== 0 ? businessHoursFields.map((businessHour, index) => <BusinessHour key={businessHour.id} businessHour={businessHour} onRemove={() => handleRemoveSchedule(index)} control={control} errors={errors} register={register} index={index}/>) : <div className="text-sm">Додайте графік</div>}
                 {errors.businessHours && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.businessHours.message}</div>}
             </div>
             <div className="flex gap-8">
@@ -150,7 +152,7 @@ const CreateFoodAndDrink = () => {
             </div>
             <div className="flex flex-col gap-1 relative">
                 <Label htmlFor="site" className="font-bold">Сайт (не обов'язково)</Label>
-                <Input id="site" placeholder={'Введіть назву сайту'} type="text" required = {false} {...register('site')}/>
+                <Input id="site" placeholder={'Введіть назву сайту'} type="text" required = {false} {...register('site', {setValueAs: value => value === "" ? undefined : value})}/>
                 {errors.site && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.site.message}</div>}
             </div>
             <div className="w-[70%]">

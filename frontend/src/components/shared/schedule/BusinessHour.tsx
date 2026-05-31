@@ -3,11 +3,17 @@ import {FoodAndDrinkDaysEnum} from "@/src/enums/food-and-drink/food-and-drink-da
 import {Control, Controller, FieldErrors, UseFormRegister} from "react-hook-form";
 import {ICreateFoodAndDrink} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 
-export interface IBusinessHour {
-    id: string;
+type IBusinessHours = {
+    id: string
 }
 
-const BusinessHour = ({businessHour, onRemove, control, register, errors, index}: {businessHour: IBusinessHour, onRemove: (id: string) => void, control: Control<ICreateFoodAndDrink, any, ICreateFoodAndDrink>, index: number, register: UseFormRegister<ICreateFoodAndDrink>, errors: FieldErrors<ICreateFoodAndDrink>}) => {
+const BusinessHour = ({onRemove, control, register, errors, index}: {businessHour: IBusinessHours, onRemove: () => void, control:  Control<ICreateFoodAndDrink & {
+        tag: string
+    }, any, ICreateFoodAndDrink & {
+        tag: string
+    }>, index: number, register: UseFormRegister<ICreateFoodAndDrink & {
+        tag: string;
+    }>, errors: FieldErrors<ICreateFoodAndDrink>}) => {
     return (<div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 mt-3 items-center w-full justify-center">
         <div className="relative">
             <Controller
@@ -72,7 +78,7 @@ const BusinessHour = ({businessHour, onRemove, control, register, errors, index}
         </div>
 
         <div className="flex-shrink-0 ml-auto">
-            <TagRemoveButton onClick={() => onRemove(businessHour.id)}/>
+            <TagRemoveButton onClick={() => onRemove()}/>
         </div>
     </div>)
 }

@@ -1,7 +1,5 @@
 import {ChangeEvent, KeyboardEventHandler, useEffect, useRef, useState} from "react";
-import {v4 as uuidv4} from "uuid";
-import {IBusinessHour} from "@/src/components/shared/schedule/BusinessHour";
-import {useForm} from "react-hook-form";
+import {useForm, useFieldArray} from "react-hook-form";
 import {ICreateFoodAndDrink} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {createFoodAndDrinkValidator} from "@/src/validators/food-and-drink/create-food-and-drink.validator";
@@ -12,7 +10,6 @@ import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-ty
 import Joi from "joi";
 
 const useCreateFoodAndDrink = () => {
-    const [schedules, setSchedules] = useState<IBusinessHour[]>([])
     const [galleryFiles, setGalleryFiles] = useState<File[]>([])
     const [tags, setTags] = useState<string[]>([])
     const [features, setFeatures] = useState<string[]>([])
@@ -23,9 +20,17 @@ const useCreateFoodAndDrink = () => {
     const [cityInputValue, setCityInputValue] = useState<string>('')
     const [debouncedCityInputValue, setDebouncedCityInputValue] = useState<string>('')
 
-    const {register, handleSubmit, control, watch, formState: {errors, isValid}, setValue, setError} = useForm<ICreateFoodAndDrink & {tag: string}>({
+    const {register, handleSubmit, reset, control, watch, formState: {errors, isValid}, setValue, setError} = useForm<ICreateFoodAndDrink & {tag: string}>({
         resolver: joiResolver(createFoodAndDrinkValidator, JoiOptions),
-        mode: 'all'
+        mode: 'all',
+        defaultValues: {
+            businessHours: []
+        }
+    })
+
+    const {fields: businessHoursFields, append: appendBusinessHour, remove: removeBusinessHour} = useFieldArray({
+        control,
+        name: 'businessHours'
     })
 
     useEffect(() => {
@@ -52,11 +57,8 @@ const useCreateFoodAndDrink = () => {
         if (fileInputRef.current) fileInputRef.current.click()
     }
     const handleAddDay = () => {
-        if(schedules.length < 7){
-            const newSchedule: IBusinessHour = {
-                id: `schedule-${uuidv4()}`
-            }
-            setSchedules(prev => [...prev, newSchedule])
+        if(businessHoursFields.length < 7){
+            appendBusinessHour({day: undefined, open: '', close: ''})
         }
     }
 
@@ -73,17 +75,15 @@ const useCreateFoodAndDrink = () => {
                 featuresToSet = [...featuresToSet, feature]
             }
             else{
-                featuresToSet.splice(featuresToSet.indexOf(feature, 1))
+                featuresToSet.splice(featuresToSet.indexOf(feature), 1)
             }
             setFeatures(featuresToSet)
             setValue('features', featuresToSet.length > 0 ? featuresToSet : undefined)
         }
     }
 
-    const handleRemoveSchedule = (id: string) => {
-        const businessHours = schedules.filter(schedule => schedule.id !== id)
-        setSchedules(businessHours)
-        setValue('businessHours', businessHours)
+    const handleRemoveSchedule = (index: number) => {
+        removeBusinessHour(index)
     }
 
     const handleAddTag = () => {
@@ -99,7 +99,7 @@ const useCreateFoodAndDrink = () => {
         }
     }
 
-    const handleTagInputChange: ((e: ChangeEvent<T, HTMLInputElement>) => void) = (e) => {
+    const handleTagInputChange: ((e: ChangeEvent<HTMLInputElement>) => void) = (e) => {
         const value = e.target.value
         setTagInput(value)
         const {error} = Joi.string().min(3).max(50).validate(value, JoiOptions)
@@ -148,7 +148,29 @@ const useCreateFoodAndDrink = () => {
     }
 
     const allFormValues = watch();
+
     useEffect(() => {
+        const foodAndDrinkCreatingDraft = localStorage.getItem('foodAndDrinkCreatingDraft')
+        if(foodAndDrinkCreatingDraft){
+            const parsedFoodAndDrinkCreatingDraft = JSON.parse(foodAndDrinkCreatingDraft) as ICreateFoodAndDrink
+            const {tags, ...restParsedFoodAndDrinkCreatingDraft} = parsedFoodAndDrinkCreatingDraft
+            reset(restParsedFoodAndDrinkCreatingDraft)
+            if(tags){
+                setTags(tags)
+            }
+        }
+    }, [reset]);
+
+    useEffect(() => {
+        localStorage.setItem('foodAndDrinkCreatingDraft', JSON.stringify(tags))
+    }, [tags]);
+
+    useEffect(() => {
+        localStorage.setItem('foodAndDrinkCreatingDraft', JSON.stringify(allFormValues))
+    }, [allFormValues]);
+
+    useEffect(() => {
+        console.log('Значення форми:')
         console.log(allFormValues)
         const { error } = createFoodAndDrinkValidator.validate(allFormValues, { abortEarly: false });
 
@@ -166,7 +188,7 @@ const useCreateFoodAndDrink = () => {
         }
     }, [allFormValues]);
 
-    return {schedules, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, cityData, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange}
+    return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, cityData, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange}
 }
 
 export default useCreateFoodAndDrink

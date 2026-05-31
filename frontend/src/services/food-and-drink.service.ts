@@ -5,6 +5,7 @@ import {fetchApi} from "@/src/lib/fetch.api";
 import {IFoodAndDrinkList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkList";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
+import {ICreateFoodAndDrink, ICreateFoodAndDrinkDto} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 
 export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkList>> {
@@ -50,6 +51,18 @@ export class FoodAndDrinkService {
             const endpoint = `/food-and-drinks/${id}`;
             const foodAndDrinkById = await fetchApi<IFoodAndDrink>(endpoint, {next: {revalidate: 60}})
             return {success: true, ...foodAndDrinkById}
+        }
+        catch (e){
+            console.log(`Сталась помилка в ${this.find.name}:`, e)
+            return getErrorResponse(e)
+        }
+    }
+
+    async create(body: ICreateFoodAndDrinkDto):Promise<IApiResponse<null>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}`;
+            const response = await fetchApi<null>(endpoint, {method: "DELETE"})
+            return {success: true, ...response}
         }
         catch (e){
             console.log(`Сталась помилка в ${this.find.name}:`, e)

@@ -24,7 +24,6 @@ import { FoodAndDrinkBodyValidationPipe } from '../../shared/pipes/body-validati
 import { AuthGuard } from '@nestjs/passport';
 import type { IUserRequest } from '../auth/interfaces/IUserRequest';
 import { FoodAndDrinkInfoPresenter } from './presenters/food-and-drink-info.presenter';
-import { FoodAndDrinkOwnerInfoPresenter } from './presenters/food-and-drink-owner-info.presenter';
 import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
 import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/find.presenter';
 import { CanManageFoodAndDrinkGuard } from '../../shared/guards/can-manage-food-and-drink.guard';
@@ -52,6 +51,7 @@ import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
 import { FoodAndDrinkTypeEnum } from './enums/food-and-drink-type.enum';
 import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
+import { ResponseMessageDto } from '../auth/dto/response-message.dto';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -69,7 +69,7 @@ export class FoodAndDrinkController {
     })
     @ApiCreatedResponse({
         description: 'Заклад успішно створено',
-        type: FoodAndDrinkOwnerInfoPresenter,
+        type: ResponseMessageDto,
     })
     @ApiBadRequestResponse({
         description: 'Дані не пройшли валідацію',
@@ -81,18 +81,15 @@ export class FoodAndDrinkController {
     })
     @UseGuards(AuthGuard('jwt'))
     @Post()
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
     async create(
         @Body() createFoodAndDrinkDto: CreateFoodAndDrinkDto,
         @Req() req: IUserRequest,
-    ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.create(
+    ): Promise<ResponseMessageDto> {
+        await this.foodAndDrinkService.create(
             createFoodAndDrinkDto,
             req.user.data,
         );
+        return { message: 'Заклад успішно створено!' };
     }
 
     @ApiOperation({
@@ -190,9 +187,8 @@ export class FoodAndDrinkController {
         description: 'UUID ідентифікатор закладу',
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Заклад успішно оновлено',
-        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiBadRequestResponse({
         description: 'Дані не пройшли валідацію',
@@ -212,10 +208,7 @@ export class FoodAndDrinkController {
     })
     @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
     @Patch(':id')
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async update(
         @Param(
             'id',
@@ -224,8 +217,8 @@ export class FoodAndDrinkController {
         )
         id: string,
         @Body() updateFoodAndDrinkDto: UpdateFoodAndDrinkDto,
-    ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.update(id, updateFoodAndDrinkDto);
+    ): Promise<void> {
+        await this.foodAndDrinkService.update(id, updateFoodAndDrinkDto);
     }
 
     @ApiCookieAuth('accessToken')
@@ -279,9 +272,8 @@ export class FoodAndDrinkController {
         description: 'UUID ідентифікатор закладу',
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Теги успішно видалено',
-        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
@@ -293,11 +285,7 @@ export class FoodAndDrinkController {
     })
     @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
     @Post(':id/tags/remove')
-    @HttpCode(HttpStatus.OK)
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async removeTags(
         @Param(
             'id',
@@ -306,8 +294,8 @@ export class FoodAndDrinkController {
         )
         id: string,
         @Body() removeTagsDto: FoodAndDrinkRemoveTagDto,
-    ): Promise<FoodAndDrink> {
-        return await this.tagsService.remove(id, removeTagsDto);
+    ): Promise<void> {
+        await this.tagsService.remove(id, removeTagsDto);
     }
 
     @ApiCookieAuth('accessToken')
@@ -322,9 +310,8 @@ export class FoodAndDrinkController {
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
     @ApiConsumes('multipart/form-data')
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Зображення успішно завантажено',
-        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiBadRequestResponse({
         description: 'Невалідний формат або розмір файлу',
@@ -341,11 +328,7 @@ export class FoodAndDrinkController {
     @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
     @UseInterceptors(FilesInterceptor('images'))
     @Post(':id/images')
-    @HttpCode(HttpStatus.OK)
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async uploadImages(
         @Param(
             'id',
@@ -368,8 +351,8 @@ export class FoodAndDrinkController {
                 .build(),
         )
         files: Express.Multer.File[],
-    ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.uploadImages(id, files);
+    ): Promise<void> {
+        await this.foodAndDrinkService.uploadImages(id, files);
     }
 
     @ApiCookieAuth('accessToken')
@@ -383,9 +366,8 @@ export class FoodAndDrinkController {
         description: 'UUID ідентифікатор закладу',
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         description: 'Зображення успішно видалено',
-        type: FoodAndDrinkOwnerInfoPresenter,
     })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
@@ -397,11 +379,7 @@ export class FoodAndDrinkController {
     })
     @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
     @Post(':id/images/remove')
-    @HttpCode(HttpStatus.OK)
-    @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
-        excludeExtraneousValues: true,
-    })
+    @HttpCode(HttpStatus.NO_CONTENT)
     async removeImages(
         @Param(
             'id',
@@ -411,8 +389,8 @@ export class FoodAndDrinkController {
         id: string,
         @Body()
         removeImagesFoodAndDrinkDto: RemoveImagesFoodAndDrinkDto,
-    ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.removeImages(
+    ): Promise<void> {
+        await this.foodAndDrinkService.removeImages(
             id,
             removeImagesFoodAndDrinkDto,
         );
