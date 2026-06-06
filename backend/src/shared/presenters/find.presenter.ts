@@ -2,8 +2,8 @@ import { Expose, Type } from 'class-transformer';
 import { ClassConstructor } from 'class-transformer/types/interfaces';
 import { BaseQueryPresenter } from './base-query.presenter';
 import { FoodAndDrinkFindOnePresenter } from '../../modules/food-and-drink/presenters/food-and-drink-find-one.presenter';
-import { ProtectedFoodAndDrinkFindOnePresenter } from '../../modules/protected-food-and-drink/presenters/protected-food-and-drink-find-one.presenter';
-import { ProtectedUserFindOnePresenter } from '../../modules/protected-users/dto/protected-user-find-one.presenter';
+import { SuperadminFoodAndDrinkFindOnePresenter } from '../../modules/protected-food-and-drink/presenters/superadmin-food-and-drink-find-one.presenter';
+import { SuperadminUserFindOnePresenter } from '../../modules/protected-users/dto/superadmin-user-find-one.presenter';
 import { ApiProperty } from '@nestjs/swagger';
 
 function createFindPresenter<T>(DataCls: ClassConstructor<T>) {
@@ -11,6 +11,10 @@ function createFindPresenter<T>(DataCls: ClassConstructor<T>) {
         @ApiProperty({ example: 10 })
         @Expose()
         total: number;
+
+        @ApiProperty({ example: 10 })
+        @Expose()
+        totalPages: number;
 
         @ApiProperty({
             type: () => [DataCls],
@@ -32,11 +36,11 @@ export const FoodAndDrinkResponseFindPresenter =
     );
 
 export const ProtectedFoodAndDrinkFindPresenter =
-    createFindPresenter<ProtectedFoodAndDrinkFindOnePresenter>(
-        ProtectedFoodAndDrinkFindOnePresenter,
+    createFindPresenter<SuperadminFoodAndDrinkFindOnePresenter>(
+        SuperadminFoodAndDrinkFindOnePresenter,
     );
 
 export const ProtectedUserFindPresenter =
-    createFindPresenter<ProtectedUserFindOnePresenter>(
-        ProtectedUserFindOnePresenter,
+    createFindPresenter<SuperadminUserFindOnePresenter>(
+        SuperadminUserFindOnePresenter,
     );

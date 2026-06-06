@@ -1,3 +1,5 @@
+import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-type.enum";
+
 export interface IBaseQuery{
     page?: number,
     limit?: number,
@@ -5,12 +7,26 @@ export interface IBaseQuery{
 }
 
 export interface IRegionCityQuery extends IBaseQuery{
+    [key: string]: unknown
     search?: string
 }
 
 export interface IFoodAndDrinkQuery extends IBaseQuery{
     [key: string]: unknown
+    name?: string
+    type?: FoodAndDrinkTypeEnum
+    rating?: number
+    tag?: string
+    averageReceipt?: {gte: number, lte: number}
     sort?: 'asc' | 'desc'
     sortBy?: string
 }
+
+export interface IUsersQuery extends IBaseQuery{
+    [key: string]: unknown
+    name?: string
+    surname?: string
+    email?: string
+}
+
 

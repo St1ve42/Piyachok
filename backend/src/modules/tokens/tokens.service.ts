@@ -107,7 +107,7 @@ export class TokensService {
         return await this.tokenRepository.findOneBy(dto);
     }
 
-    async update(id: string, dto: Partial<Token>): Promise<Token | null> {
+    async updateById(id: string, dto: Partial<Token>): Promise<Token | null> {
         await this.tokenRepository.update(id, dto);
         return await this.tokenRepository.findOneBy({ id });
     }

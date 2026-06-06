@@ -244,7 +244,9 @@ export class AuthService {
             isBlocked: false,
         });
         if (tokenEntity) {
-            await this.tokenService.update(tokenEntity.id, { isBlocked: true });
+            await this.tokenService.updateById(tokenEntity.id, {
+                isBlocked: true,
+            });
         }
     }
 
@@ -267,7 +269,7 @@ export class AuthService {
         }
         const user = (await this.userService.findById(userId)) as User;
         const tokens = await this.tokenService.generate({ user });
-        await this.tokenService.update(token.id, { isBlocked: true });
+        await this.tokenService.updateById(token.id, { isBlocked: true });
         return { ...tokens };
     }
 

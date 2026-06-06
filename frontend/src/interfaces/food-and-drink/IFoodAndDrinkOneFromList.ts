@@ -26,5 +26,5 @@ export interface IFoodAndDrinkOneFromList {
   mainImage: string | null;
   rating: number;
   distance: string | null;
-  features: string[];
+  features?: string[];
 }

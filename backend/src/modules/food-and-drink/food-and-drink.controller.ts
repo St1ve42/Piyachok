@@ -51,7 +51,7 @@ import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
 import { FoodAndDrinkTypeEnum } from './enums/food-and-drink-type.enum';
 import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
-import { ResponseMessageDto } from '../auth/dto/response-message.dto';
+import { FoodAndDrinkOwnerInfoPresenter } from './presenters/food-and-drink-owner-info.presenter';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -69,7 +69,7 @@ export class FoodAndDrinkController {
     })
     @ApiCreatedResponse({
         description: 'Заклад успішно створено',
-        type: ResponseMessageDto,
+        type: FoodAndDrinkResponseFindPresenter,
     })
     @ApiBadRequestResponse({
         description: 'Дані не пройшли валідацію',
@@ -81,15 +81,18 @@ export class FoodAndDrinkController {
     })
     @UseGuards(AuthGuard('jwt'))
     @Post()
+    @SerializeOptions({
+        type: FoodAndDrinkOwnerInfoPresenter,
+        excludeExtraneousValues: true,
+    })
     async create(
         @Body() createFoodAndDrinkDto: CreateFoodAndDrinkDto,
         @Req() req: IUserRequest,
-    ): Promise<ResponseMessageDto> {
-        await this.foodAndDrinkService.create(
+    ): Promise<FoodAndDrink> {
+        return await this.foodAndDrinkService.create(
             createFoodAndDrinkDto,
             req.user.data,
         );
-        return { message: 'Заклад успішно створено!' };
     }
 
     @ApiOperation({
@@ -108,12 +111,12 @@ export class FoodAndDrinkController {
     })
     async find(
         @Query() query: FoodAndDrinkQueryDto,
-    ): Promise<{ data: FoodAndDrink[]; total: number }> {
-        const [foodAndDrinks, total] = await this.foodAndDrinkService.find(
-            query,
-            { status: FoodAndDrinkStatusEnum.ACTIVE },
-        );
-        return { data: foodAndDrinks, ...query, total };
+    ): Promise<{ data: FoodAndDrink[]; total: number; totalPages: number }> {
+        const [foodAndDrinks, total, totalPages] =
+            await this.foodAndDrinkService.find(query, {
+                status: FoodAndDrinkStatusEnum.ACTIVE,
+            });
+        return { data: foodAndDrinks, ...query, total, totalPages };
     }
 
     @ApiOperation({

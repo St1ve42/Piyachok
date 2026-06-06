@@ -1,8 +1,8 @@
 "use client";
 
-import {useCallback, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {Pagination} from "@heroui/react";
+import { Input, Pagination} from "@heroui/react";
 
 type PropsType = {
     totalPages: number,
@@ -11,6 +11,7 @@ type PropsType = {
 
 function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     const [page, setPage] = useState(1);
+    const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
     const router = useRouter();
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -23,6 +24,15 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
         },
         [searchParams]
     )
+
+    useEffect(() => {
+        setInputPageValue(currentPage.toString())
+    }, [currentPage]);
+
+    useEffect(() => {
+      const timer = setTimeout(() => router.push(pathname + '?' + createQueryString('page', inputPageValue)), 500)
+      return () => clearTimeout(timer)
+    }, [inputPageValue]);
 
     const getPageNumbers = () => {
         const pages: (number | "ellipsis")[] = [];
@@ -52,6 +62,12 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     return (
         <div className="w-full max-w-2xs overflow-x-auto sm:max-w-full mb-5">
             <Pagination className="justify-center">
+                <div className="flex items-center gap-3">
+                  <p>Сторінка: </p>
+                  <Input value={inputPageValue} type='text' className="w-[40px] h-[30px]" onChange={(e) => setInputPageValue(e.target.value)}/>
+                  <p>з</p>
+                  <p>{totalPages}</p>
+                </div>
                 <Pagination.Content>
                     <Pagination.Item>
                         <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page-1}`))

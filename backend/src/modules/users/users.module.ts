@@ -8,6 +8,7 @@ import { CitiesModule } from '../cities/cities.module';
 import { RegionsModule } from '../regions/regions.module';
 import { FoodAndDrinkModule } from '../food-and-drink/food-and-drink.module';
 import { StorageModule } from '../storage/storage.module';
+import { TokensModule } from '../tokens/tokens.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { StorageModule } from '../storage/storage.module';
         CitiesModule,
         RegionsModule,
         FoodAndDrinkModule,
+        TokensModule,
     ],
     controllers: [UsersController],
     providers: [UsersService],

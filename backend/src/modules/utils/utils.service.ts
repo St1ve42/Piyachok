@@ -20,7 +20,10 @@ export class UtilsService {
 
     static async getCoordinates(dto: GetCoordinatesDto): Promise<ICoordinates> {
         const { region, city, street } = dto;
-        const baseUrl = `https://nominatim.openstreetmap.org/search?street=${street}&city=${city}&state=${region}&country=Україна&format=jsonv2`;
+        let baseUrl = `https://nominatim.openstreetmap.org/search?city=${city.split(' ')[1]}&state=${region}&country=Україна&format=jsonv2`;
+        if (street) {
+            baseUrl += `&street=${street}`;
+        }
         const response = await fetch(baseUrl, {
             headers: {
                 'User-agent': 'Piyachok',

@@ -1,7 +1,8 @@
 import { ProviderEnum } from '../../../shared/enums/provider.enum';
 import { GenderEnum } from '../enums/gender.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+    IsBoolean,
     IsEmail,
     IsEnum,
     IsInt,
@@ -14,6 +15,8 @@ import {
     Min,
     MinLength,
 } from 'class-validator';
+import { GlobalUserRoleEnum } from '../enums/global.user.role.enum';
+import { Role } from '../../roles/entities/role.entity';
 
 export class CreateUserDto {
     @ApiProperty({
@@ -95,8 +98,8 @@ export class CreateUserDto {
         description: 'Стать користувача (male/female)',
         required: false,
     })
-    @IsEnum(GenderEnum)
     @IsOptional()
+    @IsEnum(GenderEnum)
     gender?: GenderEnum;
 
     @ApiProperty({
@@ -104,14 +107,44 @@ export class CreateUserDto {
         description: "Телефон користувача (формат: '+380000000000')",
         required: false,
     })
+    @IsOptional()
     @IsPhoneNumber(undefined, {
         message: "Телефон повинен бути вигляду '+380000000000'",
     })
-    @IsOptional()
     phone?: string;
 
     photo?: string;
     firebaseUid?: string;
+
+    @ApiPropertyOptional({
+        example: true,
+        description: 'Чи активний акаунт користувача',
+    })
+    @IsOptional()
+    @IsBoolean()
     isActive?: boolean;
+
+    @ApiPropertyOptional({
+        example: true,
+        description: 'Чи верифіковано користувача через email',
+    })
+    @IsOptional()
+    @IsBoolean()
     isVerified?: boolean;
+
+    @ApiPropertyOptional({
+        example: false,
+        description: "Чи видалено акаунт користувача (м'яке видалення)",
+    })
+    @IsOptional()
+    @IsBoolean()
+    isDeleted?: boolean;
+
+    @ApiPropertyOptional({
+        example: false,
+        description: 'Роль користувача',
+    })
+    @IsOptional()
+    @IsEnum(GlobalUserRoleEnum)
+    role?: Role;
 }

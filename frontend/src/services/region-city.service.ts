@@ -2,24 +2,21 @@ import {IRegionCityQuery} from "@/src/interfaces/shared/IBaseQuery";
 import {IRegionData} from "@/src/interfaces/region-city/IRegionData";
 import {ICityData} from "@/src/interfaces/region-city/ICityData";
 import {fetchApi} from "@/src/lib/fetch.api";
+import {QueryDirector} from "@/src/lib/query.director";
 
 export class RegionCityService {
     async find(query?: IRegionCityQuery): Promise<IRegionData>{
-        let endpoint = '/regions'
-        if(query){
-            const {page = 1, skip = 0, limit = 10, search = ''} = query
-            endpoint += `?page=${page}&skip=${skip}&limit=${limit}&search=${search}`
-        }
-        return await fetchApi<IRegionData>(endpoint).then(({data}) => data)
+        const endpoint = `/regions`
+        const queryDirector = new QueryDirector(endpoint, query);
+        const fullEndpoint = queryDirector.build();
+        return await fetchApi<IRegionData>(fullEndpoint).then(({data}) => data)
     }
 
     async findCitiesByRegionId(id: number = 1, query?: IRegionCityQuery): Promise<ICityData>{
-        let endpoint = `/regions/${id}/cities`
-        if(query){
-            const {page = 1, skip = 0, limit = 10, search = ''} = query
-            endpoint += `?page=${page}&skip=${skip}&limit=${limit}&search=${search}`
-        }
-        return await fetchApi<ICityData>(endpoint).then(({data}) => data)
+        const endpoint = `/regions/${id}/cities`
+        const queryDirector = new QueryDirector(endpoint, query);
+        const fullEndpoint = queryDirector.build();
+        return await fetchApi<ICityData>(fullEndpoint).then(({data}) => data)
     }
 }
 

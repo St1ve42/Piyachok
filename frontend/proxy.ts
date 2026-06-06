@@ -6,11 +6,11 @@ import {customFetch} from "@/src/lib/fetch.api";
 import {removeTokens} from "@/src/actions/server.actions";
 
 export async function proxy(request: NextRequest) {
-    const cookieStore = await cookies()
-    const accessTokenCookie = cookieStore.get('accessToken')
     if (request.headers.has('next-action')) {
         return NextResponse.next();
     }
+    const cookieStore = await cookies()
+    const accessTokenCookie = cookieStore.get('accessToken')
     if(!accessTokenCookie){
         return NextResponse.redirect(new URL('/auth/sign-in', request.url))
     }

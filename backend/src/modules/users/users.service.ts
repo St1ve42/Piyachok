@@ -8,7 +8,13 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { DeepPartial, FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+    DeepPartial,
+    FindOptionsRelations,
+    FindOptionsWhere,
+    Like,
+    Repository,
+} from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ProviderEnum } from '../../shared/enums/provider.enum';
 import { ErrorResponse } from '../../shared/error/error-response';
@@ -19,8 +25,9 @@ import { City } from '../cities/entities/city.entity';
 import { GlobalUserRoleEnum } from './enums/global.user.role.enum';
 import { StorageService } from '../storage/storage.service';
 import { itemNameEnum } from '../storage/enums/itemNameEnum';
-import { UserQueryDto } from '../protected-users/dto/user-query.dto';
-import { UserSearchDto } from '../protected-users/dto/user-search.dto';
+import { SuperadminUserQueryDto } from '../protected-users/dto/superadmin-user-query.dto';
+import { SuperadminUserSearchDto } from '../protected-users/dto/superadmin-user-search.dto';
+import { TokensService } from '../tokens/tokens.service';
 
 @Injectable()
 export class UsersService {
@@ -30,6 +37,7 @@ export class UsersService {
         private readonly cityService: CitiesService,
         private readonly regionService: RegionsService,
         private readonly storageService: StorageService,
+        private readonly tokenService: TokensService,
     ) {}
     async create(createUserDto: CreateUserDto): Promise<User> {
         const { cityId, regionId, provider, ...restUser } = createUserDto;
@@ -63,7 +71,7 @@ export class UsersService {
         await this.userRepository.save(mergedUser);
     }
 
-    async softDeleteById(id: string, role: GlobalUserRoleEnum): Promise<void> {
+    async deleteMe(id: string, role: GlobalUserRoleEnum): Promise<void> {
         const isSuperAdmin = role === GlobalUserRoleEnum.SUPERADMIN;
         if (isSuperAdmin) {
             throw new ForbiddenException(
@@ -73,20 +81,48 @@ export class UsersService {
         const isAdmin = role === GlobalUserRoleEnum.ADMIN;
         if (isAdmin) {
             throw new ForbiddenException(
-                'Ви не можете видалити свій акаунт, оскільки Ви є адміністратор.',
+                'Ви не можете видалити свій акаунт, оскільки Ви є адміністратор. Зв`яжіться з суперадміністратором для переприв`язки закладу.',
             );
         }
         await this.updateById(id, { isDeleted: true });
+        await this.tokenService.updateBy({ userId: id }, { isBlocked: true });
     }
 
-    async find(query: UserQueryDto): Promise<[User[], number]> {
-        const { page, limit, skip, search } = query;
+    async softDeleteById(targetId: string, userId: string): Promise<void> {
+        const isSameUser = targetId === userId;
+        if (isSameUser) {
+            throw new ForbiddenException('Ви не можете видалити свій акаунт.');
+        }
+        const targetUser = (await this.findById(targetId)) as User;
+        if (
+            targetUser.role.name === (GlobalUserRoleEnum.SUPERADMIN as string)
+        ) {
+            throw new ForbiddenException(
+                'Ви не можете видалити акаунт користувача з ролю суперадмін.',
+            );
+        }
+        if (targetUser.role.name === (GlobalUserRoleEnum.ADMIN as string)) {
+            throw new ForbiddenException(
+                'Ви не можете видалити акаунт користувача з ролю адмін. Спочатку відв`яжіть його від закладу',
+            );
+        }
+        await this.updateById(targetId, { isDeleted: true });
+        await this.tokenService.updateBy(
+            { userId: targetId },
+            { isBlocked: true },
+        );
+    }
+
+    async find(
+        query: SuperadminUserQueryDto,
+    ): Promise<[User[], number, number]> {
+        const { page, limit, skip, ...search } = query;
         const filter: FindOptionsWhere<User> = {};
         if (search) {
             (
                 Object.entries(search) as [
-                    keyof UserSearchDto,
-                    UserSearchDto[keyof UserSearchDto],
+                    keyof SuperadminUserSearchDto,
+                    SuperadminUserSearchDto[keyof SuperadminUserSearchDto],
                 ][]
             ).forEach(([key, value]) => {
                 if (value) {
@@ -101,18 +137,27 @@ export class UsersService {
                 }
             });
         }
-        return await Promise.all([
-            this.userRepository.find({
+        const total = await this.userRepository.countBy(filter);
+        const totalPages = Math.ceil((total - skip) / limit);
+        return [
+            await this.userRepository.find({
                 take: limit,
                 skip: (page - 1) * limit + skip,
                 where: filter,
             }),
-            this.userRepository.countBy(filter),
-        ]);
+            total,
+            totalPages,
+        ];
     }
 
-    async findById(id: string): Promise<User | null> {
-        return await this.userRepository.findOneBy({ id });
+    async findById(
+        id: string,
+        relations?: FindOptionsRelations<User>,
+    ): Promise<User | null> {
+        return await this.userRepository.findOne({
+            where: { id },
+            relations,
+        });
     }
 
     async save(user: User): Promise<User> {
@@ -142,10 +187,19 @@ export class UsersService {
         await this.userRepository.save(user);
     }
 
-    async deletePhoto(user: User): Promise<void> {
+    async deletePhoto(user: User, type: 'user' | 'superadmin'): Promise<void> {
         const { photo } = user;
+        let message: string;
+        switch (type) {
+            case 'user':
+                message = 'У Вас немає фотографії.';
+                break;
+            case 'superadmin':
+                message = 'У користувача немає фотографії.';
+                break;
+        }
         if (!photo) {
-            throw new NotFoundException('У Вас немає фотографії.');
+            throw new NotFoundException(message);
         }
         await this.storageService.deleteFile(photo);
         user.photo = null;
@@ -207,5 +261,9 @@ export class UsersService {
             return { region, city };
         }
         return {};
+    }
+
+    async isExistsById(id: string): Promise<boolean> {
+        return await this.userRepository.existsBy({ id });
     }
 }

@@ -1,8 +1,8 @@
 'use client'
 import {Button, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
 import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
-import FoodAndDrinkTypeSelection from "@/src/components/shared/food-and-drink-type-selection/FoodAndDrinkTypeSelection";
-import FeatureSelection from "@/src/components/shared/feature-selection/FeatureSelection";
+import FoodAndDrinkTypeSelection from "@/src/components/shared/food-and-drink/type-selection/FoodAndDrinkTypeSelection";
+import FeatureSelection from "@/src/components/shared/food-and-drink/feature-selection/FeatureSelection";
 
 const FoodAndDrinkFiltration = () => {
     const {formKey, setFormKey, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()

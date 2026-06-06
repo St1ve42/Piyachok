@@ -14,7 +14,7 @@ export async function customFetch (endpoint: string, options: RequestInit = {}):
     })
 }
 
-export async function fetchApi<T>(
+export async function fetchApi<T = null>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<{ data: T; status: number }> {
@@ -23,6 +23,7 @@ export async function fetchApi<T>(
         const errorData = await response
             .json()
             .catch(() => ({}));
+        console.log(errorData);
         throw new ApiError(errorData, response.status);
     }
 

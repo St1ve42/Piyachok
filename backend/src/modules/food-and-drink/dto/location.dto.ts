@@ -1,5 +1,6 @@
 import {
     IsObject,
+    IsOptional,
     IsString,
     MaxLength,
     MinLength,
@@ -21,6 +22,7 @@ export class LocationDto {
     @ApiPropertyOptional({
         description: 'Географічні координати закладу (широта і довгота)',
     })
+    @IsOptional()
     @IsObject()
     @ValidateNested()
     coordinates?: CoordinatesDto;

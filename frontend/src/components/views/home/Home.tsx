@@ -2,11 +2,11 @@ import TabMenu from "@/src/components/ui/tab-menu/TabMenu";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import PaginationWithEclipses from "@/src/components/ui/pagination/PaginationWithEclipses";
 import {notFound, redirect} from "next/navigation";
-import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
+import FoodAndDrinkSearch from "@/src/components/shared/food-and-drink/search/FoodAndDrinkSearch";
 import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
-import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
+import FoodAndDrinkSort from "@/src/components/shared/food-and-drink/sort/FoodAndDrinkSort";
 import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
-import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
+import FoodAndDrinkList from "@/src/components/shared/food-and-drink/list/FoodAndDrinkList";
 
 type PropsType = {
     searchParams: Record<'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'features[]' | 'sortBy', string | undefined> & {page: number} & {sort: 'asc' | 'desc'}
@@ -14,7 +14,7 @@ type PropsType = {
 
 const Home = async ({searchParams}: PropsType) => {
     const {page, ...restParams} = searchParams
-    if(page < 1){
+    if(page < 1 || isNaN(page)){
         redirect('/')
     }
     const foodAndDrinkListApiResponse = await foodAndDrinkService.find({limit: 20, page, ...restParams})
@@ -24,8 +24,7 @@ const Home = async ({searchParams}: PropsType) => {
     if(!foodAndDrinkListApiResponse.success){
         notFound()
     }
-    const {data: {total, limit, skip, data: foodAndDrinkList}} = foodAndDrinkListApiResponse
-    const totalPages = Math.ceil((total-skip)/limit)
+    const {data: {total, totalPages, data: foodAndDrinkList}} = foodAndDrinkListApiResponse
     if(page > totalPages && totalPages !== 0){
         redirect('/')
     }
@@ -40,7 +39,7 @@ const Home = async ({searchParams}: PropsType) => {
                     <h1>Знайдено: {total}</h1>
                     <div className="flex gap-3">
                         <FoodAndDrinkSort/>
-                        <FoodAndDrinkSearch/>
+                        <FoodAndDrinkSearch type={'public'}/>
                     </div>
                 </div>
                 <FoodAndDrinkGeoMessage sortBy={searchParams.sortBy}/>

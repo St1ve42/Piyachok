@@ -16,7 +16,7 @@ const AccountLayout = async ({children}: Props) => {
     return (
         <div className="flex h-full justify-evenly">
             <Sidebar user={user}/>
-            <section className="w-[65%]">
+            <section className="w-[70%]">
                 {children}
             </section>
         </div>

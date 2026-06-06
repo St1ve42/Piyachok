@@ -36,6 +36,6 @@ export interface IFoodAndDrink {
         facebook?: string;
         X?: string;
     };
-    features: FoodAndDrinkFeaturesEnum[];
+    features?: FoodAndDrinkFeaturesEnum[];
     tags: string[];
 }

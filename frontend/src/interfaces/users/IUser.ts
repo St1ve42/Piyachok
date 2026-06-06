@@ -13,4 +13,7 @@ export interface IUser {
   isVerified: boolean;
   isActive: boolean;
   isDeleted: boolean;
+  ownerOf?: {
+    id: string
+  }
 }

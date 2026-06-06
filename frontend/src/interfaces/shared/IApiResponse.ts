@@ -13,4 +13,4 @@ interface SuccessfulApiResponse<T> {
 }
 
 
-export type IApiResponse<T> = FailedApiResponse | SuccessfulApiResponse<T>
+export type IApiResponse<T = null> = FailedApiResponse | SuccessfulApiResponse<T>

@@ -68,8 +68,8 @@ export class UsersController {
     @Get('/me')
     @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
-        type: UserPresenter, // 2. Вказуємо, яку схему (клас) використати
-        excludeExtraneousValues: true, // 3. Кажемо ігнорувати все, що без @Expose()
+        type: UserPresenter,
+        excludeExtraneousValues: true,
     })
     me(@Request() req: IUserRequest): User {
         return req.user.data;
@@ -128,7 +128,7 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     async deleteMe(@Request() req: IUserRequest): Promise<void> {
         const user = req.user;
-        await this.usersService.softDeleteById(user.data.id, user.role);
+        await this.usersService.deleteMe(user.data.id, user.role);
     }
 
     @ApiCookieAuth('accessToken')
@@ -156,7 +156,7 @@ export class UsersController {
         excludeExtraneousValues: true,
     })
     async myFoodAndDrink(@Request() req: IUserRequest): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.findOneByOwner(req.user.data);
+        return await this.foodAndDrinkService.findOneByOwner(req.user.data.id);
     }
 
     @ApiCookieAuth('accessToken')
@@ -223,6 +223,6 @@ export class UsersController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(AuthGuard('jwt'))
     async deletePhoto(@Req() req: IUserRequest): Promise<void> {
-        await this.usersService.deletePhoto(req.user.data);
+        await this.usersService.deletePhoto(req.user.data, 'user');
     }
 }

@@ -1,23 +1,37 @@
 'use client'
 import {IUser} from "@/src/interfaces/users/IUser";
-import {FC} from "react"
-import {Avatar, Button, Input, Label, ListBox, Select, Form, ComboBox, Chip, Collection} from "@heroui/react";
-import {Pencil, TrashBin} from "@gravity-ui/icons";
+import { FC } from 'react';
+import {
+    Avatar,
+    Button,
+    Input,
+    Label,
+    ListBox,
+    Select,
+    Form,
+    Chip,
+    Dropdown,
+    Header,
+    Modal
+} from '@heroui/react';
+import {Pencil, TrashBin, EllipsisVertical} from "@gravity-ui/icons";
 import Verified from "@/src/public/verified.png"
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import {utils} from "@/src/utils/utils";
 import Image from "next/image";
 import useProfile from "@/src/components/features/account/profile/useProfile";
-import RegionSelection from "@/src/components/shared/region-selection/RegionSelection";
 import {Controller} from "react-hook-form";
+import RegionSelection from "@/src/components/shared/region-and-city/region/RegionSelection";
+import CitySelection from "@/src/components/shared/region-and-city/city/CitySelection";
+import ActiveUser from "@/src/public/active-user.png";
+import { GlobalUserRoleEnum } from "@/src/enums/user/global.user.role.enum";
+import Link from "next/link";
 
-type PropsType = {
-    user: IUser
-}
+type PropsType = {user: IUser, type: 'user', id?: string} | {user: IUser, type: 'superadmin', id: string}
 
-const Profile: FC<PropsType> = ({user}) => {
-    const {name, surname, age, photo, email, gender, phone, role, isVerified, region} = user
-    const {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, cityData, handleEdit, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, updateResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control} = useProfile({user})
+const Profile: FC<PropsType> = ({user, type, id}) => {
+    const {name, surname, age, photo, email, gender, phone, role, isVerified, region, city, isActive, isDeleted, ownerOf} = user
+    const {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, handleEdit, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, errorResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control, handleRegionInputChange, regionId, handleRegionIdMatch, handleActivation, handleVerification, handleDelete, handleConfirmInputChange, isCorrectInput, handleRestore, handleOnPressDeleteButton} = useProfile({user, type, id})
     return (
         <section className="flex flex-col gap-3">
             <div className="flex justify-between items-center">
@@ -34,12 +48,79 @@ const Profile: FC<PropsType> = ({user}) => {
                         <div className="flex gap-2 items-center">
                             <div className="font-bold">{name} {surname}</div>
                             <Chip color="warning" variant="primary" className="font-bold">{utils.capitalizeFirstLetter(role)}</Chip>
+                            {isActive && <Image src={ActiveUser} alt={'Активований'} width={30} height={30} priority={true}/>}
                             {isVerified && <Image src={Verified} alt={'Верифікація'} width={30} height={30} priority={true}/>}
+                            {isDeleted && <TrashBin color={'red'} width={22} height={25}/>}
                         </div>
                         <div>{email}</div>
                     </div>
                 </div>
-                <Button onClick={handleEdit}>{isOpenEdit ? 'Скасувати' : 'Редагувати'}</Button>
+                <div className="flex gap-6">
+                    {type === 'superadmin' && <Dropdown>
+                        <Button isIconOnly aria-label="Menu" variant="secondary">
+                            <EllipsisVertical className="outline-none" />
+                        </Button>
+                        <Dropdown.Popover>
+                            <Dropdown.Menu>
+                                <Dropdown.Section>
+                                    <Header>Дії</Header>
+                                    <Dropdown.Item onClick={handleActivation}>
+                                        <Label>{isActive ? 'Деактивувати' : 'Активувати'}</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleVerification}>
+                                        <Label>{isVerified ? 'Деверифікувати' : 'Верифікувати'}</Label>
+                                    </Dropdown.Item>
+                                    {role !== GlobalUserRoleEnum.USER && ownerOf && <Dropdown.Item>
+                                        <Link href={`/account/superadmin/food-and-drinks/${ownerOf.id}`}>
+                                            <Label>Подивитись заклад</Label>
+                                        </Link>
+                                    </Dropdown.Item>}
+                                </Dropdown.Section>
+                            </Dropdown.Menu>
+                        </Dropdown.Popover>
+                    </Dropdown>}
+                  {role !== GlobalUserRoleEnum.SUPERADMIN && (!isDeleted ? <Modal>
+                    <Button variant="danger" onPress={handleOnPressDeleteButton}><TrashBin/>Видалити</Button>
+                    <Modal.Backdrop>
+                      <Modal.Container>
+                        <Modal.Dialog className="sm:max-w-[450px]">
+                          <Modal.CloseTrigger />
+                          <Modal.Header>
+                            <Modal.Heading className="text-red-600">Видалити акаунт?</Modal.Heading>
+                          </Modal.Header>
+                          <Modal.Body>
+                              {type === 'superadmin'
+                                ?
+                                <div>
+                                  <p>Ви збираєтесь назавжди деактивувати акаунт {name} {surname}.</p>
+                                  <p className="font-bold">Наслідки дії:</p>
+                                  <ul>
+                                    <li>&#x2022; Користувач негайно втратить доступ до платформи.</li>
+                                    <li>&#x2022; Контент: Відгуки та оцінки користувача залишаться для збереження статистики, але авторство буде змінено на «Видалений користувач».</li>
+                                  </ul>
+                                  <p className="font-bold">Дані користувача в базі дані будуть збережені.</p>
+                                </div>
+                                :
+                                <p>Ви впевнені, що хочете назавжди видалити свій профіль? Цю дію неможливо скасувати</p>}
+                            <div>Щоб підтвердити видалення, введіть <span className="font-bold">{email}</span> у поле нижче:</div>
+                            <Input className="my-3 ml-1 w-[90%]" type='email' placeholder='Введіть email для підтвердження' onChange={handleConfirmInputChange}/>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button onClick={handleDelete} isDisabled={!isCorrectInput} variant="danger" className="w-full" slot="close">
+                              Видалити
+                            </Button>
+                            <Button className="w-full" slot="close">
+                              Скасувати
+                            </Button>
+                          </Modal.Footer>
+                        </Modal.Dialog>
+                      </Modal.Container>
+                    </Modal.Backdrop>
+                  </Modal> :
+                    <Button className="bg-green-500" onClick={handleRestore}>Відновити акаунт</Button>
+                  )}
+                    <Button onClick={handleEdit}>{isOpenEdit ? 'Скасувати' : <div className="flex items-center gap-2"><Pencil/> Редагувати</div>}</Button>
+                </div>
             </div>
              <div className="h-4 text-sm">{uploadPhotoResponseMessage}</div>
             <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
@@ -81,25 +162,8 @@ const Profile: FC<PropsType> = ({user}) => {
                             </Select.Popover>
                         </Select>
                     )} name={'gender'} control={control}/>
-                    <RegionSelection initialRegionInputValue={region} isDisabled={!isOpenEdit} onSelectionChange={handleRegionSelectionChange}/>
-                    <ComboBox inputValue={cityInputValue} onInputChange={handleCityInputChange} isDisabled={!isOpenEdit || !regionInputValue} onSelectionChange={handleCitySelectionChange}>
-                        <Label>Місто</Label>
-                        <ComboBox.InputGroup>
-                            <Input placeholder={'Введіть місто'}/>
-                            <ComboBox.Trigger/>
-                        </ComboBox.InputGroup>
-                        <ComboBox.Popover>
-                            <ListBox>
-                                <Collection items={cityData?.data}>
-                                    {(city) =>
-                                        <ListBox.Item id={city.id} textValue={city.name}>
-                                            {city.name}
-                                        </ListBox.Item>
-                                    }
-                                </Collection>
-                            </ListBox>
-                        </ComboBox.Popover>
-                    </ComboBox>
+                    <RegionSelection onRegionIdMatch={handleRegionIdMatch} isDisabled={!isOpenEdit} initialRegionInputValue={region} regionInputValue={regionInputValue} handleRegionInputChange={handleRegionInputChange} handleRegionChange={handleRegionSelectionChange}/>
+                    <CitySelection isDisabled={!isOpenEdit} regionId={regionId} regionInputValue={regionInputValue} initialCityInputValue={city} cityInputValue={cityInputValue} handleCityInputChange={handleCityInputChange} handleCityChange={handleCitySelectionChange}/>
                     <div className="flex flex-col gap-1 relative">
                         <Label htmlFor="phone">Телефон</Label>
                         <Input id="phone" placeholder={'Введіть телефон'} type="text" disabled={!isOpenEdit} defaultValue={phone} {...register('phone')}/>
@@ -107,7 +171,7 @@ const Profile: FC<PropsType> = ({user}) => {
                     </div>
                 </div>
                 {isOpenEdit && <Button type={'submit'} isDisabled={!isValid}>Застосувати</Button>}
-                {updateResponseMessage && <div>{updateResponseMessage}</div>}
+                {errorResponseMessage && <div>{errorResponseMessage}</div>}
             </Form>
         </section>
     )

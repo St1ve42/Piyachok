@@ -4,4 +4,5 @@ export interface IFullData<T> {
     skip: number;
     data: T[];
     total: number;
+    totalPages: number;
 }

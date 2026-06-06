@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {notFound} from "next/navigation";
-import FoodAndDrink from "@/src/components/features/account/food-and-drink/FoodAndDrink";
+import FoodAndDrink from "@/src/components/features/account/food-and-drink/my-food-and-drink/FoodAndDrink";
 import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 
 type Props = {

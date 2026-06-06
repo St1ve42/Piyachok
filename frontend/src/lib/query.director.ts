@@ -16,7 +16,7 @@ export class QueryDirector {
             return this.queryBuilder.build();
         }
 
-        const { page, limit, skip, sort, sortBy, ...search } = this.query;
+        const {page, limit, skip, sort, sortBy, ...search } = this.query;
 
 
         if (limit) {

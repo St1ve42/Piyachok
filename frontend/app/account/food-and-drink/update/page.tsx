@@ -1,5 +1,7 @@
 import type {Metadata} from "next";
 import {FC} from "react";
+import { getAccessCookie } from "@/src/services/server.service";
+import { userService } from "@/src/services/users.service";
 
 export const metadata: Metadata = {
     title: 'Оновлення закладу'
@@ -11,9 +13,12 @@ type Props = {
 }
 
 const UpdateFoodAndDrinkPage: FC<Props> = async () => {
+    const accessToken = await getAccessCookie()
+    const foodAndDrink = await userService.findMyFoodAndDrink({headers: {'cookie': accessToken}})
+    if(!foodAndDrink.success) return <div>{foodAndDrink.data.message}</div>
     return (
         <div>
-            Component
+            Оновлення закладу
         </div>
     );
 }

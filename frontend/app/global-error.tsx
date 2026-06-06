@@ -1,6 +1,7 @@
-'use client' // Error boundaries must be Client Components
+'use client'
 
 import {useEffect} from "react";
+import {Button, Heading} from "@heroui/react";
 
 export default function GlobalError({ error, unstable_retry}: {
     error: Error & { digest?: string },
@@ -11,9 +12,11 @@ export default function GlobalError({ error, unstable_retry}: {
     }, [error]);
     return (
         <html>
-            <body>
-                <h2>Щось пішло не так!</h2>
-                <button onClick={() => unstable_retry()}>Спробуйте знову</button>
+            <body className="flex justify-center items-center">
+                <div>
+                    <Heading level={3}>Щось пішло не так!</Heading>
+                    <Button onClick={() => unstable_retry()}>Спробуйте знову</Button>
+                </div>
             </body>
         </html>
     )

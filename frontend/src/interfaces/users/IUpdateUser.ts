@@ -1,3 +1,3 @@
-import {ISignUp} from "@/src/interfaces/auth/ISignUp";
+import { IUser } from '@/src/interfaces/users/IUser';
 
-export type IUpdateUser = Partial<ISignUp>
+export type IUpdateUser = Partial<IUser>

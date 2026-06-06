@@ -5,6 +5,11 @@ import { CityPresenter } from '../../cities/presenters/city.presenter';
 import { RegionPresenter } from '../../regions/presenters/region.presenter';
 import { ApiProperty } from '@nestjs/swagger';
 
+class JoinedOwnerPresenter {
+    @Expose()
+    id: string;
+}
+
 export class UserPresenter {
     @ApiProperty({
         example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
@@ -120,4 +125,12 @@ export class UserPresenter {
     })
     @Expose()
     isDeleted: boolean;
+
+    @ApiProperty({
+        example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+        description: 'Унікальний ідентифікатор закладу',
+    })
+    @Expose()
+    @Type(() => JoinedOwnerPresenter)
+    ownerOf: string;
 }

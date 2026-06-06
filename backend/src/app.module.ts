@@ -19,9 +19,9 @@ import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.modu
 import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { SuperadminModule } from './modules/superadmin/superadmin.module';
-import { ProtectedUsersModule } from './modules/protected-users/protected-users.module';
+import { SuperadminUsersModule } from './modules/protected-users/superadmin-users.module';
 import { RouterModule } from '@nestjs/core';
-import { ProtectedFoodAndDrinkModule } from './modules/protected-food-and-drink/protected-food-and-drink.module';
+import { SuperadminFoodAndDrinkModule } from './modules/protected-food-and-drink/superadmin-food-and-drink.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UtilsModule } from './modules/utils/utils.module';
 
@@ -86,7 +86,7 @@ import { UtilsModule } from './modules/utils/utils.module';
         FoodAndDrinkStatisticsModule,
         TagsModule,
         SuperadminModule,
-        ProtectedUsersModule,
+        SuperadminUsersModule,
         RouterModule.register([
             {
                 path: 'superadmin',
@@ -94,11 +94,11 @@ import { UtilsModule } from './modules/utils/utils.module';
                 children: [
                     {
                         path: '/users',
-                        module: ProtectedUsersModule,
+                        module: SuperadminUsersModule,
                     },
                     {
                         path: '/food-and-drinks',
-                        module: ProtectedFoodAndDrinkModule,
+                        module: SuperadminFoodAndDrinkModule,
                     },
                     {
                         path: '/roles',
@@ -107,7 +107,7 @@ import { UtilsModule } from './modules/utils/utils.module';
                 ],
             },
         ]),
-        ProtectedFoodAndDrinkModule,
+        SuperadminFoodAndDrinkModule,
         StorageModule,
         UtilsModule,
     ],

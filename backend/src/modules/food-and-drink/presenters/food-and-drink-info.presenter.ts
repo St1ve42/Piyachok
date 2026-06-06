@@ -127,6 +127,19 @@ export class FoodAndDrinkInfoPresenter {
         description: 'Посилання на соціальні мережі закладу',
     })
     @Expose()
+    @Transform(
+        ({
+            value,
+        }: {
+            value: {
+                instagram?: string;
+                telegram?: string;
+                facebook?: string;
+                X?: string;
+            };
+        }) => (Object.keys(value).length === 0 ? null : value),
+        { toPlainOnly: true },
+    )
     socialNetworks?: {
         instagram?: string;
         telegram?: string;

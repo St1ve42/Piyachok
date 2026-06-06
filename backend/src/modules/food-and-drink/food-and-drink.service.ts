@@ -54,7 +54,7 @@ export class FoodAndDrinkService {
     async find(
         query: SuperadminFoodAndDrinkQueryDto,
         filterOptions?: FindOptionsWhere<FoodAndDrink>,
-    ): Promise<[FoodAndDrink[], number]> {
+    ): Promise<[FoodAndDrink[], number, number]> {
         const {
             page,
             limit,
@@ -125,7 +125,7 @@ export class FoodAndDrinkService {
                 .where(filter)
                 .orderBy('distance', 'ASC');
             const { entities, raw } = await queryBuilder.getRawAndEntities();
-            const count = await this.foodAndDrinkRepository.countBy(filter);
+            const total = await this.foodAndDrinkRepository.countBy(filter);
 
             const result = entities.map((entity, index) => {
                 const distance = (raw[index] as { distance: number }).distance;
@@ -137,21 +137,24 @@ export class FoodAndDrinkService {
                             : `${Number((distance / 1000).toFixed(2))} км`,
                 };
             });
-
-            return [result, count];
+            const totalPages = Math.ceil(total - skip) / limit;
+            return [result, total, totalPages];
         }
         if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
             order[sortBy] = sort;
         }
-        return await Promise.all([
-            this.foodAndDrinkRepository.find({
+        const total = await this.foodAndDrinkRepository.countBy(filter);
+        const totalPages = Math.ceil((total - skip) / limit);
+        return [
+            await this.foodAndDrinkRepository.find({
                 take: limit,
                 skip: (page - 1) * limit + skip,
                 where: filter,
                 order,
             }),
-            this.foodAndDrinkRepository.countBy(filter),
-        ]);
+            total,
+            totalPages,
+        ];
     }
 
     async findById(
@@ -337,8 +340,8 @@ export class FoodAndDrinkService {
         return await this.foodAndDrinkRepository.existsBy({ id });
     }
 
-    async findOneByOwner(user: User): Promise<FoodAndDrink> {
-        const foodAndDrink = await this.findOneByParams({ ownerId: user.id });
+    async findOneByOwner(userId: string): Promise<FoodAndDrink> {
+        const foodAndDrink = await this.findOneByParams({ ownerId: userId });
         if (!foodAndDrink) {
             throw new NotFoundException('Ви не є власником жодного закладу');
         }
