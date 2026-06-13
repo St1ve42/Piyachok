@@ -3,11 +3,11 @@ import Users from "@/src/components/views/superadmin/users/Users";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {redirect} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";
-import {IUsersQuery} from "@/src/interfaces/shared/IBaseQuery";
 import {
   userQueryValidator,
   userQueryValidatorType,
 } from "@/src/validators/user/user-query-validator";
+import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 
 export const metadata: Metadata = {
     title: 'Усі користувачі'
@@ -23,7 +23,7 @@ const UsersPage = async ({searchParams}: Props) => {
     if(error){
       redirect("/account/superadmin/users");
     }
-    const {search, searchBy = 'name', ...restAwaitedParams} = value as userQueryValidatorType
+    const {search, searchBy = UserSearchByEnum.NAME, ...restAwaitedParams} = value as userQueryValidatorType
     const accessCookie = await getAccessCookie()
     const query = (search && searchBy) ? {...restAwaitedParams, [searchBy]: search} : restAwaitedParams
     const response = await superadminUsersService.find(query, {headers: {'Cookie': accessCookie}})
