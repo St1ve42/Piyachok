@@ -29,7 +29,6 @@ const CitySelection: FC<PropsType> = ({regionId, initialCityInputValue, cityInpu
         const timer = setTimeout(() => setDebouncedCityInputValue(cityInputValue), 500)
         return () => clearTimeout(timer)
     }, [cityInputValue]);
-    console.log(regionId);
     const cityQuery = useCityQuery({search: debouncedCityInputValue, regionId}) as  UseQueryResult<ICityData, Error>
     const cityData = cityQuery.data
     useEffect(() => {

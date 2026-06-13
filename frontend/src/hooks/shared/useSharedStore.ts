@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
 import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/users/IUserFromSocialNetwork";
+import {createJSONStorage, persist} from "zustand/middleware";
 
 interface IStore<T> {
     previousApiResponse: T | null,
@@ -30,11 +31,18 @@ export const useErrorStore = create<IError>(
         setError: (error: string | null) => set({error})
 }))
 
-export const useConfirmAgeStore = create<IConfirmAge>(
-  (set) => ({
-    isConfirmed: null,
-    setIsConfirmedAge: (isConfirmed: boolean | null) => set({isConfirmed})
-  }))
+export const useConfirmAgeStore = create<IConfirmAge>()(
+    persist(
+      (set) => ({
+        isConfirmed: null,
+        setIsConfirmedAge: (isConfirmed: boolean | null) => set({isConfirmed})
+      }),
+        {
+            name: 'isConfirmedAge',
+            storage: createJSONStorage(() => sessionStorage)
+        }
+    )
+)
 
 export const useResponseMessageStore = createSharedStore<IResponseMessage>()
 export const useUserFromSocialNetworkStore = createSharedStore<IUserFromSocialNetworkWithToken>()

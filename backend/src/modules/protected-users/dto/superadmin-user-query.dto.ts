@@ -13,12 +13,6 @@ export class SuperadminUserQueryDto extends BaseQueryDto {
 
     @ApiProperty({ example: 'oleksandr.petrenko@example.com' })
     @IsOptional()
-    @IsEmail(
-        {},
-        {
-            message: 'Невалідний email. Формат має бути name@example.com',
-        },
-    )
     email?: string;
 
     @ApiProperty({ example: 'Пастухов' })

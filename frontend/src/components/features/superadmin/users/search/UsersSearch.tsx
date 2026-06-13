@@ -1,9 +1,15 @@
 'use client'
 import { Button, Header, ListBox, SearchField, Label } from "@heroui/react";
 import useUsersSearch from "@/src/components/features/superadmin/users/search/useUsersSearch";
+import {FC} from "react";
+import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 
-const UsersSearch = () => {
-  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch()
+type PropsType = {
+    searchBy: UserSearchByEnum
+}
+
+const UsersSearch: FC<PropsType> = ({searchBy}) => {
+  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch({searchBy})
   return (
     <div className="flex gap-3 items-center">
       <div className="relative w-[250px]">
@@ -22,7 +28,7 @@ const UsersSearch = () => {
                 ? <ListBox.Item>Завантаження...</ListBox.Item>
                 : (usersResponse.data.success ?
                   (usersResponse.data.data.data.length !==0
-                    ? usersResponse.data.data.data.map(({name, surname, id}) => <ListBox.Item key={id} id={name + ' ' + surname} textValue={name + '' + surname}>{name} {surname}</ListBox.Item>)
+                    ? usersResponse.data.data.data.map((user) => <ListBox.Item key={user.id} id={user[searchBy]} textValue={user[searchBy]}>{user[searchBy]}</ListBox.Item>)
                     : <Header className="text-[16px]">Користувачів не знайдено</Header>)
                   : <Header className="text-[16px]">Сталась помилка при пошуку</Header>)
               }
@@ -32,10 +38,10 @@ const UsersSearch = () => {
       </div>
       <Button onClick={() => {
         if(!inputValue){
-          router.push(pathname + '?' + createQueryString('nameAndSurname', null, "delete"))
+          router.push(pathname + '?' + createQueryString('search', null, "delete"))
         }
         else{
-          router.push(pathname + '?' + createQueryString('nameAndSurname', inputValue))
+          router.push(pathname + '?' + createQueryString('search', inputValue))
         }
       }}>Знайти</Button>
     </div>

@@ -12,7 +12,7 @@ import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-ty
 import Joi from "joi";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import { IFoodAndDrinkOwnerInfo } from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
-import { redirect } from "next/navigation";
+import { redirect, useRouter} from "next/navigation";
 import { utils } from "@/src/services/utils.service";
 
 type PropsType = { mode: 'create' | 'update', foodAndDrink?: IFoodAndDrinkOwnerInfo}
@@ -29,6 +29,8 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [isSuccessCreateResponse, setIsSuccessCreateResponse] = useState<boolean>(false)
     const [regionInputValue, setRegionInputValue] = useState<string>('')
+    const router = useRouter()
+    const [isLoading, setIsLoading] = useState(false)
 
     const {register, handleSubmit, reset, control, watch, formState: {errors, isValid}, setValue, setError} = useForm<ICreateFoodAndDrink & {tag: string}>({
         resolver: joiResolver(createFoodAndDrinkValidator, JoiOptions),
@@ -202,7 +204,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
     }, [mode, reset]);
 
     useEffect(() => {
-      if (mode === "create") {
+      if (mode === "create" && !isSuccessCreateResponse) {
         const timer = setTimeout(() => {
           localStorage.setItem(
             "foodAndDrinkCreatingDraft",
@@ -223,8 +225,10 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
     }, [allFormValues, cityInputValue, regionInputValue, tags, foodAndDrinkTypeValue, mode]);
 
     const handleCreateFormSubmit = async (data: ICreateFoodAndDrink) => {
+        setIsLoading(true)
         if(galleryFiles.length === 0){
           setErrorMessage('Фотографії закладу є необхідні.')
+            setIsLoading(false)
           return
         }
         const {instagram, facebook, x, telegram, street, ...restData} = data
@@ -240,6 +244,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
             })
             if(!coordinatesResponse.success){
                 setErrorMessage(coordinatesResponse.data.message)
+                setIsLoading(false)
                 return
             }
         }
@@ -258,6 +263,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
         })
         if(!createResponse.success){
             setErrorMessage(createResponse.data.message)
+            setIsLoading(false)
             return
         }
         if(galleryFiles.length !== 0){
@@ -269,15 +275,20 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
             const uploadImagesResponse = await foodAndDrinkService.uploadImages(id, formData)
             if(!uploadImagesResponse.success){
                 setErrorMessage(uploadImagesResponse.data.message)
+                setIsLoading(false)
                 return
             }
         }
-        localStorage.removeItem('foodAndDrinkCreatingDraft')
+        router.refresh()
         setIsSuccessCreateResponse(true)
+        setIsLoading(false)
+        localStorage.removeItem('foodAndDrinkCreatingDraft')
     }
 
     const handleUpdateFormSubmit = async (data: ICreateFoodAndDrink) => {
+        setIsLoading(true)
         if(!foodAndDrink){
+            setIsLoading(false)
             return
         }
         const {street, instagram, facebook, telegram, x, phone, ...restData} = data
@@ -296,6 +307,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
                 })
                 if(!coordinatesResponse.success){
                   setErrorMessage(coordinatesResponse.data.message)
+                    setIsLoading(false)
                   return
                 }
               }
@@ -309,6 +321,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
         const updateResponse = await foodAndDrinkService.update(id, updateData)
         if(!updateResponse.success){
             setErrorMessage(updateResponse.data.message)
+            setIsLoading(false)
             return
         }
         if(galleryFiles.length !== 0){
@@ -319,13 +332,14 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
             const uploadImagesResponse = await foodAndDrinkService.uploadImages(id, formData)
             if(!uploadImagesResponse.success){
                 setErrorMessage(uploadImagesResponse.data.message)
+                setIsLoading(false)
                 return
             }
         }
         redirect('/account/food-and-drink')
     }
 
-  return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch}
+  return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading}
 }
 
 export default useCreateOrUpdateFoodAndDrink

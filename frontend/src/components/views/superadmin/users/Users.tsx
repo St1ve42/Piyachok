@@ -9,14 +9,16 @@ import Limit from "@/src/components/ui/limitation/Limit";
 import UserSort from "@/src/components/features/superadmin/users/sort/UserSort";
 import NoResults from "@/src/components/ui/no-results/NoResults";
 import UserFilter from "@/src/components/features/superadmin/users/filter/UserFilter";
+import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 
 type PropsType = {
     users: IUserListData
     page: number
     limit: number
+    searchBy: UserSearchByEnum
 }
 
-const Users: FC<PropsType> = ({users, page, limit}) => {
+const Users: FC<PropsType> = ({users, page, limit, searchBy}) => {
     const {data, total, totalPages} = users
     if((page > totalPages && totalPages !== 0) || limit > 20){
       redirect('')
@@ -30,7 +32,7 @@ const Users: FC<PropsType> = ({users, page, limit}) => {
               <div className="flex gap-3 items-center">
                 <UserSort/>
                 <UserFilter/>
-                <UsersSearch/>
+                <UsersSearch searchBy={searchBy}/>
               </div>
             </div>
             {data.length !== 0 ? <div className="grid grid-cols-3 gap-4 mb-3">

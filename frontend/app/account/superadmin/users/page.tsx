@@ -4,7 +4,10 @@ import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {redirect} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";
 import {IUsersQuery} from "@/src/interfaces/shared/IBaseQuery";
-import {userQueryValidator} from "@/src/validators/user/user-query-validator";
+import {
+  userQueryValidator,
+  userQueryValidatorType,
+} from "@/src/validators/user/user-query-validator";
 
 export const metadata: Metadata = {
     title: 'Усі користувачі'
@@ -20,14 +23,14 @@ const UsersPage = async ({searchParams}: Props) => {
     if(error){
       redirect("/account/superadmin/users");
     }
-    const {nameAndSurname, searchBy, ...restAwaitedParams} = value as Omit<IUsersQuery, 'name' | 'surname'> & {nameAndSurname?: string, searchBy?: string}
-    const [name, surname] = nameAndSurname ? nameAndSurname.split(' ') : [undefined, undefined]
+    const {search, searchBy = 'name', ...restAwaitedParams} = value as userQueryValidatorType
     const accessCookie = await getAccessCookie()
-    const response = await superadminUsersService.find({...restAwaitedParams, name, surname}, {headers: {'Cookie': accessCookie}})
+    const query = (search && searchBy) ? {...restAwaitedParams, [searchBy]: search} : restAwaitedParams
+    const response = await superadminUsersService.find(query, {headers: {'Cookie': accessCookie}})
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <Users users={response.data} page={restAwaitedParams.page ?? 1} limit={restAwaitedParams.limit ?? 20}/>
+    return <Users users={response.data} page={restAwaitedParams.page} limit={restAwaitedParams.limit} searchBy={searchBy}/>
 }
 
 export default UsersPage;

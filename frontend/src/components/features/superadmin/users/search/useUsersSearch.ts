@@ -3,20 +3,19 @@ import {Key} from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 import { useUsersQuery } from "@/src/hooks/tanstack-query/useUsersQuery";
 
-export const useUsersSearch = () => {
+export const useUsersSearch = ({searchBy}: {searchBy: string}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState<string>('')
     const [debouncedInputValue, setDebouncedInputValue] = useState<string>('')
-    const [name, surname] = debouncedInputValue.split(' ')
-    const usersResponse = useUsersQuery({ name, surname });
+    const usersResponse = useUsersQuery({ searchBy, inputValue: debouncedInputValue });
     const {pathname, router, createQueryString} = useURL()
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedInputValue(inputValue), 500)
         return () => clearTimeout(timer)
     }, [inputValue]);
-  useEffect(() => {
-      router.push(pathname + '?' + createQueryString('nameAndSurname', debouncedInputValue))
-  }, [debouncedInputValue]);
+      useEffect(() => {
+          router.push(pathname + '?' + createQueryString('search', debouncedInputValue))
+      }, [debouncedInputValue]);
     const handleChangeInput: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (e) => {
         const val = e.target.value
         setInputValue(val)
@@ -25,10 +24,10 @@ export const useUsersSearch = () => {
     const handleOnKeyDownInput: KeyboardEventHandler<HTMLInputElement> = (e) => {
         if(e.key === 'Enter'){
             if(!inputValue){
-                router.push(pathname + '?' + createQueryString('nameAndSurname', null, "delete"))
+                router.push(pathname + '?' + createQueryString('search', null, "delete"))
             }
             else{
-                router.push(pathname + '?' + createQueryString('nameAndSurname', inputValue))
+                router.push(pathname + '?' + createQueryString('search', inputValue))
             }
             setIsOpen(false);
         }
@@ -42,7 +41,7 @@ export const useUsersSearch = () => {
         setIsOpen(false);
     }
     const handleActionListBox = (key: Key) => {
-        router.push(pathname + '?' + createQueryString('nameAndSurname', key.toString()))
+        router.push(pathname + '?' + createQueryString('search', key.toString()))
         setInputValue(key.toString())
         setIsOpen(false)
     }

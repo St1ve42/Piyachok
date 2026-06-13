@@ -20,7 +20,7 @@ type PropsType = { mode: 'create', foodAndDrink?: IFoodAndDrinkOwnerInfo } | {mo
 
 const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
     const {mode, foodAndDrink} = props
-    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, handleRegionInputChange, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch} = useCreateOrUpdateFoodAndDrink({mode, foodAndDrink})
+    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, handleRegionInputChange, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading} = useCreateOrUpdateFoodAndDrink({mode, foodAndDrink})
     if(props.mode === 'create' && isSuccessCreateResponse){
         return <div className="h-[70%] flex justify-center items-center">
             <div className="w-[60%] flex flex-col items-center gap-2">
@@ -189,7 +189,7 @@ const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
             </div>
             <div className="relative">
                 {errorMessage && <div className="absolute text-red-600 text-[15px] top-[-10px] leading-none">{errorMessage}</div>}
-                {mode === 'create' ? <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid}>Створити</Button> : <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid}>Оновити</Button>}
+                {mode === 'create' ? <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid || isLoading}>Створити</Button> : <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid || isLoading}>Оновити</Button>}
             </div>
         </Form>
     )
