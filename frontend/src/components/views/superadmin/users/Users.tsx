@@ -6,6 +6,9 @@ import {Heading} from "@heroui/react";
 import UsersSearch from "@/src/components/features/superadmin/users/search/UsersSearch";
 import { redirect } from "next/navigation";
 import Limit from "@/src/components/ui/limitation/Limit";
+import UserSort from "@/src/components/features/superadmin/users/sort/UserSort";
+import NoResults from "@/src/components/ui/no-results/NoResults";
+import UserFilter from "@/src/components/features/superadmin/users/filter/UserFilter";
 
 type PropsType = {
     users: IUserListData
@@ -16,21 +19,23 @@ type PropsType = {
 const Users: FC<PropsType> = ({users, page, limit}) => {
     const {data, total, totalPages} = users
     if((page > totalPages && totalPages !== 0) || limit > 20){
-      redirect('/account/superadmin/users')
+      redirect('')
     }
     return (
-        <section className="flex flex-col gap-4">
+        <section className="flex flex-col gap-4 h-full">
             <Heading level={3}>Усі користувачі</Heading>
             <Heading level={5}>Знайдено: {total}</Heading>
             <div className="flex justify-between">
               <Limit currentLimit={limit}/>
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
+                <UserSort/>
+                <UserFilter/>
                 <UsersSearch/>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mb-3">
+            {data.length !== 0 ? <div className="grid grid-cols-3 gap-4 mb-3">
                 {data.map(user => <UserCard key={user.id} user={user}/>)}
-            </div>
+            </div> : <NoResults/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

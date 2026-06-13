@@ -10,6 +10,7 @@ import { TagsModule } from '../tags/tags.module';
 import { StorageModule } from '../storage/storage.module';
 import { RolesModule } from '../roles/roles.module';
 import { User } from '../users/entities/user.entity';
+import { UsersModule } from '../users/users.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { User } from '../users/entities/user.entity';
             UserView,
             User,
         ]),
+        forwardRef(() => UsersModule),
         forwardRef(() => TagsModule),
         StorageModule,
         RolesModule,

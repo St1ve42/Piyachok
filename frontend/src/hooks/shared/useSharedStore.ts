@@ -9,7 +9,12 @@ interface IStore<T> {
 
 interface IError {
     error: string | null,
-    setError: (error: string) => void
+    setError: (error: string | null) => void
+}
+
+interface IConfirmAge {
+  isConfirmed: boolean | null,
+  setIsConfirmedAge: (isConfirmed: boolean | null) => void
 }
 
 const createSharedStore = <T>() => create<IStore<T>>(
@@ -22,8 +27,14 @@ const createSharedStore = <T>() => create<IStore<T>>(
 export const useErrorStore = create<IError>(
     (set) => ({
         error: null,
-        setError: (error: string) => set({error})
+        setError: (error: string | null) => set({error})
 }))
+
+export const useConfirmAgeStore = create<IConfirmAge>(
+  (set) => ({
+    isConfirmed: null,
+    setIsConfirmedAge: (isConfirmed: boolean | null) => set({isConfirmed})
+  }))
 
 export const useResponseMessageStore = createSharedStore<IResponseMessage>()
 export const useUserFromSocialNetworkStore = createSharedStore<IUserFromSocialNetworkWithToken>()

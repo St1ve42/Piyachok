@@ -7,9 +7,12 @@ import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/fil
 import FoodAndDrinkSort from "@/src/components/shared/food-and-drink/sort/FoodAndDrinkSort";
 import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
 import FoodAndDrinkList from "@/src/components/shared/food-and-drink/list/FoodAndDrinkList";
+import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 
-type PropsType = {
-    searchParams: Record<'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'features[]' | 'sortBy', string | undefined> & {page: number} & {sort: 'asc' | 'desc'}
+export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {features?: string[]} & {page: number}
+
+export type PropsType = {
+  searchParams: FoodAndDrinkSearchParamsType
 }
 
 const Home = async ({searchParams}: PropsType) => {
@@ -26,6 +29,8 @@ const Home = async ({searchParams}: PropsType) => {
     }
     const {data: {total, totalPages, data: foodAndDrinkList}} = foodAndDrinkListApiResponse
     if(page > totalPages && totalPages !== 0){
+        console.log(totalPages)
+        console.log('It works')
         redirect('/')
     }
     return (

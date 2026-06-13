@@ -29,10 +29,11 @@ import {
     ApiCookieAuth,
     ApiNotFoundResponse,
     ApiNoContentResponse,
+    ApiConflictResponse,
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
-import { FoodAndDrinkInfoPresenter } from '../food-and-drink/presenters/food-and-drink-info.presenter';
-import { FoodAndDrinkOwnerInfoPresenter } from '../food-and-drink/presenters/food-and-drink-owner-info.presenter';
+import { SuperadminFoodAndDrinkBindOwnershipDto } from './dto/superadmin-food-and-drink-bind-ownership.dto';
+import { SuperadminFoodAndDrinkInfoPresenter } from './presenters/superadmin-food-and-drink-info-presenter';
 
 @ApiTags('Адміністрування закладів (Суперадмін)')
 @UseGuards(AuthGuard('jwt'), IsSuperadminGuard)
@@ -83,7 +84,7 @@ export class SuperadminFoodAndDrinkController {
     })
     @ApiOkResponse({
         description: 'Успішно отримано інформацію про заклад',
-        type: FoodAndDrinkInfoPresenter,
+        type: SuperadminFoodAndDrinkInfoPresenter,
     })
     @ApiNotFoundResponse({
         description: 'Заклад не знайдено',
@@ -91,7 +92,7 @@ export class SuperadminFoodAndDrinkController {
     })
     @Get(':id')
     @SerializeOptions({
-        type: FoodAndDrinkOwnerInfoPresenter,
+        type: SuperadminFoodAndDrinkInfoPresenter,
         excludeExtraneousValues: true,
     })
     async findById(
@@ -102,7 +103,9 @@ export class SuperadminFoodAndDrinkController {
         )
         id: string,
     ): Promise<FoodAndDrink> {
-        return (await this.foodAndDrinkService.findById(id)) as FoodAndDrink;
+        return (await this.foodAndDrinkService.findById(id, {
+            owner: true,
+        })) as FoodAndDrink;
     }
 
     @ApiCookieAuth('accessToken')
@@ -146,6 +149,53 @@ export class SuperadminFoodAndDrinkController {
         await this.foodAndDrinkService.setStatus(
             id,
             superadminFoodAndDrinkStatusDto,
+        );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Зміна власника закладу',
+        description: 'Дозволяє суперадміністратору змінити власника закладу.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiNoContentResponse({
+        description: 'Власника закладу успішно змінено',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Тільки суперадміністратори мають доступ до цього ресурсу',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
+    @ApiConflictResponse({
+        description: 'Користувач вже є власником інакшого або свого закладу',
+        type: ResponseErrorDto,
+    })
+    @Post(':id/bind-ownership')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async bindOwnership(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        id: string,
+        @Body()
+        superadminFoodAndDrinkBindOwnershipDto: SuperadminFoodAndDrinkBindOwnershipDto,
+    ): Promise<void> {
+        await this.foodAndDrinkService.bindOwnership(
+            id,
+            superadminFoodAndDrinkBindOwnershipDto,
         );
     }
 }

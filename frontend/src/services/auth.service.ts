@@ -56,9 +56,9 @@ export class AuthService{
         }
     }
 
-    async logOut(): Promise<IApiResponse<null>>{
+    async logOut(): Promise<IApiResponse>{
         try{
-            const response = await fetchApi<null>('/auth/log-out', {method: 'POST'})
+            const response = await fetchApi('/auth/log-out', {method: 'POST'})
             return {success: true, ...response}
         }
         catch (e){

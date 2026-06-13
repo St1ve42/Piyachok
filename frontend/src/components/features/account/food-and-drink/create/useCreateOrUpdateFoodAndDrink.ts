@@ -1,16 +1,23 @@
 import {ChangeEvent, KeyboardEventHandler, useEffect, useMemo, useRef, useState} from "react";
 import {useForm, useFieldArray} from "react-hook-form";
-import {ICreateFoodAndDrink} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
+import {
+  ICreateFoodAndDrink,
+  ICreateFoodAndDrinkDto,
+} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {createFoodAndDrinkValidator} from "@/src/validators/food-and-drink/create-food-and-drink.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {Key} from "@heroui/react";
 import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 import Joi from "joi";
-import {utils} from "@/src/services/utils.service";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
+import { IFoodAndDrinkOwnerInfo } from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import { redirect } from "next/navigation";
+import { utils } from "@/src/services/utils.service";
 
-const useCreateFoodAndDrink = () => {
+type PropsType = { mode: 'create' | 'update', foodAndDrink?: IFoodAndDrinkOwnerInfo}
+
+const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
     const [galleryFiles, setGalleryFiles] = useState<File[]>([])
     const [tags, setTags] = useState<string[]>([])
     const [features, setFeatures] = useState<string[]>([])
@@ -35,6 +42,25 @@ const useCreateFoodAndDrink = () => {
         control,
         name: 'businessHours'
     })
+    useEffect(() => {
+        if(mode === 'update' && foodAndDrink){
+          const {images, businessHours, features, tags, city, region, type} = foodAndDrink
+          if(tags){
+            setTags(tags)
+          }
+          if(features){
+            setFeatures(features)
+          }
+          if(images){
+            Promise.all(images.map(async image => await utils.urlToFile(utils.buildStorageURL(image), image))).then(images => setGalleryFiles(images))
+          }
+          setRegionInputValue(region)
+          setCityInputValue(city)
+          setFoodAndDrinkTypeValue(type)
+          setValue('type', type)
+          appendBusinessHour(businessHours)
+        }
+    }, []);
 
     const handleUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
         if(galleryFiles.length < 10){
@@ -106,7 +132,7 @@ const useCreateFoodAndDrink = () => {
             setError('tag', {message: error.message})
         }
         else{
-            setError('tag', undefined)
+          setError("tag", { message: undefined });
         }
     }
 
@@ -135,60 +161,68 @@ const useCreateFoodAndDrink = () => {
         }
     }
 
+    const onRegionIdMatch = (id?: number) => {
+      setRegionId(id)
+    }
+
     const handleCityInputChange = (value: string) => {
         setCityInputValue(value)
     }
 
     const handleCitySelectionChange = (value: Key | null) => {
         if(value){
-            setValue('cityId', Number(value))
+            setValue('cityId', Number(value), {shouldValidate: true})
         }
     }
 
     const allFormValues = watch();
 
     useEffect(() => {
-        const foodAndDrinkCreatingDraft = localStorage.getItem('foodAndDrinkCreatingDraft')
-        if(foodAndDrinkCreatingDraft){
-            const parsedFoodAndDrinkCreatingDraft = JSON.parse(foodAndDrinkCreatingDraft) as ICreateFoodAndDrink & {regionInputValue?: string, cityInputValue?: string, foodAndDrinkTypeValue?: FoodAndDrinkTypeEnum}
-            const {tags, regionInputValue, cityInputValue, foodAndDrinkTypeValue, ...restParsedFoodAndDrinkCreatingDraft} = parsedFoodAndDrinkCreatingDraft
-            reset(restParsedFoodAndDrinkCreatingDraft)
-            if(tags){
-                setTags(tags)
-            }
-            if(regionInputValue){
-                setRegionInputValue(regionInputValue)
-            }
+        if(mode === 'create'){
+            const foodAndDrinkCreatingDraft = localStorage.getItem('foodAndDrinkCreatingDraft')
+            if(foodAndDrinkCreatingDraft){
+                const parsedFoodAndDrinkCreatingDraft = JSON.parse(foodAndDrinkCreatingDraft) as ICreateFoodAndDrink & {regionInputValue?: string, cityInputValue?: string, foodAndDrinkTypeValue?: FoodAndDrinkTypeEnum}
+                const {tags, regionInputValue, cityInputValue, foodAndDrinkTypeValue, ...restParsedFoodAndDrinkCreatingDraft} = parsedFoodAndDrinkCreatingDraft
+                reset(restParsedFoodAndDrinkCreatingDraft)
+                if(tags){
+                    setTags(tags)
+                }
+                if(regionInputValue){
+                    setRegionInputValue(regionInputValue)
+                }
 
-            if(cityInputValue){
-                setCityInputValue(cityInputValue)
-            }
-            if(foodAndDrinkTypeValue){
-                setFoodAndDrinkTypeValue(foodAndDrinkTypeValue)
+                if(cityInputValue){
+                    setCityInputValue(cityInputValue)
+                }
+                if(foodAndDrinkTypeValue){
+                    setFoodAndDrinkTypeValue(foodAndDrinkTypeValue)
+                }
             }
         }
-    }, [reset]);
+    }, [mode, reset]);
 
     useEffect(() => {
+      if (mode === "create") {
         const timer = setTimeout(() => {
-            localStorage.setItem(
-              "foodAndDrinkCreatingDraft",
-              JSON.stringify({
-                ...allFormValues,
-                regionInputValue,
-                cityInputValue,
-                tags: tags.length !== 0 ? tags : undefined,
-                foodAndDrinkTypeValue,
-              }),
-            );
+          localStorage.setItem(
+            "foodAndDrinkCreatingDraft",
+            JSON.stringify({
+              ...allFormValues,
+              regionInputValue,
+              cityInputValue,
+              tags: tags.length !== 0 ? tags : undefined,
+              foodAndDrinkTypeValue,
+            }),
+          );
         }, 500);
 
         return () => {
-            clearTimeout(timer);
+          clearTimeout(timer);
         };
-    }, [allFormValues, cityInputValue, regionInputValue, tags, foodAndDrinkTypeValue]);
+      }
+    }, [allFormValues, cityInputValue, regionInputValue, tags, foodAndDrinkTypeValue, mode]);
 
-    const onSubmit = async (data: ICreateFoodAndDrink) => {
+    const handleCreateFormSubmit = async (data: ICreateFoodAndDrink) => {
         if(galleryFiles.length === 0){
           setErrorMessage('Фотографії закладу є необхідні.')
           return
@@ -242,26 +276,56 @@ const useCreateFoodAndDrink = () => {
         setIsSuccessCreateResponse(true)
     }
 
-    useEffect(() => {
-      console.log('Значення форми:')
-      console.log(allFormValues)
-      const { error } = createFoodAndDrinkValidator.validate(allFormValues, { abortEarly: false });
+    const handleUpdateFormSubmit = async (data: ICreateFoodAndDrink) => {
+        if(!foodAndDrink){
+            return
+        }
+        const {street, instagram, facebook, telegram, x, phone, ...restData} = data
+        const updateData: Partial<ICreateFoodAndDrinkDto> = restData
+        const socialNetworks: Pick<ICreateFoodAndDrink, "instagram" | "facebook" | "x" | "telegram"> = {instagram, facebook, telegram, x}
+        if(street !== foodAndDrink['location']['street']){
+              let coordinatesResponse = await utils.getCoordinates({
+                region: regionInputValue,
+                city: cityInputValue,
+                street
+              })
+              if(!coordinatesResponse.success){
+                coordinatesResponse = await utils.getCoordinates({
+                  region: regionInputValue,
+                  city: cityInputValue,
+                })
+                if(!coordinatesResponse.success){
+                  setErrorMessage(coordinatesResponse.data.message)
+                  return
+                }
+              }
+          updateData['location'] = {street, coordinates: coordinatesResponse.data}
+        }
+        if(phone !== foodAndDrink.phone){
+          updateData['phone'] = phone
+        }
+        updateData['socialNetworks'] = socialNetworks
+        const {id} = foodAndDrink
+        const updateResponse = await foodAndDrinkService.update(id, updateData)
+        if(!updateResponse.success){
+            setErrorMessage(updateResponse.data.message)
+            return
+        }
+        if(galleryFiles.length !== 0){
+            const formData = new FormData()
+            galleryFiles.forEach(file => {
+                formData.append('images', file)
+            })
+            const uploadImagesResponse = await foodAndDrinkService.uploadImages(id, formData)
+            if(!uploadImagesResponse.success){
+                setErrorMessage(uploadImagesResponse.data.message)
+                return
+            }
+        }
+        redirect('/account/food-and-drink')
+    }
 
-      if (error) {
-        console.log("🛑 ВСІ ПОМИЛКИ ВАЛІДАЦІЇ JOI (НАПРЯМУ):");
-        console.table(
-          error.details.map(detail => ({
-            Поле: detail.path.join('.'),
-            Помилка: detail.message,
-            Тип: detail.type
-          }))
-        );
-      } else {
-        console.log("✅ Схема Joi каже: ФОРМА ПОВНІСТЮ ВАЛІДНА");
-      }
-    }, [allFormValues]);
-
-    return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, onSubmit, errorMessage, isSuccessCreateResponse, foodAndDrinkTypeValue}
+  return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch}
 }
 
-export default useCreateFoodAndDrink
+export default useCreateOrUpdateFoodAndDrink

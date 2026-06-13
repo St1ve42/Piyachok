@@ -8,7 +8,7 @@ import {getSignUpValidator} from "@/src/validators/auth/sign-up.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {IBaseSignUp, ISignUpWithRepeatedPassword} from "@/src/interfaces/auth/ISignUp";
 import {useRouter} from "next/navigation";
-import {useResponseMessageStore, useUserFromSocialNetworkStore} from "@/src/store/useSharedStore";
+import {useResponseMessageStore, useUserFromSocialNetworkStore} from "@/src/hooks/shared/useSharedStore";
 import {authService} from "@/src/services/auth.service";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";

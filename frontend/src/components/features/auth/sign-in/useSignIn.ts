@@ -4,7 +4,7 @@ import {joiResolver} from "@hookform/resolvers/joi";
 import {signInValidator} from "@/src/validators/auth/sign-in.validator";
 import {JoiOptions} from "@/src/constants/joi.options";
 import {useEffect, useState} from "react";
-import {useUserFromSocialNetworkStore} from "@/src/store/useSharedStore";
+import {useUserFromSocialNetworkStore} from "@/src/hooks/shared/useSharedStore";
 import {useRouter} from "next/navigation";
 import {authService} from "@/src/services/auth.service";
 import {AuthProvider} from "@firebase/auth";

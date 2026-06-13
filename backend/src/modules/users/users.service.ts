@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import {
     DeepPartial,
+    FindOptionsOrder,
     FindOptionsRelations,
     FindOptionsWhere,
     Like,
@@ -28,6 +29,8 @@ import { itemNameEnum } from '../storage/enums/itemNameEnum';
 import { SuperadminUserQueryDto } from '../protected-users/dto/superadmin-user-query.dto';
 import { SuperadminUserSearchDto } from '../protected-users/dto/superadmin-user-search.dto';
 import { TokensService } from '../tokens/tokens.service';
+import { Role } from '../roles/entities/role.entity';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +41,7 @@ export class UsersService {
         private readonly regionService: RegionsService,
         private readonly storageService: StorageService,
         private readonly tokenService: TokensService,
+        private readonly roleService: RolesService,
     ) {}
     async create(createUserDto: CreateUserDto): Promise<User> {
         const { cityId, regionId, provider, ...restUser } = createUserDto;
@@ -116,8 +120,9 @@ export class UsersService {
     async find(
         query: SuperadminUserQueryDto,
     ): Promise<[User[], number, number]> {
-        const { page, limit, skip, ...search } = query;
+        const { page, limit, skip, sortBy, sort, ...search } = query;
         const filter: FindOptionsWhere<User> = {};
+        const order: FindOptionsOrder<User> = {};
         if (search) {
             (
                 Object.entries(search) as [
@@ -128,7 +133,11 @@ export class UsersService {
                 if (value) {
                     switch (typeof value) {
                         case 'string':
-                            filter[key] = Like(`%${value}%`);
+                            if (key === 'role') {
+                                filter[key] = { name: value };
+                            } else {
+                                filter[key] = Like(`%${value}%`);
+                            }
                             break;
                         default:
                             filter[key] = value;
@@ -137,6 +146,9 @@ export class UsersService {
                 }
             });
         }
+        if (sortBy && sort) {
+            order[sortBy] = sort;
+        }
         const total = await this.userRepository.countBy(filter);
         const totalPages = Math.ceil((total - skip) / limit);
         return [
@@ -144,6 +156,7 @@ export class UsersService {
                 take: limit,
                 skip: (page - 1) * limit + skip,
                 where: filter,
+                order,
             }),
             total,
             totalPages,
@@ -261,6 +274,15 @@ export class UsersService {
             return { region, city };
         }
         return {};
+    }
+
+    async updateRole(user: User, roleName: GlobalUserRoleEnum): Promise<void> {
+        if (user.role.name !== GlobalUserRoleEnum.SUPERADMIN.toString()) {
+            user.role = (await this.roleService.findBy({
+                name: roleName,
+            })) as Role;
+            await this.userRepository.save(user);
+        }
     }
 
     async isExistsById(id: string): Promise<boolean> {

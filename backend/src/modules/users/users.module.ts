@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { RegionsModule } from '../regions/regions.module';
 import { FoodAndDrinkModule } from '../food-and-drink/food-and-drink.module';
 import { StorageModule } from '../storage/storage.module';
 import { TokensModule } from '../tokens/tokens.module';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
     imports: [
@@ -16,8 +17,9 @@ import { TokensModule } from '../tokens/tokens.module';
         TypeOrmModule.forFeature([User, Role]),
         CitiesModule,
         RegionsModule,
-        FoodAndDrinkModule,
+        forwardRef(() => FoodAndDrinkModule),
         TokensModule,
+        RolesModule,
     ],
     controllers: [UsersController],
     providers: [UsersService],

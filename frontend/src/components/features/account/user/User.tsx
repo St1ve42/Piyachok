@@ -3,8 +3,8 @@ import Link from "next/link";
 import {IUser} from "@/src/interfaces/users/IUser";
 import {FC} from "react";
 import {Avatar} from "@heroui/react";
-import {Gear} from "@gravity-ui/icons";
-import {utils} from "@/src/utils/utils";
+import { Gear } from "@gravity-ui/icons";
+import { utils } from "@/src/services/utils.service";
 
 type PropsType = {
     user: IUser

@@ -18,7 +18,6 @@ export class FoodAndDrinkService {
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -30,7 +29,6 @@ export class FoodAndDrinkService {
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -42,7 +40,6 @@ export class FoodAndDrinkService {
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -54,7 +51,6 @@ export class FoodAndDrinkService {
             return {success: true, ...foodAndDrinkById}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -66,9 +62,19 @@ export class FoodAndDrinkService {
             return {success: true, ...response}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
+    }
+
+    async update(id: string, body: Partial<ICreateFoodAndDrinkDto>):Promise<IApiResponse> {
+      try{
+        const endpoint = `/food-and-drinks/${id}`;
+        const response = await fetchApi(endpoint, {method: "PATCH", body: JSON.stringify(body)})
+        return {success: true, ...response}
+      }
+      catch (e){
+         return getErrorResponse(e)
+      }
     }
 
     async delete(id: string):Promise<IApiResponse> {
@@ -78,7 +84,6 @@ export class FoodAndDrinkService {
             return {success: true, ...response}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }
@@ -90,7 +95,6 @@ export class FoodAndDrinkService {
             return {success: true, ...response}
         }
         catch (e){
-            console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
     }

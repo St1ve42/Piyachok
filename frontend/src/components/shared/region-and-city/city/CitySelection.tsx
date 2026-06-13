@@ -8,7 +8,9 @@ import {
   ListBox,
 } from "@heroui/react";
 import {useCityQuery} from "@/src/hooks/tanstack-query/useCityQuery";
-import {FC, useEffect, useState} from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { UseQueryResult } from "@tanstack/react-query";
+import { ICityData } from "@/src/interfaces/region-city/ICityData";
 
 type PropsType = {
     regionId: number | undefined
@@ -17,17 +19,27 @@ type PropsType = {
     cityInputValue: string;
     handleCityInputChange: (city: string) => void
     handleCityChange: (city: Key | null) => void
+    setRegionInputValue?: Dispatch<SetStateAction<string>>
     isDisabled?: boolean
 } & LabelRootProps
 
-const CitySelection: FC<PropsType> = ({regionId, initialCityInputValue, cityInputValue, handleCityInputChange, handleCityChange, regionInputValue, isDisabled = false, ...restLabelProps}) => {
+const CitySelection: FC<PropsType> = ({regionId, initialCityInputValue, cityInputValue, handleCityInputChange, handleCityChange, regionInputValue, setRegionInputValue, isDisabled = false, ...restLabelProps}) => {
     const [debouncedCityInputValue, setDebouncedCityInputValue] = useState<string>(initialCityInputValue)
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedCityInputValue(cityInputValue), 500)
         return () => clearTimeout(timer)
     }, [cityInputValue]);
-    const cityQuery = useCityQuery({search: debouncedCityInputValue, regionId})
+    console.log(regionId);
+    const cityQuery = useCityQuery({search: debouncedCityInputValue, regionId}) as  UseQueryResult<ICityData, Error>
     const cityData = cityQuery.data
+    useEffect(() => {
+        if(cityData){
+          const city = cityData.data.find(city => city.name === cityInputValue)
+          if(city){
+            handleCityChange(city.id)
+          }
+        }
+    }, [cityData]);
     return <ComboBox inputValue={cityInputValue} onInputChange={handleCityInputChange} isDisabled={isDisabled || !regionInputValue} onChange={handleCityChange}>
         <Label {...restLabelProps}>Місто</Label>
         <ComboBox.InputGroup>

@@ -1,6 +1,6 @@
 'use client'
 
-import {useErrorStore} from "@/src/store/useSharedStore";
+import {useErrorStore} from "@/src/hooks/shared/useSharedStore";
 import {FC} from "react";
 
 type PropsType = {

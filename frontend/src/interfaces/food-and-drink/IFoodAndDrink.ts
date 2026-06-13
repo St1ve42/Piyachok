@@ -4,8 +4,8 @@ import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drin
 export interface ILocation {
     street: string
     coordinates: {
-        latitude: number;
-        longitude: number;
+        lat: number;
+        lng: number;
     }
 }
 
@@ -23,6 +23,7 @@ export interface IFoodAndDrink {
     type: FoodAndDrinkTypeEnum;
     location: ILocation;
     city: string;
+    region: string;
     businessHours: Array<IBusinessHours>;
     images: string[] | null;
     mainImage: string | null;
@@ -37,5 +38,5 @@ export interface IFoodAndDrink {
         X?: string;
     };
     features?: FoodAndDrinkFeaturesEnum[];
-    tags: string[];
+    tags?: string[];
 }

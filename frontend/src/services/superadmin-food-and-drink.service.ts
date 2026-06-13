@@ -5,7 +5,8 @@ import {QueryDirector} from "@/src/lib/query.director";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
-import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import { IFoodAndDrinkBindOwnership } from "@/src/interfaces/food-and-drink/IFoodAndDrinkBindOwnership";
+import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 
 export class SuperadminFoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkListData>> {
@@ -34,16 +35,28 @@ export class SuperadminFoodAndDrinkService {
         }
     }
 
-    async findById(id: string, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkOwnerInfo>> {
+    async findById(id: string, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkSuperadminInfo>> {
         try{
             const endpoint = `/superadmin/food-and-drinks/${id}`;
-            const foodAndDrinkByIdResponse = await fetchApi<IFoodAndDrinkOwnerInfo>(endpoint, {method: 'GET', ...requestInit})
+            const foodAndDrinkByIdResponse = await fetchApi<IFoodAndDrinkSuperadminInfo>(endpoint, {method: 'GET', ...requestInit})
             return {success: true, ...foodAndDrinkByIdResponse}
         }
         catch (e){
             console.log(`Сталась помилка в ${this.find.name}:`, e)
             return getErrorResponse(e)
         }
+    }
+
+    async bindOwnership(id: string, body: IFoodAndDrinkBindOwnership, requestInit?: RequestInit):Promise<IApiResponse> {
+      try{
+        const endpoint = `/superadmin/food-and-drinks/${id}/bind-ownership`;
+        const foodAndDrinkBindOwnershipResponse = await fetchApi(endpoint, {method: 'POST', body: JSON.stringify(body), ...requestInit})
+        return {success: true, ...foodAndDrinkBindOwnershipResponse}
+      }
+      catch (e){
+        console.log(`Сталась помилка в ${this.find.name}:`, e)
+        return getErrorResponse(e)
+      }
     }
 }
 

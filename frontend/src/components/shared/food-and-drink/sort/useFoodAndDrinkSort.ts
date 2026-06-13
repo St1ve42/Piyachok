@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useURL} from "@/src/hooks/shared/useURL";
 import {Key} from "@heroui/react";
-import {useErrorStore} from "@/src/store/useSharedStore";
+import {useErrorStore} from "@/src/hooks/shared/useSharedStore";
 
 const useFoodAndDrinkSort = () => {
     const [sort, setSort] = useState<string | null>(null)

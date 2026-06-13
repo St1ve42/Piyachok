@@ -24,6 +24,7 @@ export class CitiesService {
                 take: limit,
                 skip: limit * (page - 1) + skip,
                 select: { id: true, name: true },
+                relations: { region: true },
             }),
             this.cityRepository.count({ where: filter }),
         ]);

@@ -3,11 +3,11 @@ import {FC} from "react";
 import { Avatar, Card, CardContent, CardFooter, Chip } from "@heroui/react";
 import { Eye, TrashBin } from "@gravity-ui/icons";
 import ActiveUser from "@/src/public/active-user.png"
-import {utils} from "@/src/utils/utils";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import Image from "next/image";
 import Verified from "@/src/public/verified.png";
 import Link from "next/link";
+import { utils } from "@/src/services/utils.service";
 
 type PropsType = {
     user: IFullUser

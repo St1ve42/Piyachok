@@ -1,8 +1,8 @@
 import type {Metadata} from "next";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {notFound} from "next/navigation";
-import FoodAndDrink from "@/src/components/features/account/food-and-drink/my-food-and-drink/FoodAndDrink";
 import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
+import FoodAndDrinkByID from "@/src/components/features/food-and-drink-by-id/FoodAndDrinkByID";
 
 type Props = {
     params: Promise<Record<'foodAndDrinkId', string | undefined>>,
@@ -31,11 +31,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 const FoodAndDrinkByIdPage = async (props: Props) => {
     const foodAndDrink = await getFoodAndDrinkById(props)
-    return <div className="flex justify-center">
-        <div className="w-[80%]">
-            <FoodAndDrink foodAndDrink={foodAndDrink} isPublic/>
-        </div>
-    </div>
+    return <FoodAndDrinkByID foodAndDrink={foodAndDrink}/>
 
 }
 

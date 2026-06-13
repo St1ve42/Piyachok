@@ -1,4 +1,6 @@
 import Home from "@/src/components/views/home/Home";
+import { queryFoodAndDrinkValidator } from "@/src/validators/food-and-drink/query-food-and-drink.validator";
+import { redirect } from "next/navigation";
 
 type PropsType = {
     searchParams: Promise<Record<'page' | 'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'features[]' | 'sortBy', string | undefined> & {
@@ -7,6 +9,10 @@ type PropsType = {
 }
 
 export default async function HomePage({searchParams}: PropsType) {
-    const {page = 1, ...restSearchParams} = await searchParams
-    return <Home searchParams={{page: Number(page), ...restSearchParams}}/>;
+    const awaitedSearchParams = await searchParams
+    const {error, value} = queryFoodAndDrinkValidator.validate(awaitedSearchParams)
+    if(error){
+      redirect('/')
+    }
+    return <Home searchParams={value}/>;
 }

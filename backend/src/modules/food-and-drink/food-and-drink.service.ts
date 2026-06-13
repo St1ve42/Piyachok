@@ -37,6 +37,8 @@ import { SortEnum } from '../../shared/enums/sort.enum';
 import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
 import { RolesService } from '../roles/roles.service';
 import { Role } from '../roles/entities/role.entity';
+import { SuperadminFoodAndDrinkBindOwnershipDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-bind-ownership.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -49,6 +51,7 @@ export class FoodAndDrinkService {
         private readonly roleService: RolesService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly userService: UsersService,
     ) {}
 
     async find(
@@ -137,7 +140,7 @@ export class FoodAndDrinkService {
                             : `${Number((distance / 1000).toFixed(2))} км`,
                 };
             });
-            const totalPages = Math.ceil(total - skip) / limit;
+            const totalPages = Math.ceil((total - skip) / limit);
             return [result, total, totalPages];
         }
         if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
@@ -200,6 +203,11 @@ export class FoodAndDrinkService {
             cityId,
         });
         await this.foodAndDrinkRepository.save(foodAndDrink);
+        owner.role = (await this.roleService.findBy({
+            name: GlobalUserRoleEnum.ADMIN,
+        })) as Role;
+        owner.ownerOf = foodAndDrink;
+        await this.userRepository.save(owner);
         return (await this.findById(foodAndDrink.id)) as FoodAndDrink;
     }
 
@@ -229,7 +237,16 @@ export class FoodAndDrinkService {
     }
 
     async delete(id: string): Promise<void> {
+        const { owner } = (await this.findById(id, {
+            owner: true,
+        })) as FoodAndDrink;
+        if (owner.role.name !== GlobalUserRoleEnum.SUPERADMIN.toString()) {
+            owner.role = (await this.roleService.findBy({
+                name: GlobalUserRoleEnum.USER,
+            })) as Role;
+        }
         await this.foodAndDrinkRepository.delete(id);
+        await this.userRepository.save(owner);
     }
 
     async save(foodAndDrink: FoodAndDrink): Promise<FoodAndDrink> {
@@ -267,36 +284,35 @@ export class FoodAndDrinkService {
     async uploadImages(
         id: string,
         files: Express.Multer.File[],
-    ): Promise<FoodAndDrink> {
+    ): Promise<void> {
         const foodAndDrink = (await this.findById(id)) as FoodAndDrink;
         const { images } = foodAndDrink;
         if (images) {
-            if (images.length === 10) {
-                throw new ConflictException(
-                    `Вже завантажено максимальну кількість зображень: 10`,
-                );
-            }
-            const amount = images.length + files.length;
-            if (amount > 10) {
-                throw new ConflictException(
-                    `Перевищена максимальна загальна кількість зображень: 10. Приберіть ${amount - 10} зображення`,
-                );
-            }
-        }
-        for (const file of files) {
-            const path = await this.storageService.uploadFile(
-                file,
-                itemNameEnum.FOOD_AND_DRINK,
-                id,
+            await Promise.all(
+                images.map(
+                    async (image) =>
+                        await this.storageService.deleteFile(image),
+                ),
             );
-            if (foodAndDrink.images) {
-                foodAndDrink.images.push(path);
-            } else {
-                foodAndDrink.images = [path];
-                foodAndDrink.mainImage = path;
+            foodAndDrink.images = null;
+            foodAndDrink.mainImage = null;
+        }
+        if (files) {
+            for (const file of files) {
+                const path = await this.storageService.uploadFile(
+                    file,
+                    itemNameEnum.FOOD_AND_DRINK,
+                    id,
+                );
+                if (foodAndDrink.images) {
+                    foodAndDrink.images.push(path);
+                } else {
+                    foodAndDrink.images = [path];
+                    foodAndDrink.mainImage = path;
+                }
             }
         }
-        return this.foodAndDrinkRepository.save(foodAndDrink);
+        await this.foodAndDrinkRepository.save(foodAndDrink);
     }
 
     async removeImages(
@@ -351,7 +367,7 @@ export class FoodAndDrinkService {
     async setStatus(
         id: string,
         superadminFoodAndDrinkStatusDto: SuperadminFoodAndDrinkStatusDto,
-    ): Promise<FoodAndDrink> {
+    ): Promise<void> {
         const { status } = superadminFoodAndDrinkStatusDto;
         const foodAndDrink = (await this.findById(id, {
             owner: true,
@@ -360,22 +376,44 @@ export class FoodAndDrinkService {
             throw new ConflictException(`Цей заклад вже має статус ${status}`);
         }
         foodAndDrink.status = status;
-        if (
-            foodAndDrink.owner.role.name !==
-            GlobalUserRoleEnum.SUPERADMIN.toString()
-        ) {
-            if (status === FoodAndDrinkStatusEnum.ACTIVE) {
-                foodAndDrink.owner.role = (await this.roleService.findBy({
-                    name: GlobalUserRoleEnum.ADMIN,
-                })) as Role;
-            } else {
-                foodAndDrink.owner.role = (await this.roleService.findBy({
-                    name: GlobalUserRoleEnum.USER,
-                })) as Role;
-            }
-            await this.userRepository.save(foodAndDrink.owner);
-        }
-        return this.foodAndDrinkRepository.save(foodAndDrink);
+        await this.foodAndDrinkRepository.save(foodAndDrink);
+    }
+
+    async bindOwnership(
+        id: string,
+        superadminFoodAndDrinkBindOwnershipDto: SuperadminFoodAndDrinkBindOwnershipDto,
+    ): Promise<void> {
+        const { userId } = superadminFoodAndDrinkBindOwnershipDto;
+        const userToBind = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: { ownerOf: true },
+        });
+        if (!userToBind)
+            throw new NotFoundException(
+                `Користувача з id ${userId} не знайдено`,
+            );
+
+        if (userToBind.ownerOf?.id === id)
+            throw new ConflictException(
+                `Користувача є власником поточного закладу`,
+            );
+
+        if (userToBind.ownerOf)
+            throw new ConflictException(
+                `Користувача є власником інакшого закладу`,
+            );
+        const foodAndDrink = (await this.foodAndDrinkRepository.findOne({
+            where: { id },
+            relations: { owner: true },
+        })) as FoodAndDrink;
+        const { owner: oldOwner } = foodAndDrink;
+        await this.foodAndDrinkRepository.update(id, {
+            owner: { id: userId },
+        });
+        userToBind.ownerOf = foodAndDrink;
+        oldOwner.ownerOf = null;
+        await this.userService.updateRole(userToBind, GlobalUserRoleEnum.ADMIN);
+        await this.userService.updateRole(oldOwner, GlobalUserRoleEnum.USER);
     }
 
     private async checkExisting(

@@ -48,10 +48,10 @@ const Sidebar: FC<PropsType> = ({user}) => {
                     <Plus/>
                     Створити заклад
                 </ListBox.Item>
-                <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
+                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
                     <House/>
                     Заклад
-                </ListBox.Item>
+                </ListBox.Item>}
                 {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item href={'/account/statistics'} textValue={'Статистика'}>
                     <ChartColumn/>
                     Статистика

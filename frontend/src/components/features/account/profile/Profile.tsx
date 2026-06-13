@@ -17,7 +17,6 @@ import {
 import {Pencil, TrashBin, EllipsisVertical} from "@gravity-ui/icons";
 import Verified from "@/src/public/verified.png"
 import UserAvatar from "@/src/public/default_user_avatar.png";
-import {utils} from "@/src/utils/utils";
 import Image from "next/image";
 import useProfile from "@/src/components/features/account/profile/useProfile";
 import {Controller} from "react-hook-form";
@@ -26,6 +25,7 @@ import CitySelection from "@/src/components/shared/region-and-city/city/CitySele
 import ActiveUser from "@/src/public/active-user.png";
 import { GlobalUserRoleEnum } from "@/src/enums/user/global.user.role.enum";
 import Link from "next/link";
+import { utils } from "@/src/services/utils.service";
 
 type PropsType = {user: IUser, type: 'user', id?: string} | {user: IUser, type: 'superadmin', id: string}
 

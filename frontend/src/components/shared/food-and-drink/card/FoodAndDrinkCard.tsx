@@ -6,12 +6,12 @@ import livemusic from "@/src/public/live-music.png"
 import parking from "@/src/public/parking.png"
 import hours24_7 from "@/src/public/24_7.png"
 import Feature from "@/src/components/shared/food-and-drink/feature/Feature";
-import {utils} from "@/src/utils/utils";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@heroui/react";
 import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drink-features.enum";
 import Link from "next/link";
 import {UrlObject} from "node:url";
 import Decision from "@/src/components/features/superadmin/food-and-drink/moderate/decision/Decision";
+import { utils } from "@/src/services/utils.service";
 
 const icons: Record<FoodAndDrinkFeaturesEnum, StaticImageData> = {
     [FoodAndDrinkFeaturesEnum.WI_FI]: wifi,

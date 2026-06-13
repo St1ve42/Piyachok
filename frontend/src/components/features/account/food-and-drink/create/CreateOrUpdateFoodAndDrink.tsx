@@ -6,17 +6,22 @@ import Image from "next/image";
 import {Plus} from "@gravity-ui/icons";
 import FeatureSelection from "@/src/components/shared/food-and-drink/feature-selection/FeatureSelection";
 import { v4 as uuidv4 } from "uuid";
-import useCreateFoodAndDrink from "@/src/components/features/account/food-and-drink/create/useCreateFoodAndDrink";
+import useCreateOrUpdateFoodAndDrink from "@/src/components/features/account/food-and-drink/create/useCreateOrUpdateFoodAndDrink";
 import BusinessHour from "@/src/components/shared/food-and-drink/schedule/BusinessHour";
 import SuccessMark from "@/src/public/success_mark.png";
 import RegionSelection from "@/src/components/shared/region-and-city/region/RegionSelection";
 import CitySelection from "@/src/components/shared/region-and-city/city/CitySelection";
 import GalleryFilesWithSwiper from "@/src/components/features/account/food-and-drink/create/components/GalleryFilesWithSwiper";
 import GalleryFiles from "@/src/components/features/account/food-and-drink/create/components/GalleryFiles";
+import {FC} from "react";
+import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
 
-const CreateFoodAndDrink = () => {
-    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, onSubmit, errorMessage, isSuccessCreateResponse, handleRegionInputChange, foodAndDrinkTypeValue} = useCreateFoodAndDrink()
-    if(isSuccessCreateResponse){
+type PropsType = { mode: 'create', foodAndDrink?: IFoodAndDrinkOwnerInfo } | {mode: 'update', foodAndDrink: IFoodAndDrinkOwnerInfo }
+
+const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
+    const {mode, foodAndDrink} = props
+    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, handleRegionInputChange, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch} = useCreateOrUpdateFoodAndDrink({mode, foodAndDrink})
+    if(props.mode === 'create' && isSuccessCreateResponse){
         return <div className="h-[70%] flex justify-center items-center">
             <div className="w-[60%] flex flex-col items-center gap-2">
                 <Image src={SuccessMark} width={100} height={100} alt={'Успіх'}/>
@@ -27,12 +32,19 @@ const CreateFoodAndDrink = () => {
             </div>
         </div>
     }
+    const createInputDefaultValue = <K extends keyof IFoodAndDrinkOwnerInfo>(
+      foodAndDrinkProp: K
+    ): IFoodAndDrinkOwnerInfo[K] | undefined => {
+      return (props.mode === 'update' && (props.foodAndDrink[foodAndDrinkProp] !== undefined || props.foodAndDrink[foodAndDrinkProp] !== null))
+        ? props.foodAndDrink[foodAndDrinkProp]
+        : undefined;
+    }
     return (
-        <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 w-[40vw]">
+        <Form onSubmit={handleSubmit(mode === 'create' ? handleCreateFormSubmit : handleUpdateFormSubmit)} className="flex flex-col gap-8 w-[40vw]">
             <h1 className="font-bold text-2xl">Створення закладу</h1>
             <div className="flex flex-col gap-1 relative w-[25vw]">
                 <Label isRequired htmlFor="name" className="font-bold">Назва</Label>
-                <Input placeholder={'Введіть ім`я'} type="text" required={true} id="name" {...register('name')}/>
+                <Input placeholder={'Введіть назву'} type="text" required={true} id="name" {...register('name')} defaultValue={createInputDefaultValue('name')}/>
                 {errors.name && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.name.message}</div>}
             </div>
             <div>
@@ -51,7 +63,7 @@ const CreateFoodAndDrink = () => {
             </div>
             <div className="flex flex-col gap-1 relative">
                 <Label isRequired htmlFor="description" className="font-bold">Опис</Label>
-                <TextArea id={'description'} placeholder={'Введіть опис'} className="h-[8rem]" maxLength={1000} autoCorrect={'off'} required {...register('description')}/>
+                <TextArea id={'description'} placeholder={'Введіть опис'} className="h-[8rem]" maxLength={1000} autoCorrect={'off'} required {...register('description')} defaultValue={createInputDefaultValue('description')}/>
                 {errors.description && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.description.message}</div>}
             </div>
             <div className="w-[10vw]">
@@ -59,7 +71,7 @@ const CreateFoodAndDrink = () => {
             </div>
             <div className="flex flex-col gap-1 relative w-[12vw]">
                 <Label isRequired htmlFor="averageReceipt" className="font-bold">Середній чек</Label>
-                <Input id={'averageReceipt'} placeholder={'Введіть суму'} type="number" min={0} required {...register('averageReceipt', { valueAsNumber: true })}/>
+                <Input id={'averageReceipt'} placeholder={'Введіть суму'} type="number" min={0} required {...register('averageReceipt', { valueAsNumber: true })} defaultValue={createInputDefaultValue('averageReceipt')}/>
                 {errors.averageReceipt && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.averageReceipt.message}</div>}
             </div>
             <div className="flex flex-col gap-2 relative w-[80%]">
@@ -74,21 +86,21 @@ const CreateFoodAndDrink = () => {
                 {errors.businessHours && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.businessHours.message}</div>}
             </div>
             <div className="flex gap-8">
-                <RegionSelection className={'font-bold'} isRequired initialRegionInputValue={regionInputValue} regionInputValue={regionInputValue} handleRegionInputChange={handleRegionInputChange} handleRegionChange={handleRegionSelectionChange}/>
-                <CitySelection className={'font-bold'} isRequired regionId={regionId} regionInputValue={regionInputValue} initialCityInputValue={cityInputValue} cityInputValue={cityInputValue} handleCityInputChange={handleCityInputChange} handleCityChange={handleCitySelectionChange}/>
+                <RegionSelection className={'font-bold'} isRequired initialRegionInputValue={regionInputValue} regionInputValue={regionInputValue} handleRegionInputChange={handleRegionInputChange} handleRegionChange={handleRegionSelectionChange} onRegionIdMatch={onRegionIdMatch}/>
+                <CitySelection className={'font-bold'} isRequired regionId={regionId} regionInputValue={regionInputValue} initialCityInputValue={cityInputValue} cityInputValue={cityInputValue} handleCityInputChange={handleCityInputChange} handleCityChange={handleCitySelectionChange} setRegionInputValue={setRegionInputValue}/>
             </div>
             <div className="flex flex-col gap-1 relative w-[25vw]">
                 <Label isRequired htmlFor="street" className="font-bold">Адреса</Label>
-                <Input id="street" placeholder={'Введіть назву вулиці'} type="text" required {...register('street')}/>
+                <Input id="street" placeholder={'Введіть назву вулиці'} type="text" required {...register('street')} defaultValue={props.mode === 'update' ? props.foodAndDrink.location.street : undefined}/>
                 {errors.street && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.street.message}</div>}
             </div>
             <div className="flex flex-col gap-1 relative w-[25vw]">
                 <Label isRequired htmlFor="phone" className="font-bold">Номер телефону закладу</Label>
-                <Input id={'phone'} placeholder={'Введіть номер телефону'} type="text" required {...register('phone')}/>
+                <Input id={'phone'} placeholder={'Введіть номер телефону'} type="text" required {...register('phone')} defaultValue={createInputDefaultValue('phone') ?? undefined}/>
                 {errors.phone && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.phone.message}</div>}
             </div>
             <div className="w-[40%]">
-                <FeatureSelection handleFeatureCheck={handleFeatureCheck} isShownTextAboutOptional={true}/>
+                <FeatureSelection featuresFromApi={props.foodAndDrink?.features} handleFeatureCheck={handleFeatureCheck} isShownTextAboutOptional={true}/>
             </div>
             <div className="flex flex-col gap-3 relative">
                 <Label htmlFor={'tag'} className="font-bold">Теги (не обов&#39;язково)</Label>
@@ -125,7 +137,7 @@ const CreateFoodAndDrink = () => {
             </div>
             <div className="flex flex-col gap-1 relative">
                 <Label htmlFor="site" className="font-bold">Сайт (не обов&#39;язково)</Label>
-                <Input id="site" placeholder={'Введіть назву сайту'} type="text" required = {false} {...register('site', {setValueAs: value => value === "" ? undefined : value})}/>
+                <Input id="site" placeholder={'Введіть назву сайту'} type="text" required = {false} {...register('site', {setValueAs: value => value === "" ? undefined : value})} defaultValue={createInputDefaultValue('site') ?? undefined}/>
                 {errors.site && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.site.message}</div>}
             </div>
             <div className="w-[33vw]">
@@ -135,7 +147,7 @@ const CreateFoodAndDrink = () => {
 
                     <div className="flex flex-col gap-1.5 relative">
                         <Label htmlFor="instagram" className="font-bold text-sm">Інстаграм</Label>
-                        <Input id="instagram" placeholder="Введіть посилання на Instagram" type="text" {...register('instagram', {setValueAs: value => value === "" ? undefined : value})}/>
+                        <Input id="instagram" placeholder="Введіть посилання на Instagram" type="text" {...register('instagram', {setValueAs: value => value === "" ? undefined : value})} defaultValue={(props.mode === 'update' && props.foodAndDrink.socialNetworks?.instagram) ? props.foodAndDrink.socialNetworks.instagram : undefined }/>
                         {errors.instagram && (
                             <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">
                                 {errors.instagram.message}
@@ -145,7 +157,7 @@ const CreateFoodAndDrink = () => {
 
                     <div className="flex flex-col gap-1.5 relative">
                         <Label htmlFor="facebook" className="font-bold text-sm">Facebook</Label>
-                        <Input id="facebook" placeholder="Введіть посилання на Facebook" type="text" {...register('facebook', {setValueAs: value => value === "" ? undefined : value})}/>
+                        <Input id="facebook" placeholder="Введіть посилання на Facebook" type="text" {...register('facebook', {setValueAs: value => value === "" ? undefined : value})} defaultValue={(props.mode === 'update' && props.foodAndDrink.socialNetworks?.facebook) ? props.foodAndDrink.socialNetworks.facebook : undefined }/>
                         {errors.facebook && (
                             <div className="absolute text-red-600 text-[10px] bottom-[-20px] mt-1 leading-none">
                                 {errors.facebook.message}
@@ -155,7 +167,7 @@ const CreateFoodAndDrink = () => {
 
                     <div className="flex flex-col gap-1.5 relative mt-2">
                         <Label htmlFor="x" className="font-bold text-sm">X</Label>
-                        <Input id="x" placeholder="Введіть посилання на X" type="text" {...register('x', {setValueAs: value => value === "" ? undefined : value})}/>
+                        <Input id="x" placeholder="Введіть посилання на X" type="text" {...register('x', {setValueAs: value => value === "" ? undefined : value})} defaultValue={(props.mode === 'update' && props.foodAndDrink.socialNetworks?.X) ? props.foodAndDrink.socialNetworks.X : undefined }/>
                         {errors.x && (
                             <div className="absolute text-red-600 text-[10px] bottom-[-20px] mt-1 leading-none">
                                 {errors.x.message}
@@ -165,7 +177,7 @@ const CreateFoodAndDrink = () => {
 
                     <div className="flex flex-col gap-1.5 relative mt-2">
                         <Label htmlFor="telegram" className="font-bold text-sm">Telegram</Label>
-                        <Input id="telegram" placeholder="Введіть посилання на Telegram" type="text" {...register('telegram', {setValueAs: value => value === "" ? undefined : value})}/>
+                        <Input id="telegram" placeholder="Введіть посилання на Telegram" type="text" {...register('telegram', {setValueAs: value => value === "" ? undefined : value})} defaultValue={(props.mode === 'update' && props.foodAndDrink.socialNetworks?.telegram) ? props.foodAndDrink.socialNetworks.telegram : undefined }/>
                         {errors.telegram && (
                             <div className="absolute text-red-600 text-[10px] bottom-[-20px] mt-1 leading-none">
                                 {errors.telegram.message}
@@ -177,10 +189,10 @@ const CreateFoodAndDrink = () => {
             </div>
             <div className="relative">
                 {errorMessage && <div className="absolute text-red-600 text-[15px] top-[-10px] leading-none">{errorMessage}</div>}
-                <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid}>Створити</Button>
+                {mode === 'create' ? <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid}>Створити</Button> : <Button type={'submit'} className={'mb-5 mt-5'} isDisabled={!isValid}>Оновити</Button>}
             </div>
         </Form>
     )
 }
 
-export default CreateFoodAndDrink
+export default CreateOrUpdateFoodAndDrink

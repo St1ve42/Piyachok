@@ -4,9 +4,8 @@ import { TagsPresenter } from './tags-presenter';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationPresenter } from './location.presenter';
 import { BusinessHoursPresenter } from './business-hours.presenter';
-import { City } from '../../cities/entities/city.entity';
-import { CityPresenter } from '../../cities/presenters/city.presenter';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
+import { FoodAndDrink } from '../entities/food-and-drink.entity';
 
 export class FoodAndDrinkInfoPresenter {
     @ApiProperty({
@@ -50,11 +49,19 @@ export class FoodAndDrinkInfoPresenter {
         example: 'м. Львів',
     })
     @Expose()
-    @Transform(({ value }: { value: City }) => value.name, {
-        toPlainOnly: true,
+    @Transform(({ obj }: { obj: FoodAndDrink }) => obj.city.name || null, {
+        toClassOnly: true,
     })
-    @Type(() => CityPresenter)
-    city: CityPresenter;
+    city: string;
+
+    @Expose()
+    @Transform(
+        ({ obj }: { obj: FoodAndDrink }) => obj.city.region.name || null,
+        {
+            toClassOnly: true,
+        },
+    )
+    region: string;
 
     @ApiProperty({
         type: 'array',

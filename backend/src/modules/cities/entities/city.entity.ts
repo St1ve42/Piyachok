@@ -18,7 +18,7 @@ export class City {
     name: string;
     @Column()
     regionId: number;
-    @ManyToOne(() => Region, (region) => region.cities)
+    @ManyToOne(() => Region, (region) => region.cities, { eager: true })
     @JoinColumn({ name: 'regionId' })
     region: Region;
     @OneToMany(() => User, (user) => user.city)

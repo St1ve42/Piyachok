@@ -1,8 +1,10 @@
 import type {Metadata} from "next";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {notFound} from "next/navigation";
-import FoodAndDrink from "@/src/components/features/account/food-and-drink/my-food-and-drink/FoodAndDrink";
+import FoodAndDrink from "@/src/components/shared/food-and-drink/FoodAndDrink";
 import {getAccessCookie} from "@/src/services/server.service";
+import {superadminUsersService} from "@/src/services/superadmin-users.service";
+import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 
 export const metadata: Metadata = {
     title: 'Заклад з айді'
@@ -25,7 +27,11 @@ const SuperadminFoodAndDrinkByIdPage = async ({params}: Props) => {
     else if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    return <FoodAndDrink foodAndDrink={foodAndDrinkResponse.data} isPublic={false}/>
+    const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER}, {headers: {'Cookie': accessToken}})
+    if(!usersResponse.success){
+        return <div>{usersResponse.data.message}</div>
+    }
+    return <FoodAndDrink foodAndDrink={foodAndDrinkResponse.data} mode={'superadmin'} users={usersResponse.data.data}/>
 }
 
 export default SuperadminFoodAndDrinkByIdPage;

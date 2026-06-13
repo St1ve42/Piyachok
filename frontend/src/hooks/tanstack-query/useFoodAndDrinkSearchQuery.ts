@@ -5,9 +5,7 @@ import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
 
-export function useFoodAndDrinkSearchQuery(name: string, type: 'public'): UseQueryResult<IApiResponse<IFoodAndDrinkListData>, Error>;
-
-export function useFoodAndDrinkSearchQuery(name: string, type: 'moderate' | 'all', accessCookie: string): UseQueryResult<IApiResponse<IFoodAndDrinkListData>, Error>;
+export function useFoodAndDrinkSearchQuery(name: string, type: 'public' | 'moderate' | 'all', accessCookie?: string): UseQueryResult<IApiResponse<IFoodAndDrinkListData>, Error>;
 
 export function useFoodAndDrinkSearchQuery<T extends 'public' | 'moderate' | 'all'>(name: string, type: T, accessCookie?: string){
     if ((type === 'moderate' || type === 'all') && !accessCookie) {

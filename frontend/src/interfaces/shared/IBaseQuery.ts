@@ -1,4 +1,5 @@
 import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-type.enum";
+import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 
 export interface IBaseQuery{
     page?: number,
@@ -26,7 +27,10 @@ export interface IUsersQuery extends IBaseQuery{
     [key: string]: unknown
     name?: string
     surname?: string
-    email?: string
+    email?: string,
+    role?: GlobalUserRoleEnum
+    sortBy?: string,
+    sort?: 'asc' | 'desc'
 }
 
 

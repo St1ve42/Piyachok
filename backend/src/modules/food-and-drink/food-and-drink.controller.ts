@@ -351,7 +351,9 @@ export class FoodAndDrinkController {
                     errorMessage: (ctx) =>
                         `Недопустимий розмір для файлу ${(ctx?.file as Express.Multer.File).originalname}. Максимальний розмір: 1 Мб.`,
                 })
-                .build(),
+                .build({
+                    fileIsRequired: false,
+                }),
         )
         files: Express.Multer.File[],
     ): Promise<void> {
