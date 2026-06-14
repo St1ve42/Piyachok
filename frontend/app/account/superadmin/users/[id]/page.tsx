@@ -4,8 +4,16 @@ import {notFound} from "next/navigation";
 import Profile from "@/src/components/features/account/profile/Profile";
 import {getAccessCookie} from "@/src/services/server.service";
 
-export const metadata: Metadata = {
-    title: 'Користувач за айді'
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+    const { id } = await params;
+    if (!id) {
+        notFound();
+    }
+    const accessCookie = await getAccessCookie();
+    const response = await superadminUsersService.findById(id, {headers: {'Cookie': accessCookie}})
+    return {
+        title: response.success ? response.data.name + ' ' + response.data.surname : 'Користувач',
+    };
 };
 
 type Props = {
@@ -19,7 +27,7 @@ const UserByIdPage = async ({params}: Props) => {
     }
     const accessCookie = await getAccessCookie()
     const response = await superadminUsersService.findById(id, {headers: {'Cookie': accessCookie}})
-    if(!response.success && response.status === 404){
+    if(!response.success && (response.status === 404 || response.status === 400)){
         notFound()
     }
     if(!response.success){

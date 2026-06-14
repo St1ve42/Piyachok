@@ -6,8 +6,19 @@ import {getAccessCookie} from "@/src/services/server.service";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 
-export const metadata: Metadata = {
-    title: 'Заклад з айді'
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { id } = await params;
+  if (!id) {
+    notFound();
+  }
+  const accessToken = await getAccessCookie();
+  const foodAndDrinkResponse = await superadminFoodAndDrinkService.findById(
+    id,
+    { headers: { Cookie: accessToken } },
+  );
+  return {
+    title: foodAndDrinkResponse.success ? foodAndDrinkResponse.data.name : 'Заклад',
+  };
 };
 
 type Props = {
@@ -23,7 +34,7 @@ const SuperadminFoodAndDrinkByIdPage = async ({params, searchParams}: Props) => 
     }
     const accessToken = await getAccessCookie()
     const foodAndDrinkResponse = await superadminFoodAndDrinkService.findById(id, {headers: {'Cookie': accessToken}})
-    if(!foodAndDrinkResponse.success && foodAndDrinkResponse.status === 404){
+    if(!foodAndDrinkResponse.success && (foodAndDrinkResponse.status === 404 || foodAndDrinkResponse.status === 400)){
         notFound()
     }
     else if(!foodAndDrinkResponse.success){
