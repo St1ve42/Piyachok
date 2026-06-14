@@ -3,11 +3,11 @@ import {Key} from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 import { useUsersQuery } from "@/src/hooks/tanstack-query/useUsersQuery";
 
-export const useUsersSearch = ({searchBy}: {searchBy: string}) => {
+export const useUsersSearch = ({searchBy, isDropdown}: {searchBy: string, isDropdown: boolean}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState<string>('')
     const [debouncedInputValue, setDebouncedInputValue] = useState<string>('')
-    const usersResponse = useUsersQuery({ searchBy, inputValue: debouncedInputValue });
+    const usersResponse = useUsersQuery({ searchBy, inputValue: debouncedInputValue, isDropdown });
     const {pathname, router, createQueryString} = useURL()
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedInputValue(inputValue), 500)

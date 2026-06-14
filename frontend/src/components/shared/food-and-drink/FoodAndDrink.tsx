@@ -1,14 +1,7 @@
 'use client'
-import {Avatar, Button, Card, CardContent, Chip, Dropdown, Header, Heading, Input, Label, Modal } from "@heroui/react";
+import {Avatar, Button, Card, CardContent, Chip, Dropdown, Header, Heading, Input, Label, Modal} from "@heroui/react";
 import Image from "next/image";
-import {
-  MapPin,
-  Globe,
-  Pencil,
-  TrashBin,
-  EllipsisVertical,
-  Eye, Route,
-} from "@gravity-ui/icons";
+import {EllipsisVertical, Eye, Globe, MapPin, Pencil, Route, TrashBin,} from "@gravity-ui/icons";
 import useFoodAndDrink from './useFoodAndDrink'
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
@@ -16,13 +9,16 @@ import Link from "next/link";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
 import {FC} from "react";
 import noImage from "@/src/public/no-image-icon.jpg";
-import { v4 as uuidv4 } from "uuid";
-import { utils } from "@/src/services/utils.service";
+import {v4 as uuidv4} from "uuid";
+import {utils} from "@/src/services/utils.service";
 import dynamic from "next/dynamic";
-import { IFoodAndDrink } from "@/src/interfaces/food-and-drink/IFoodAndDrink";
+import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import {IUser} from "@/src/interfaces/users/IUser";
+import UsersSearch from "@/src/components/features/superadmin/users/search/UsersSearch";
+import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+
 const Map = dynamic(() => import('@/src/components/features/food-and-drink-by-id/map/Map'), { ssr: false });
 
 type PropsType = {
@@ -72,29 +68,31 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                             <Button className="bg-orange-400"><Route/>Прив`язка</Button>
                             <Modal.Backdrop>
                                 <Modal.Container>
-                                    <Modal.Dialog className="sm:max-w-[450px]">
+                                    <Modal.Dialog className="sm:max-w-[450px] h-[60vh]">
                                         <Modal.CloseTrigger ref={closeTriggerButtonRef}/>
                                         <Modal.Header>
-                                            <Modal.Heading>Виберіть користувача, якого хочете прив'язати до вибраного закладу</Modal.Heading>
+                                            <Modal.Heading>Виберіть користувача, якого хочете прив&#39;язати до вибраного закладу, або знайдіть його, скориставшись пошуком за імейлом</Modal.Heading>
                                         </Modal.Header>
                                         <Modal.Body className="flex gap-3 flex-col">
-                                            {props.users.map(user => {
-                                                console.log(user.id, props.foodAndDrink.owner.id)
-                                                if(user.id !== props.foodAndDrink.owner.id){
-                                                    return <Card key={user.id} className="text-[14px] h-fit">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="flex items-center gap-4">
-                                                            <Avatar className={'size-14'}>
-                                                                <Avatar.Image alt="фото" src={user.photo ? utils.buildStorageURL(user.photo ) : UserAvatar.src} width={100} height={100}/>
-                                                            </Avatar>
-                                                            <div>
-                                                                <div>{user.name} {user.surname}</div>
-                                                                <div>{user.email}</div>
+                                            <div className="ml-1">
+                                                <UsersSearch searchBy={UserSearchByEnum.EMAIL} isDropdown={false}/>
+                                            </div>
+                                            <div className="mb-3">
+                                                {props.users.length !== 0 ? props.users.map(user => <Card key={user.id} className="text-[14px] h-fit mt-3">
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="flex items-center gap-4">
+                                                                <Avatar className={'size-14'}>
+                                                                    <Avatar.Image alt="фото" src={user.photo ? utils.buildStorageURL(user.photo ) : UserAvatar.src} width={100} height={100}/>
+                                                                </Avatar>
+                                                                <div>
+                                                                    <div>{user.name} {user.surname}</div>
+                                                                    <div>{user.email}</div>
+                                                                </div>
                                                             </div>
+                                                            <Button className="bg-orange-400" onClick={handleBindOwnership(user.id)}><Route/></Button>
                                                         </div>
-                                                        <Button className="bg-orange-400" onClick={handleBindOwnership(user.id)}><Route/></Button>
-                                                    </div>
-                                            </Card>}})}
+                                                </Card>) : <div className="mt-2 italic">Користувачів не знайдено</div>}
+                                            </div>
                                         </Modal.Body>
                                     </Modal.Dialog>
                                 </Modal.Container>
@@ -135,7 +133,8 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                     </Modal>
                 </div>
             </div>}
-            <div className="flex gap-4">
+            {errorMessage && <div className="absolute text-red-600 w-[56%] text-[10px] mt-14 leading-none">{errorMessage}</div>}
+            <div className="flex gap-4 mt-2">
                 <div className="flex flex-col gap-4 flex-1" style={{maxWidth: props.mode === 'user' || props.mode === 'superadmin' ? '68%' : '100%'}}>
                     {images ? <div className="relative rounded-md overflow-hidden">
                         <Swiper className="relative w-full h-[21rem] bg-gray-100"

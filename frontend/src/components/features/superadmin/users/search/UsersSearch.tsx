@@ -6,10 +6,11 @@ import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 
 type PropsType = {
     searchBy: UserSearchByEnum
+    isDropdown?: boolean
 }
 
-const UsersSearch: FC<PropsType> = ({searchBy}) => {
-  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch({searchBy})
+const UsersSearch: FC<PropsType> = ({searchBy, isDropdown = true}) => {
+  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch({searchBy, isDropdown})
   return (
     <div className="flex gap-3 items-center">
       <div className="relative w-[250px]">
@@ -21,7 +22,7 @@ const UsersSearch: FC<PropsType> = ({searchBy}) => {
             <SearchField.ClearButton onClick={handleClickClearButton}/>
           </SearchField.Group>
         </SearchField>
-        {isOpen && usersResponse.data && (
+        {isDropdown && isOpen && usersResponse.data && (
           <div className="absolute top-full left-0 w-full mt-2 z-1 max-h-[210px] bg-white border-small border-default-200 rounded-2xl shadow-lg p-2 overflow-y-scroll">
             <ListBox aria-label={'Пошук закладів'} className="z-[9998]" onAction={handleActionListBox}>
               {usersResponse.isLoading

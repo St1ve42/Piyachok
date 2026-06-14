@@ -12,10 +12,12 @@ export const metadata: Metadata = {
 
 type Props = {
     params: Promise<Record<'id', string | undefined>>,
+    searchParams: Promise<Record<'search', string | undefined>>
 }
 
-const SuperadminFoodAndDrinkByIdPage = async ({params}: Props) => {
+const SuperadminFoodAndDrinkByIdPage = async ({params, searchParams}: Props) => {
     const {id} = await params
+    const {search} = await searchParams
     if(!id){
         notFound()
     }
@@ -27,7 +29,7 @@ const SuperadminFoodAndDrinkByIdPage = async ({params}: Props) => {
     else if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER}, {headers: {'Cookie': accessToken}})
+    const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER, email: search}, {headers: {'Cookie': accessToken}})
     if(!usersResponse.success){
         return <div>{usersResponse.data.message}</div>
     }

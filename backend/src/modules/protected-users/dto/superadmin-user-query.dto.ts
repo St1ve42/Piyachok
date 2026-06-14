@@ -1,5 +1,5 @@
 import { BaseQueryDto } from '../../../shared/dto/base-query.dto';
-import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { SortEnum } from '../../../shared/enums/sort.enum';
 import { UserSortByEnum } from '../enums/UserSortByEnum';
