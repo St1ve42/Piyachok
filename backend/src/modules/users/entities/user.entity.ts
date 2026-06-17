@@ -18,7 +18,7 @@ import { Role } from '../../roles/entities/role.entity';
 import { Token } from '../../tokens/entities/token.entity';
 import { hash } from 'bcrypt';
 import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entity';
-import { UserView } from '../../food-and-drink-statistics/entities/user-views.entity';
+import { UserView } from '../../food-and-drinks-views/entity/user-views.entity';
 
 @Entity()
 export class User {

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ICoordinates } from '../../shared/interfaces/ICoordinates';
 import { INominatim } from './interfaces/INominatim';
+import dayjs, { ManipulateType } from 'dayjs';
 
 export class UtilsService {
     static outputArray(array: any[]): string {
@@ -16,6 +17,28 @@ export class UtilsService {
             }
             return accum;
         }, '');
+    }
+
+    static addTime(
+        initialDate: Date,
+        value: number,
+        unit: ManipulateType,
+    ): Date {
+        return dayjs().add(value, unit).toDate();
+    }
+
+    static subtractTime(
+        initialDate: Date,
+        value: number,
+        unit: ManipulateType,
+    ): Date {
+        return dayjs(initialDate).subtract(value, unit).toDate();
+    }
+
+    static diffInUnit(start: Date, end: Date, unit: ManipulateType): number {
+        const date1 = dayjs(end);
+        const date2 = dayjs(start);
+        return date1.diff(date2, unit);
     }
 
     static async getCoordinates(dto: GetCoordinatesDto): Promise<ICoordinates> {

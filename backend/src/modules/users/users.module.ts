@@ -10,6 +10,7 @@ import { FoodAndDrinkModule } from '../food-and-drink/food-and-drink.module';
 import { StorageModule } from '../storage/storage.module';
 import { TokensModule } from '../tokens/tokens.module';
 import { RolesModule } from '../roles/roles.module';
+import { FoodAndDrinkFavouritesModule } from '../food-and-drink-favourites/food-and-drink-favourites.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { RolesModule } from '../roles/roles.module';
         forwardRef(() => FoodAndDrinkModule),
         TokensModule,
         RolesModule,
+        FoodAndDrinkFavouritesModule,
     ],
     controllers: [UsersController],
     providers: [UsersService],

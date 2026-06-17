@@ -16,6 +16,7 @@ import {
     FileTypeValidator,
     Req,
     SerializeOptions,
+    Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
@@ -42,6 +43,9 @@ import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FoodAndDrinkOwnerInfoPresenter } from '../food-and-drink/presenters/food-and-drink-owner-info.presenter';
 import { UserPresenter } from './presenters/user.presenter';
+import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
+import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/find.presenter';
+import { BaseQueryDto } from '../../shared/dto/base-query.dto';
 
 @ApiTags('Користувачі')
 @Controller('users')
@@ -49,6 +53,7 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private readonly foodAndDrinkService: FoodAndDrinkService,
+        private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -224,5 +229,38 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     async deletePhoto(@Req() req: IUserRequest): Promise<void> {
         await this.usersService.deletePhoto(req.user.data, 'user');
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Список уподобань',
+    })
+    @ApiNoContentResponse({
+        type: FoodAndDrinkResponseFindPresenter,
+        description: 'Список успішно отримано',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Користувач не має уподобань',
+        type: ResponseErrorDto,
+    })
+    @Get('/me/favourites')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard('jwt'))
+    @SerializeOptions({
+        type: FoodAndDrinkResponseFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async myFavourites(
+        @Query() query: BaseQueryDto,
+        @Req() req: IUserRequest,
+    ): Promise<{ data: FoodAndDrink[]; total: number; totalPages: number }> {
+        return await this.foodAndDrinkFavouritesService.findMyFavourites(
+            req.user.data.id,
+            query,
+        );
     }
 }

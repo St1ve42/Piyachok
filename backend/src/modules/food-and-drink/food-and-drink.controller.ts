@@ -26,7 +26,7 @@ import type { IUserRequest } from '../auth/interfaces/IUserRequest';
 import { FoodAndDrinkInfoPresenter } from './presenters/food-and-drink-info.presenter';
 import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
 import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/find.presenter';
-import { CanManageFoodAndDrinkGuard } from '../../shared/guards/can-manage-food-and-drink.guard';
+import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
 import { FoodAndDrinkRemoveTagDto } from './dto/food-and-drink-remove-tag.dto';
 import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
@@ -52,6 +52,14 @@ import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-reques
 import { FoodAndDrinkTypeEnum } from './enums/food-and-drink-type.enum';
 import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
 import { FoodAndDrinkOwnerInfoPresenter } from './presenters/food-and-drink-owner-info.presenter';
+import { OptionalAuthGuard } from '../../shared/guards/optional-auth.guard';
+import type { IOptionalUserRequest } from '../auth/interfaces/IOptionalUserRequest';
+import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
+import { FoodAndDrinkStatisticsService } from '../food-and-drink-statistics/food-and-drink-statistics.service';
+import { ResponseFindStatisticByFoodAndDrinkDto } from '../food-and-drink-statistics/dto/response-find-statistic-by-food-and-drink.dto';
+import { ResponseFoodAndDrinkFindViewsDto } from '../food-and-drinks-views/dto/response-food-and-drink-find-views.dto';
+import { QueryFoodAndDrinkViewsDto } from '../food-and-drinks-views/dto/query-food-and-drink-views.dto';
+import { FoodAndDrinkViewsService } from '../food-and-drinks-views/food-and-drink-views.service';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -59,6 +67,9 @@ export class FoodAndDrinkController {
     constructor(
         private readonly foodAndDrinkService: FoodAndDrinkService,
         private readonly tagsService: TagsService,
+        private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
+        private readonly foodAndDrinkStatisticService: FoodAndDrinkStatisticsService,
+        private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -163,6 +174,7 @@ export class FoodAndDrinkController {
         description: 'Заклад не знайдено',
         type: ResponseErrorDto,
     })
+    @UseGuards(OptionalAuthGuard)
     @Get(':id')
     @SerializeOptions({
         type: FoodAndDrinkInfoPresenter,
@@ -175,8 +187,10 @@ export class FoodAndDrinkController {
             FoodAndDrinkBodyValidationPipe,
         )
         id: string,
+        @Req() req: IOptionalUserRequest,
     ): Promise<FoodAndDrink> {
-        return await this.foodAndDrinkService.findActiveById(id);
+        const userId = req.user?.data.id;
+        return await this.foodAndDrinkService.findActiveById(id, userId);
     }
 
     @ApiCookieAuth('accessToken')
@@ -209,7 +223,7 @@ export class FoodAndDrinkController {
         description: 'Заклад не знайдено',
         type: ResponseErrorDto,
     })
-    @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
     @Patch(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     async update(
@@ -250,7 +264,7 @@ export class FoodAndDrinkController {
         description: 'Заклад не знайдено',
         type: ResponseErrorDto,
     })
-    @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     async delete(
@@ -286,7 +300,7 @@ export class FoodAndDrinkController {
         description: 'Немає прав для редагування тегів цього закладу',
         type: ResponseErrorDto,
     })
-    @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
     @Post(':id/tags/remove')
     @HttpCode(HttpStatus.NO_CONTENT)
     async removeTags(
@@ -328,7 +342,7 @@ export class FoodAndDrinkController {
         description: 'Немає прав для завантаження зображень цього закладу',
         type: ResponseErrorDto,
     })
-    @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
     @UseInterceptors(FilesInterceptor('images'))
     @Post(':id/images')
     @HttpCode(HttpStatus.NO_CONTENT)
@@ -382,7 +396,7 @@ export class FoodAndDrinkController {
         description: 'Немає прав для видалення зображень цього закладу',
         type: ResponseErrorDto,
     })
-    @UseGuards(AuthGuard('jwt'), CanManageFoodAndDrinkGuard)
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
     @Post(':id/images/remove')
     @HttpCode(HttpStatus.NO_CONTENT)
     async removeImages(
@@ -398,6 +412,120 @@ export class FoodAndDrinkController {
         await this.foodAndDrinkService.removeImages(
             id,
             removeImagesFoodAndDrinkDto,
+        );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Додати або видалити з улюблених',
+        description: 'Додає або видаляє заклад з улюблених користувача',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiNoContentResponse({
+        description:
+            'Успішно додано або видалено заклад з улюблених користувачів',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @UseGuards(AuthGuard('jwt'))
+    @Post(':id/favourites')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async toggleFavourite(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Req() req: IUserRequest,
+    ): Promise<void> {
+        const user = req.user;
+        await this.foodAndDrinkFavouritesService.toggleFavourite(
+            user.data.id,
+            foodAndDrinkId,
+        );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Загальна статистика закладу',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано статистику закладу',
+        type: ResponseFindStatisticByFoodAndDrinkDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Користувач не є власником цього закладу',
+        type: ResponseErrorDto,
+    })
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
+    @Get(':id/statistics')
+    @HttpCode(HttpStatus.OK)
+    async findStatistics(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+    ): Promise<ResponseFindStatisticByFoodAndDrinkDto> {
+        return await this.foodAndDrinkStatisticService.findOneByFoodAndDrink(
+            foodAndDrinkId,
+        );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Статистика переглядів за певний період часу',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description:
+            'Успішно отримано статистику переглядів за певний період часу',
+        type: ResponseFoodAndDrinkFindViewsDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Користувач не є власником цього закладу',
+        type: ResponseErrorDto,
+    })
+    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
+    @Get(':id/views')
+    @HttpCode(HttpStatus.OK)
+    async findViews(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Query() query: QueryFoodAndDrinkViewsDto,
+    ): Promise<ResponseFoodAndDrinkFindViewsDto[]> {
+        return await this.foodAndDrinkViewsService.findViews(
+            foodAndDrinkId,
+            query,
         );
     }
 }

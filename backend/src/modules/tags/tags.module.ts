@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { FoodAndDrinkModule } from '../food-and-drink/food-and-drink.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tag } from '../food-and-drink/entities/tag.entity';
+import { Tag } from './entity/tag.entity';
 import { SharedModule } from '../../shared/shared.module';
 
 @Module({

@@ -179,4 +179,10 @@ export class FoodAndDrinkInfoPresenter {
         { toPlainOnly: true },
     )
     tags: TagsPresenter[];
+
+    @ApiPropertyOptional({
+        example: true,
+    })
+    @Expose()
+    isFavourite: boolean | null;
 }

@@ -1,24 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FoodAndDrinkStatistic } from './entities/food-and-drink-statistic.entity';
+import { Repository } from 'typeorm';
+import { ResponseFindStatisticByFoodAndDrinkDto } from './dto/response-find-statistic-by-food-and-drink.dto';
 
 @Injectable()
 export class FoodAndDrinkStatisticsService {
-    create() {
-        return 'This action adds a new foodAndDrinkStatistic';
+    constructor(
+        @InjectRepository(FoodAndDrinkStatistic)
+        private readonly foodAndDrinkStatisticsRepository: Repository<FoodAndDrinkStatistic>,
+    ) {}
+    async create(foodAndDrinkId: string): Promise<void> {
+        const hasStatistics =
+            await this.foodAndDrinkStatisticsRepository.existsBy({
+                foodAndDrinkId,
+            });
+        if (hasStatistics) {
+            throw new ConflictException('Заклад вже володіє статистикою');
+        }
+        const statisticsEntity = this.foodAndDrinkStatisticsRepository.create({
+            foodAndDrinkId,
+        });
+        await this.foodAndDrinkStatisticsRepository.save(statisticsEntity);
     }
 
-    findAll() {
-        return `This action returns all foodAndDrinkStatistics`;
+    async findOneByFoodAndDrink(
+        foodAndDrinkId: string,
+    ): Promise<ResponseFindStatisticByFoodAndDrinkDto> {
+        const statistics = await this.foodAndDrinkStatisticsRepository.findOne({
+            where: {
+                foodAndDrinkId,
+            },
+            select: ['totalFavourites', 'totalViews'],
+        });
+        if (!statistics) {
+            throw new ConflictException('У заклада відсутня статистика');
+        }
+        return statistics;
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} foodAndDrinkStatistic`;
-    }
-
-    update(id: number) {
-        return `This action updates a #${id} foodAndDrinkStatistic`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} foodAndDrinkStatistic`;
+    async increment(
+        foodAndDrinkId: string,
+        field: 'totalViews' | 'totalFavourites',
+    ): Promise<void> {
+        await this.foodAndDrinkStatisticsRepository.increment(
+            { foodAndDrinkId },
+            field,
+            1,
+        );
     }
 }

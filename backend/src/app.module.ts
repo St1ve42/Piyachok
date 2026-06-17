@@ -24,6 +24,8 @@ import { RouterModule } from '@nestjs/core';
 import { SuperadminFoodAndDrinkModule } from './modules/protected-food-and-drink/superadmin-food-and-drink.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UtilsModule } from './modules/utils/utils.module';
+import { FoodAndDrinkFavouritesModule } from './modules/food-and-drink-favourites/food-and-drink-favourites.module';
+import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-and-drink-views.module';
 
 @Module({
     imports: [
@@ -110,6 +112,8 @@ import { UtilsModule } from './modules/utils/utils.module';
         SuperadminFoodAndDrinkModule,
         StorageModule,
         UtilsModule,
+        FoodAndDrinkFavouritesModule,
+        FoodAndDrinkViewsModule,
     ],
     controllers: [],
     providers: [

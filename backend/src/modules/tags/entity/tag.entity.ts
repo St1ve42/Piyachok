@@ -5,7 +5,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from 'typeorm';
-import { FoodAndDrink } from './food-and-drink.entity';
+import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entity';
 
 @Unique(['name'])
 @Entity()

@@ -17,6 +17,7 @@ import { EnvService } from '../shared/services/env.service';
                 migrations: [__dirname + '/migrations/*.{js,ts}'],
                 autoLoadEntities: true,
                 synchronize: false,
+                timezone: 'Z',
             }),
             inject: [EnvService],
         }),

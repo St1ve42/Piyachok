@@ -5,7 +5,7 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Tag } from '../food-and-drink/entities/tag.entity';
+import { Tag } from './entity/tag.entity';
 import { In, Repository } from 'typeorm';
 import { FoodAndDrinkService } from '../food-and-drink/food-and-drink.service';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';

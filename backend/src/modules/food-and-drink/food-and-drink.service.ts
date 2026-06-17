@@ -39,6 +39,10 @@ import { RolesService } from '../roles/roles.service';
 import { Role } from '../roles/entities/role.entity';
 import { SuperadminFoodAndDrinkBindOwnershipDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-bind-ownership.dto';
 import { UsersService } from '../users/users.service';
+import { ResponseFindActiveFoodAndDrinkByIdDto } from './dto/response-find-active-food-and-drink-by-id.dto';
+import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
+import { FoodAndDrinkStatisticsService } from '../food-and-drink-statistics/food-and-drink-statistics.service';
+import { FoodAndDrinkViewsService } from '../food-and-drinks-views/food-and-drink-views.service';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -52,6 +56,9 @@ export class FoodAndDrinkService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly userService: UsersService,
+        private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
+        private readonly foodAndDrinkStatisticsService: FoodAndDrinkStatisticsService,
+        private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
     ) {}
 
     async find(
@@ -172,8 +179,9 @@ export class FoodAndDrinkService {
 
     async findActiveById(
         id: string,
+        userId?: string,
         relations?: FindOptionsRelations<FoodAndDrink>,
-    ): Promise<FoodAndDrink> {
+    ): Promise<ResponseFindActiveFoodAndDrinkByIdDto> {
         const foodAndDrink = await this.foodAndDrinkRepository.findOne({
             where: {
                 id,
@@ -184,7 +192,33 @@ export class FoodAndDrinkService {
         if (!foodAndDrink) {
             throw new NotFoundException('Такого закладу не існує');
         }
-        return foodAndDrink;
+        const isFavourite = userId
+            ? await this.foodAndDrinkFavouritesService.checkIfIsFavourite(
+                  userId,
+                  id,
+              )
+            : null;
+        if (userId) {
+            const existsUserView =
+                await this.foodAndDrinkViewsService.existsUserView(
+                    userId,
+                    foodAndDrink.id,
+                );
+            if (!existsUserView) {
+                await this.foodAndDrinkViewsService.upsertViewPerDay(
+                    foodAndDrink.id,
+                );
+                await this.foodAndDrinkViewsService.createViewUser(
+                    userId,
+                    foodAndDrink.id,
+                );
+                await this.foodAndDrinkStatisticsService.increment(
+                    foodAndDrink.id,
+                    'totalViews',
+                );
+            }
+        }
+        return { ...foodAndDrink, isFavourite };
     }
 
     async create(
@@ -208,6 +242,7 @@ export class FoodAndDrinkService {
         })) as Role;
         owner.ownerOf = foodAndDrink;
         await this.userRepository.save(owner);
+        await this.foodAndDrinkStatisticsService.create(foodAndDrink.id);
         return (await this.findById(foodAndDrink.id)) as FoodAndDrink;
     }
 

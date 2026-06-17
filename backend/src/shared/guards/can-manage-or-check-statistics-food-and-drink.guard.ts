@@ -8,7 +8,7 @@ import { FoodAndDrinkService } from '../../modules/food-and-drink/food-and-drink
 import { IUserRequest } from '../../modules/auth/interfaces/IUserRequest';
 import { GlobalUserRoleEnum } from '../../modules/users/enums/global.user.role.enum';
 
-export class CanManageFoodAndDrinkGuard implements CanActivate {
+export class CanManageOrCheckStatisticsFoodAndDrinkGuard implements CanActivate {
     constructor(@Inject() private foodAndDrink: FoodAndDrinkService) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const req = context.switchToHttp().getRequest<IUserRequest>();
@@ -22,7 +22,7 @@ export class CanManageFoodAndDrinkGuard implements CanActivate {
         const isSuperAdmin = user.role === GlobalUserRoleEnum.SUPERADMIN;
         if (!isOwner && !isSuperAdmin) {
             throw new ForbiddenException(
-                'Вам заборонено редагувати цей заклад, оскільки Ви не є його власником.',
+                'Вам заборонено редагувати цей заклад або переглядати статистику, оскільки Ви не є його власником.',
             );
         }
         return true;

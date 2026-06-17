@@ -24,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: envService.accessSecret,
         });
     }
+
     async validate(payload: IJwtPayload): Promise<IValidatePayload> {
         const { userId, ...restPayload } = payload;
         const { jti, isActive, isDeleted, role } = restPayload;
