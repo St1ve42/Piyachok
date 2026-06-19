@@ -522,7 +522,7 @@ export class FoodAndDrinkController {
         )
         foodAndDrinkId: string,
         @Query() query: QueryFoodAndDrinkViewsDto,
-    ): Promise<ResponseFoodAndDrinkFindViewsDto[]> {
+    ): Promise<ResponseFoodAndDrinkFindViewsDto> {
         return await this.foodAndDrinkViewsService.findViews(
             foodAndDrinkId,
             query,

@@ -48,7 +48,7 @@ const Home = async ({searchParams}: PropsType) => {
                     </div>
                 </div>
                 <FoodAndDrinkGeoMessage sortBy={searchParams.sortBy}/>
-                <FoodAndDrinkList foodAndDrinkList={foodAndDrinkList} href={'/food-and-drink/'}/>
+                <FoodAndDrinkList mode={'default'} foodAndDrinkList={foodAndDrinkList} href={'/food-and-drink/'}/>
                 {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
             </div>
         </div>

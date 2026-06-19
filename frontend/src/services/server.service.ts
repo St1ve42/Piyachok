@@ -7,6 +7,7 @@ export const getUserFromHeaders = async (): Promise<IUser> => {
     const allHeaders = await headers()
     const rawUser = allHeaders.get('x-user-data')
     if(!rawUser){
+        console.log('Redirecting works')
         redirect('/auth/sign-in')
     }
     return JSON.parse(decodeURIComponent(rawUser)) as IUser

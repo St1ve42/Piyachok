@@ -4,7 +4,7 @@ import Twitter from "@/src/public/twitter.png";
 import Facebook from "@/src/public/facebook_logo.svg";
 import Telegram from "@/src/public/telegram.png";
 import { ChangeEventHandler, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import {redirect, useRouter } from "next/navigation";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { foodAndDrinkService } from "@/src/services/food-and-drink.service";
 import { updateTagAction } from "@/src/actions/server.actions";
@@ -84,6 +84,19 @@ export default function useFoodAndDrink({foodAndDrink}: {foodAndDrink: IFoodAndD
 
     }
 
+    const handleToggleFavourite = async () => {
+        const response = await foodAndDrinkService.toggleFavourite(foodAndDrink.id)
+        if(!response.success && response.status === 401){
+            redirect('/auth/sign-in')
+        }
+        if(!response.success){
+            setErrorMessage(response.data.message)
+            return
+        }
+        await updateTagAction('food-and-drink-by-id')
+        await updateTagAction('my-favourite-food-and-drinks')
+    }
+
 
 
 
@@ -96,7 +109,8 @@ export default function useFoodAndDrink({foodAndDrink}: {foodAndDrink: IFoodAndD
         handleChangeStatus,
         handleBindOwnership,
         errorMessage,
-        closeTriggerButtonRef
+        closeTriggerButtonRef,
+        handleToggleFavourite
     }
 }
 

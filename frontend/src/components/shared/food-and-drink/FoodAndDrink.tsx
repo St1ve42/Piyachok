@@ -1,7 +1,7 @@
 'use client'
 import {Avatar, Button, Card, CardContent, Chip, Dropdown, Header, Heading, Input, Label, Modal} from "@heroui/react";
 import Image from "next/image";
-import {EllipsisVertical, Eye, Globe, MapPin, Pencil, Route, TrashBin,} from "@gravity-ui/icons";
+import {EllipsisVertical, Eye, Globe, MapPin, Pencil, Route, TrashBin} from "@gravity-ui/icons";
 import useFoodAndDrink from './useFoodAndDrink'
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
@@ -12,23 +12,24 @@ import noImage from "@/src/public/no-image-icon.jpg";
 import {v4 as uuidv4} from "uuid";
 import {utils} from "@/src/services/utils.service";
 import dynamic from "next/dynamic";
-import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import {IUser} from "@/src/interfaces/users/IUser";
 import UsersSearch from "@/src/components/features/superadmin/users/search/UsersSearch";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
+import TotalStatistics from "@/src/components/features/food-and-drink-by-id/components/TotalStatistics";
 
-const Map = dynamic(() => import('@/src/components/features/food-and-drink-by-id/map/Map'), { ssr: false });
+const Map = dynamic(() => import('@/src/components/features/food-and-drink-by-id/components/Map'), { ssr: false });
 
 type PropsType = {
-    foodAndDrink: IFoodAndDrink;
+    foodAndDrink: IFoodAndDrinkById;
     mode: 'user'
 } | {mode: 'owner', foodAndDrink: IFoodAndDrinkOwnerInfo} | {mode: 'superadmin', foodAndDrink: IFoodAndDrinkSuperadminInfo, users: IUser[]}
 
 const FoodAndDrink: FC<PropsType> = (props) => {
     const {icons, handleConfirm, handleOnPressDeleteButton, isCorrectInput, handleConfirmInputChange, handleChangeStatus, handleBindOwnership, errorMessage, closeTriggerButtonRef} = useFoodAndDrink({foodAndDrink: props.foodAndDrink})
-    const {images, name, type, location, city, features, site, phone, averageReceipt, description, tags, businessHours, socialNetworks} = props.foodAndDrink
+    const {images, name, type, location, city, features, site, phone, averageReceipt, description, tags, businessHours, socialNetworks, id} = props.foodAndDrink
     const offset = -(new Date().getTimezoneOffset())
     const createdAtDate = props.mode !== 'user' ? new Date(new Date(props.foodAndDrink.createdAt).getTime() + offset*60*1000) : null
     const updatedAtDate = props.mode !== 'user' ? new Date(new Date(props.foodAndDrink.updatedAt).getTime() + offset*60*1000) : null
@@ -154,6 +155,7 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                                 <h1 className="text-2xl font-bold">{name}</h1>
                                 <div className="text-sm text-gray-500">{type}</div>
                             </div>
+                            {props.mode === 'user' && <TotalStatistics foodAndDrinkId={id} isFavourite={props.foodAndDrink.isFavourite}/>}
                             {props.mode !== 'user' && <div className="flex items-center gap-2">
                                 <Chip color="success">Статус: {props.foodAndDrink.status}</Chip>
                             </div>}

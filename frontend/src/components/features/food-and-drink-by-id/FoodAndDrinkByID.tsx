@@ -1,9 +1,9 @@
 import FoodAndDrink from "@/src/components/shared/food-and-drink/FoodAndDrink";
-import { IFoodAndDrink } from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 import { FC } from "react";
+import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
 
 type PropsType = {
-  foodAndDrink: IFoodAndDrink
+  foodAndDrink: IFoodAndDrinkById
 }
 
 const FoodAndDrinkByID: FC<PropsType> = ({foodAndDrink}) => {

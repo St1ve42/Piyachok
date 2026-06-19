@@ -33,7 +33,7 @@ const FoodAndDrinkModerate: FC<PropsType> = ({foodAndDrinkListData, page, access
                   <FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie}/>
                 </div>
             </div>
-            <FoodAndDrinkList isDecision foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
+            <FoodAndDrinkList mode={'moderate'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </div>
     )

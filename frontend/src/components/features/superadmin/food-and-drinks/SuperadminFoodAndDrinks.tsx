@@ -22,7 +22,7 @@ const SuperadminFoodAndDrinks: FC<PropType> = ({foodAndDrinkListData, page, acce
         redirect('/account/superadmin/food-and-drinks')
     }
     return (
-        <div className="h-full flex flex-col gap-3">
+        <section className="h-full flex flex-col gap-3">
             <Heading level={3}>Усі заклади</Heading>
             <Heading level={5}>Знайдено: {total}</Heading>
             <div className="flex items-center justify-between">
@@ -32,9 +32,9 @@ const SuperadminFoodAndDrinks: FC<PropType> = ({foodAndDrinkListData, page, acce
                         <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie}/>
                       </div>
             </div>
-            <FoodAndDrinkList foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
+            <FoodAndDrinkList mode={'default'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
-        </div>
+        </section>
     )
 }
 

@@ -4,6 +4,9 @@ import {getErrorResponse} from "@/src/errors/get.error.response";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {IUpdateMe} from "@/src/interfaces/users/IUpdateMe";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import {IFoodAndDrinkQuery} from "@/src/interfaces/shared/IBaseQuery";
+import {QueryDirector} from "@/src/lib/query.director";
 
 export class UsersService{
     async me(requestOptions?: RequestInit): Promise<IApiResponse<IUser>>{
@@ -59,6 +62,19 @@ export class UsersService{
     async findMyFoodAndDrink(requestOptions?: RequestInit): Promise<IApiResponse<IFoodAndDrinkOwnerInfo>>{
         try{
             const response = await fetchApi<IFoodAndDrinkOwnerInfo>(`/users/me/food-and-drink`, {cache: 'no-store', ...requestOptions})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findMyFavouriteFoodAndDrinks(query?: IFoodAndDrinkQuery, requestOptions?: RequestInit): Promise<IApiResponse<IFoodAndDrinkListData>>{
+        try{
+            const endpoint = '/users/me/favourites';
+            const queryDirector = new QueryDirector(endpoint, query);
+            const fullEndpoint = queryDirector.build();
+            const response = await fetchApi<IFoodAndDrinkListData>(fullEndpoint, {cache: 'no-store', ...requestOptions})
             return {success: true, ...response}
         }
         catch (e){

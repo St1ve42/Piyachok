@@ -4,9 +4,12 @@ import {getErrorResponse} from "@/src/errors/get.error.response";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
-import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 import {ICreateFoodAndDrinkDto} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
+import {IFoodAndDrinkTotalStatistics} from "@/src/interfaces/food-and-drink/IFoodAndDrinkTotalStatistics";
+import {IFoodAndDrinkViewStatistics} from "@/src/interfaces/food-and-drink/IFoodAndDrinkViewStatistics";
+import {IFoodAndDrinkViewStatisticsQuery} from "@/src/interfaces/food-and-drink/IFoodAndDrinkViewStatisticsQuery";
 
 export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkListData>> {
@@ -44,10 +47,10 @@ export class FoodAndDrinkService {
         }
     }
 
-    async findById(id: string):Promise<IApiResponse<IFoodAndDrink>> {
+    async findById(id: string, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkById>> {
         try{
             const endpoint = `/food-and-drinks/${id}`;
-            const foodAndDrinkById = await fetchApi<IFoodAndDrink>(endpoint, {next: {revalidate: 15}})
+            const foodAndDrinkById = await fetchApi<IFoodAndDrinkById>(endpoint, {next: {revalidate: 15, tags: ['food-and-drink-by-id']}, ...requestInit})
             return {success: true, ...foodAndDrinkById}
         }
         catch (e){
@@ -92,6 +95,41 @@ export class FoodAndDrinkService {
         try{
             const endpoint = `/food-and-drinks/${id}/images`;
             const response = await fetchApi(endpoint, {method: "POST", body})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async toggleFavourite(id: string): Promise<IApiResponse> {
+        try{
+            const endpoint = `/food-and-drinks/${id}/favourites`;
+            const response = await fetchApi(endpoint, {method: "POST"})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findTotalStatistics(id: string): Promise<IApiResponse<IFoodAndDrinkTotalStatistics>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}/statistics`;
+            const response = await fetchApi<IFoodAndDrinkTotalStatistics>(endpoint, {next: {tags: ['totalStatistics']}})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findViewStatistics(id: string, query: IFoodAndDrinkViewStatisticsQuery, requestInit?: RequestInit): Promise<IApiResponse<IFoodAndDrinkViewStatistics>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}/views`;
+            const queryDirector = new QueryDirector(endpoint, query)
+            const fullEndpoint = queryDirector.build()
+            const response = await fetchApi<IFoodAndDrinkViewStatistics>(fullEndpoint, {...requestInit})
             return {success: true, ...response}
         }
         catch (e){

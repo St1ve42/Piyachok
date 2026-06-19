@@ -7,13 +7,13 @@ import NoResults from "@/src/components/ui/no-results/NoResults";
 type PropsType = {
     foodAndDrinkList: IFoodAndDrinkOneFromList[]
     href: string | UrlObject
-    isDecision?: boolean
+    mode: 'default' | 'moderate' | 'favourite'
 }
 
-const FoodAndDrinkList: FC<PropsType> = ({foodAndDrinkList, href, isDecision = false}) => {
+const FoodAndDrinkList: FC<PropsType> = ({foodAndDrinkList, href, mode}) => {
     return (foodAndDrinkList.length !== 0 ?
         (<div className="grid grid-cols-3 w-full gap-3">{foodAndDrinkList.map(foodAndDrink =>
-            <FoodAndDrinkCard foodAndDrinkOneFromList={foodAndDrink} isDecision={isDecision} id={foodAndDrink.id} key={foodAndDrink.id} href={href}/>
+            <FoodAndDrinkCard foodAndDrinkOneFromList={foodAndDrink} mode={mode} id={foodAndDrink.id} key={foodAndDrink.id} href={href}/>
         )}
         </div>)
         :

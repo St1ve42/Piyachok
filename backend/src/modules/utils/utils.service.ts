@@ -24,7 +24,7 @@ export class UtilsService {
         value: number,
         unit: ManipulateType,
     ): Date {
-        return dayjs().add(value, unit).toDate();
+        return dayjs(initialDate).add(value, unit).toDate();
     }
 
     static subtractTime(

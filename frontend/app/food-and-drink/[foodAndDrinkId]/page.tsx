@@ -1,20 +1,24 @@
 import type {Metadata} from "next";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {notFound} from "next/navigation";
-import {IFoodAndDrink} from "@/src/interfaces/food-and-drink/IFoodAndDrink";
 import FoodAndDrinkByID from "@/src/components/features/food-and-drink-by-id/FoodAndDrinkByID";
+import {cookies} from "next/headers";
+import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
 
 type Props = {
     params: Promise<Record<'foodAndDrinkId', string | undefined>>,
     searchParams: Promise<unknown>
 }
 
-export const getFoodAndDrinkById = async ({params}: Props): Promise<IFoodAndDrink> => {
+export const getFoodAndDrinkById = async ({params}: Props): Promise<IFoodAndDrinkById> => {
     const {foodAndDrinkId} = await params
     if(!foodAndDrinkId){
         notFound()
     }
-    const foodAndDrinkResponse = await foodAndDrinkService.findById(foodAndDrinkId)
+    const cookieStore = await cookies()
+    const accessTokenCookie = cookieStore.get('accessToken')
+    const requestInit: RequestInit | undefined = accessTokenCookie ? {headers: {'Cookie': `${accessTokenCookie.name}=${accessTokenCookie.value}`}} : undefined
+    const foodAndDrinkResponse = await foodAndDrinkService.findById(foodAndDrinkId, requestInit)
     if(!foodAndDrinkResponse.success){
         notFound()
     }

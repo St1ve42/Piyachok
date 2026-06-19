@@ -6,7 +6,11 @@ import {customFetch} from "@/src/lib/fetch.api";
 import {removeTokens} from "@/src/actions/server.actions";
 
 export async function proxy(request: NextRequest) {
-    if (request.headers.has('next-action')) {
+    if (
+        request.headers.has('next-action') ||
+        request.headers.has('x-prerender-revalidate') ||
+        request.headers.has('x-nextjs-revalidate')
+    ) {
         return NextResponse.next();
     }
     const cookieStore = await cookies()

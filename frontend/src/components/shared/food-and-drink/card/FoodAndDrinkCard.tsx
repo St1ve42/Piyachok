@@ -12,6 +12,7 @@ import Link from "next/link";
 import {UrlObject} from "node:url";
 import Decision from "@/src/components/features/superadmin/food-and-drink/moderate/decision/Decision";
 import { utils } from "@/src/services/utils.service";
+import TemporaryFavourite from "@/src/components/features/account/favourites/components/TemporaryFavourite";
 
 const icons: Record<FoodAndDrinkFeaturesEnum, StaticImageData> = {
     [FoodAndDrinkFeaturesEnum.WI_FI]: wifi,
@@ -24,15 +25,15 @@ type PropsType = {
     foodAndDrinkOneFromList: IFoodAndDrinkOneFromList
     id: string
     href: string | UrlObject
-    isDecision?: boolean
+    mode: 'default' | 'moderate' | 'favourite'
 }
 
-export const FoodAndDrinkCard = ({foodAndDrinkOneFromList, id, href, isDecision = false}: PropsType) => {
+export const FoodAndDrinkCard = ({foodAndDrinkOneFromList, id, href, mode}: PropsType) => {
     const {name, type, location: {street}, city, features, mainImage, distance} = foodAndDrinkOneFromList
     return (<Card className="text-[14px]">
         <Link href={href + '/' + id} className="flex flex-col gap-2 h-full">
             {mainImage ? <Image src={utils.buildStorageURL(mainImage)} alt={'Фото закладу'} width={300} height={150} className="w-auto h-[25vh] rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-bold">
                     {name}
                 </CardTitle>
@@ -45,7 +46,8 @@ export const FoodAndDrinkCard = ({foodAndDrinkOneFromList, id, href, isDecision 
                 {features.map((feature) => <Feature key={feature} image={icons[feature as FoodAndDrinkFeaturesEnum]} alt={feature} featureName={feature}/>)}
             </CardFooter>}
         </Link>
-        {isDecision && <Decision id={id}/>}
+        {mode === 'favourite' && <TemporaryFavourite foodAndDrinkId={id}/>}
+        {mode === 'moderate' && <Decision id={id}/>}
     </Card>)
 }
 
