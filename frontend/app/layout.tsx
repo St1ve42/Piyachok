@@ -44,7 +44,7 @@ export default async function RootLayout({
       <body suppressHydrationWarning={true}>
         <div className="root">
             <Header profileSlot={profileContent}/>
-            <main className="h-[80%] mt-[20vh]">
+            <main className="h-[80%] mt-[17vh]">
                 <Providers>
                     {children}
                 </Providers>

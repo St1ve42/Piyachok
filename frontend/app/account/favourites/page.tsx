@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import Favourites from "@/src/components/features/account/favourites/Favourites";
+import Favourites from "@/src/components/views/account/Favourites";
 import {FC} from "react";
 import {redirect} from "next/navigation";
 import {userService} from "@/src/services/users.service";

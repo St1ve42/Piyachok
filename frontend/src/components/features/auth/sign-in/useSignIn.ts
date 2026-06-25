@@ -12,35 +12,12 @@ import {firebaseService} from "@/src/services/firebase.service";
 import {IUserFromSocialNetworkWithToken} from "@/src/interfaces/users/IUserFromSocialNetwork";
 
 const useSignIn = () => {
-    const {register, watch, reset, handleSubmit, formState: {errors, isValid}} = useForm<ISignIn>({mode: 'all', resolver: joiResolver(signInValidator, JoiOptions)})
+    const {register, handleSubmit, formState: {errors, isValid}} = useForm<ISignIn>({mode: 'all', resolver: joiResolver(signInValidator, JoiOptions)})
     const [isShownPassword, setIsShownPassword] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const {setApiResponse} = useUserFromSocialNetworkStore()
     const router = useRouter()
-    // eslint-disable-next-line react-hooks/incompatible-library
-    const allFields = watch()
-
-    useEffect(() => {
-        const formData = localStorage.getItem('signInFormData')
-        if(formData){
-            try{
-                const parsedData = JSON.parse(formData);
-                reset(parsedData)
-            }
-            catch(e){
-                console.log("Помилка парсингу даних: ", e)
-            }
-        }
-    }, [reset]);
-
-    useEffect(() => {
-        if(!isLoading && !isSuccessfullySubmitted){
-            const {password, ...restSignIn} = allFields
-            localStorage.setItem('signInFormData', JSON.stringify(restSignIn))
-        }
-    }, [allFields, isLoading, isSuccessfullySubmitted]);
 
     useEffect(() => {
 
@@ -55,7 +32,6 @@ const useSignIn = () => {
             const result = await authService.signIn(formData)
             if (result.success) {
                 localStorage.removeItem('signInFormData')
-                setIsSuccessfullySubmitted(true)
                 router.push('/')
                 router.refresh()
             } else {

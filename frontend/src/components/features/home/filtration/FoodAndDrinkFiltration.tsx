@@ -1,17 +1,27 @@
 'use client'
 import {Button, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrack} from "@heroui/react";
-import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
+import useFoodAndDrinkFiltration from "@/src/components/features/home/filtration/useFoodAndDrinkFiltration";
 import FoodAndDrinkTypeSelection from "@/src/components/shared/food-and-drink/type-selection/FoodAndDrinkTypeSelection";
 import FeatureSelection from "@/src/components/shared/food-and-drink/feature-selection/FeatureSelection";
+import {FC} from "react";
 
-const FoodAndDrinkFiltration = () => {
-    const {formKey, setFormKey, pathname, router, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect} = useFoodAndDrinkFiltration()
+export type PropsType = {
+    initialTypeValue?: string,
+    initialFeatures?: string[] | string,
+    initialRating?: number,
+    initialAverageReceipt?: number[]
+}
+
+
+const FoodAndDrinkFiltration: FC<PropsType> = ({initialTypeValue, initialFeatures, initialAverageReceipt, initialRating}) => {
+    const {formKey, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect, clearFilters} = useFoodAndDrinkFiltration()
     return (
         <div className="flex p-4 flex-col gap-8 fixed z-10" key={formKey}>
             <h1 className="self-center">Фільтрувати</h1>
-            <FoodAndDrinkTypeSelection handleTypeSelect={handleTypeSelect}/>
-            <FeatureSelection handleFeatureCheck={handleFeatureCheck}/>
+            <FoodAndDrinkTypeSelection initialValue={initialTypeValue} handleTypeSelect={handleTypeSelect}/>
+            <FeatureSelection handleFeatureCheck={handleFeatureCheck} initialFeatures={typeof initialFeatures === 'string' ? [initialFeatures] : initialFeatures}/>
             <Slider
+                defaultValue={initialRating ?? 0}
                 maxValue={10}
                 aria-label="Рейтинг"
                 onChangeEnd = {handleRatingSelect}
@@ -29,7 +39,7 @@ const FoodAndDrinkFiltration = () => {
                 <Label>Діапазон середнього чеку</Label>
                 <Slider
                     className="w-full max-w-xs"
-                    defaultValue={[
+                    defaultValue={initialAverageReceipt ?? [
                         0,
                         5000
                     ]}
@@ -51,10 +61,7 @@ const FoodAndDrinkFiltration = () => {
                     </SliderTrack>
                 </Slider>
             </div>
-            <Button className="self-center mt-4" onClick={() => {
-                router.push(pathname)
-                setFormKey(prev => prev + 1);
-            }}>Очистити</Button>
+            <Button className="self-center mt-4" onClick={clearFilters}>Очистити</Button>
         </div>
     )
 }

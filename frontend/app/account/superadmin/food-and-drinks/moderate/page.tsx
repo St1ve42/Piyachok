@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {getAccessCookie} from "@/src/services/server.service";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
-import FoodAndDrinkModerate from "@/src/components/features/superadmin/food-and-drink/moderate/FoodAndDrinkModerate";
+import FoodAndDrinkModerate from "@/src/components/features/account/superadmin/food-and-drink/moderate/FoodAndDrinkModerate";
 import {FC} from "react";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {redirect} from "next/navigation";

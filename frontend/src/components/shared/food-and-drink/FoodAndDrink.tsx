@@ -1,7 +1,7 @@
 'use client'
 import {Avatar, Button, Card, CardContent, Chip, Dropdown, Header, Heading, Input, Label, Modal} from "@heroui/react";
 import Image from "next/image";
-import {EllipsisVertical, Eye, Globe, MapPin, Pencil, Route, TrashBin} from "@gravity-ui/icons";
+import {EllipsisVertical, Eye, Globe, MapPin, Pencil, Route, TrashBin, Smartphone} from "@gravity-ui/icons";
 import useFoodAndDrink from './useFoodAndDrink'
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
@@ -15,10 +15,14 @@ import dynamic from "next/dynamic";
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import {IUser} from "@/src/interfaces/users/IUser";
-import UsersSearch from "@/src/components/features/superadmin/users/search/UsersSearch";
+import UsersSearch from "@/src/components/features/account/superadmin/users/search/UsersSearch";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
 import TotalStatistics from "@/src/components/features/food-and-drink-by-id/components/TotalStatistics";
+import Statistics from "@/src/components/features/account/statistics/Statistics";
+import {useSearchParams} from "next/navigation";
+import ReadOnlyStarRating from "@/src/components/ui/read-only-star-rating/ReadOnlyStarRating";
+import {FoodAndDrinkDaysEnum} from "@/src/enums/food-and-drink/food-and-drink-days.enum";
 
 const Map = dynamic(() => import('@/src/components/features/food-and-drink-by-id/components/Map'), { ssr: false });
 
@@ -28,6 +32,9 @@ type PropsType = {
 } | {mode: 'owner', foodAndDrink: IFoodAndDrinkOwnerInfo} | {mode: 'superadmin', foodAndDrink: IFoodAndDrinkSuperadminInfo, users: IUser[]}
 
 const FoodAndDrink: FC<PropsType> = (props) => {
+    const searchParams = useSearchParams()
+    const start = searchParams.get('start')
+    const end = searchParams.get('end')
     const {icons, handleConfirm, handleOnPressDeleteButton, isCorrectInput, handleConfirmInputChange, handleChangeStatus, handleBindOwnership, errorMessage, closeTriggerButtonRef} = useFoodAndDrink({foodAndDrink: props.foodAndDrink})
     const {images, name, type, location, city, features, site, phone, averageReceipt, description, tags, businessHours, socialNetworks, id} = props.foodAndDrink
     const offset = -(new Date().getTimezoneOffset())
@@ -42,7 +49,7 @@ const FoodAndDrink: FC<PropsType> = (props) => {
     const { coordinates: {lat, lng} } = props.foodAndDrink.location;
     const centerPosition: [number, number] = [lat, lng]
     return (
-        <section className="flex flex-col gap-6">
+        <section className="flex flex-col gap-2">
             {props.mode !== 'user' && <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                     {createdAtDate && <div>Створено: {createdAtDate.toLocaleDateString('uk-UA', dateOptions)}, {createdAtDate.toLocaleTimeString('uk-UA')}</div>}
@@ -134,9 +141,21 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                     </Modal>
                 </div>
             </div>}
+            {props.mode === 'superadmin' && <Card className="text-[14px] h-fit w-[20vw] self-end flex-row items-center">
+                <Avatar className={'size-14'}>
+                    <Avatar.Image alt="фото" src={props.foodAndDrink.owner.photo ? utils.buildStorageURL(props.foodAndDrink.owner.photo ) : UserAvatar.src} width={100} height={100}/>
+                </Avatar>
+                <CardContent>
+                    <div>{props.foodAndDrink.owner.name} {props.foodAndDrink.owner.surname}</div>
+                    <div>{props.foodAndDrink.owner.email}</div>
+                </CardContent>
+                <Link href={`/account/superadmin/users/${props.foodAndDrink.owner.id}`}>
+                    <Eye/>
+                </Link>
+            </Card>}
             {errorMessage && <div className="absolute text-red-600 w-[56%] text-[10px] mt-14 leading-none">{errorMessage}</div>}
             <div className="flex gap-4 mt-2">
-                <div className="flex flex-col gap-4 flex-1" style={{maxWidth: props.mode === 'user' || props.mode === 'superadmin' ? '68%' : '100%'}}>
+                <div className="flex flex-col gap-4 flex-1">
                     {images ? <div className="relative rounded-md overflow-hidden">
                         <Swiper className="relative w-full h-[21rem] bg-gray-100"
                                 modules={[Navigation, Pagination]}
@@ -148,8 +167,8 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                         >
                             {images.map((image => <SwiperSlide key={image}><Image src={utils.buildStorageURL(image)} alt={name} fill className="object-cover"/></SwiperSlide>))}
                         </Swiper>
-                    </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
-                    <div className="bg-white p-4 rounded-md shadow-sm mb-6 flex flex-col gap-2">
+                    </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-[21rem] rounded-sm border-black border-solid border-2"/>}
+                    <div className="bg-white p-4 rounded-md shadow-sm flex flex-col gap-2">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h1 className="text-2xl font-bold">{name}</h1>
@@ -162,40 +181,54 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                         </div>
 
                         <p className="text-gray-700">{description}</p>
-                        <h3><span className="font-semibold">Рейтинг:</span> {props.foodAndDrink.rating ?? 0}/10</h3>
+                        <h3 className="flex items-center gap-1">
+                            <span className="font-semibold">Рейтинг:</span>
+                            <span>{props.foodAndDrink.rating ?? 0}</span>
+                            <ReadOnlyStarRating initialValue={props.foodAndDrink.rating ?? 0}/>
+                        </h3>
                        <h3><span className="font-semibold">Середній чек:</span> {averageReceipt} грн</h3>
-                        <div className="gap-2 grid grid-cols-2">
+                        <div className="gap-2 grid grid-cols-2 pr-10">
                             <div>
                                 <h3 className="font-semibold">Контакти</h3>
-                                <div className="flex items-center gap-2">{phone}</div>
-                                {site && <div className="flex items-center gap-2 mt-1"><Globe/> <a href={site} target="_blank" rel="noreferrer" className="text-blue-600">{site}</a></div>}
+                                <div className="flex items-center gap-2"><Smartphone/>{phone}</div>
                                 <div className="flex items-center gap-2 mt-1"><MapPin/> {location.street}, {city}</div>
+                                {site && <div className="flex items-center gap-2"><Globe/> <Link href={site} className="text-blue-600 w-[100px]">{site}</Link></div>}
                             </div>
                             <div>
                                 <h3 className="font-semibold mb-2">Години роботи</h3>
-                                <ul className="text-sm text-gray-700 w-[60%]">
-                                    {businessHours.map((bh, i) => (
-                                        <li key={i} className="flex justify-between"><span>{bh.day}</span><span>{bh.open} - {bh.close}</span></li>
-                                    ))}
+                                <ul className="text-sm text-gray-700 grid grid-rows-4 grid-flow-col">
+                                    {Object.values(FoodAndDrinkDaysEnum).map(day => {
+                                        const foundedBusinessHour = businessHours.find(businessHour => businessHour.day === day)
+                                        if(!foundedBusinessHour){
+                                            return <li key={uuidv4()} className="flex justify-between mr-5"><span>{day}</span><span>не вказано</span></li>
+                                        }
+                                        else{
+                                            const {open, close} = foundedBusinessHour
+                                            return <li key={uuidv4()} className="flex justify-between"><span>{day}</span><span>{open} - {close}</span></li>
+                                        }
+                                    })}
+                                    {/*{businessHours.map((bh, i) => (*/}
+                                    {/*    <li key={i} className="flex justify-between"><span>{bh.day}</span><span>{bh.open} - {bh.close}</span></li>*/}
+                                    {/*))}*/}
                                 </ul>
                             </div>
-                            {features && <div>
+                            <div>
                                 <h3 className="font-semibold mb-2">Особливості</h3>
-                                <div className="flex gap-2 flex-wrap">
+                                {features ? <div className="flex gap-2 flex-wrap">
                                     {features.map((f) => (
                                         <Chip key={f} className="uppercase">{f}</Chip>
                                     ))}
-                                </div>
-                            </div>}
-                            {tags && <div>
+                                </div> : <div className="text-sm">Відсутні</div>}
+                            </div>
+                            <div>
                                 <h3 className="font-semibold mb-2">Теги</h3>
-                                <div className="flex gap-2 flex-wrap">
-                                    {tags.map((tag) => <Link href={{pathname: '/', query: {tag}}} key={uuidv4()}><Chip>{tag}</Chip></Link>)}
-                                </div>
-                            </div>}
-                            {socialNetworks && Object.keys(socialNetworks).length !==0 && <div className="w-[40%]">
+                                {tags ? <div className="flex gap-2 flex-wrap">
+                                    {tags.map((tag) => <Link href={{pathname: '/', query: {tag}}} key={uuidv4()}><Chip className="hover:text-blue-600">{tag}</Chip></Link>)}
+                                </div> : <div className="text-sm">Відсутні</div>}
+                            </div>
+                            <div className="w-[50%]">
                                 <h3 className="font-semibold mb-2">Соціальні мережі</h3>
-                                <ul className="text-sm text-gray-700">
+                                {socialNetworks && Object.keys(socialNetworks).length !==0 ? <ul className="text-sm text-gray-700">
                                     {Object.entries(socialNetworks).map(([key, value]) => (
                                         <li key={key} className="flex gap-2 mt-1">
                                             <Image src={icons[key]} alt={key} width={20} height={20}/>
@@ -203,8 +236,8 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                                             <Link href={value}>{value}</Link>
                                         </li>
                                     ))}
-                                </ul>
-                            </div>}
+                                </ul> : <div className="text-sm">Відсутні</div>}
+                            </div>
                         </div>
                     </div>
                     <div></div>
@@ -213,22 +246,11 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                     <Map foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region: props.foodAndDrink.region, city: props.foodAndDrink.city}}/>
                     <div></div>
                 </div>}
-                {props.mode === 'superadmin' && <Card className="text-[14px] h-fit w-[20vw]">
-                    <div className="flex justify-between items-center">
-                        <Heading level={5}>Власник</Heading>
-                        <Link href={`/account/superadmin/users/${props.foodAndDrink.owner.id}`}>
-                            <Eye/>
-                        </Link>
-                    </div>
-                    <Avatar className={'size-14'}>
-                        <Avatar.Image alt="фото" src={props.foodAndDrink.owner.photo ? utils.buildStorageURL(props.foodAndDrink.owner.photo ) : UserAvatar.src} width={100} height={100}/>
-                    </Avatar>
-                    <CardContent>
-                        <div>{props.foodAndDrink.owner.name} {props.foodAndDrink.owner.surname}</div>
-                        <div>{props.foodAndDrink.owner.email}</div>
-                    </CardContent>
-                </Card>}
             </div>
+            {props.mode === 'superadmin' && <div>
+                <Heading level={3} className="text-center">Статистика</Heading>
+                <Statistics start={start} end={end} id={id}/>
+            </div>}
         </section>
     )
 }

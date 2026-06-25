@@ -23,7 +23,7 @@ const FoodAndDrinkModerate: FC<PropsType> = ({foodAndDrinkListData, page, access
         redirect('/account/superadmin/food-and-drinks/moderate')
     }
     return (
-        <div className="h-full flex flex-col gap-3">
+        <div className="h-full flex flex-col gap-3 mb-5">
             <Heading level={3}>Модерація закладів</Heading>
             <Heading level={5}>Знайдено: {total}</Heading>
             <div className="flex items-center justify-between">

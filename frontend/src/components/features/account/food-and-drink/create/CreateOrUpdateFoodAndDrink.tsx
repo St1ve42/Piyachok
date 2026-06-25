@@ -100,7 +100,7 @@ const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
                 {errors.phone && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.phone.message}</div>}
             </div>
             <div className="w-[40%]">
-                <FeatureSelection featuresFromApi={props.foodAndDrink?.features} handleFeatureCheck={handleFeatureCheck} isShownTextAboutOptional={true}/>
+                <FeatureSelection initialFeatures={props.foodAndDrink?.features} handleFeatureCheck={handleFeatureCheck} isShownTextAboutOptional={true}/>
             </div>
             <div className="flex flex-col gap-3 relative">
                 <Label htmlFor={'tag'} className="font-bold">Теги (не обов&#39;язково)</Label>

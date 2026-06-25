@@ -1,6 +1,6 @@
 'use client'
 
-import {useTotalStatistics} from "@/src/hooks/tanstack-query/useTotalStatistics";
+import {useFoodAndDrinkTotalStatistics} from "@/src/hooks/tanstack-query/useFoodAndDrinkTotalStatistics";
 import {FC} from "react";
 import {Eye} from "@gravity-ui/icons"
 import Favourite from "@/src/components/features/food-and-drink-by-id/components/Favourite";
@@ -11,7 +11,7 @@ type PropsType = {
 }
 
 const TotalStatistics: FC<PropsType> = ({foodAndDrinkId, isFavourite}) => {
-    const { isLoading, data } = useTotalStatistics(foodAndDrinkId);
+    const { isLoading, data } = useFoodAndDrinkTotalStatistics(foodAndDrinkId);
     if(isLoading){
         return <div>Завантаження...</div>
     }

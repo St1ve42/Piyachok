@@ -48,3 +48,6 @@
     cursor: pointer;
     color: #ff4754;
 }
+label{
+    font-size: 16px;
+}

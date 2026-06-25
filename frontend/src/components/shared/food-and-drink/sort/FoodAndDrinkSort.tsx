@@ -1,9 +1,15 @@
 'use client'
 import {Label, ListBox, Select} from "@heroui/react";
 import useFoodAndDrinkSort from "@/src/components/shared/food-and-drink/sort/useFoodAndDrinkSort";
+import {FC} from "react";
 
-const FoodAndDrinkSort = () => {
-    const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useFoodAndDrinkSort()
+type PropsType = {
+    initialSortByValue?: string,
+    initialSortValue?: string
+}
+
+const FoodAndDrinkSort: FC<PropsType> = (props) => {
+    const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useFoodAndDrinkSort(props)
     return (
         <div className="flex gap-3">
             <Select className="w-[160px]" placeholder="Сортувати за:" value={sortBy} onChange = {handleChangeSortBy}>

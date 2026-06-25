@@ -10,9 +10,9 @@ import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@heroui/reac
 import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drink-features.enum";
 import Link from "next/link";
 import {UrlObject} from "node:url";
-import Decision from "@/src/components/features/superadmin/food-and-drink/moderate/decision/Decision";
+import Decision from "@/src/components/features/account/superadmin/food-and-drink/moderate/decision/Decision";
 import { utils } from "@/src/services/utils.service";
-import TemporaryFavourite from "@/src/components/features/account/favourites/components/TemporaryFavourite";
+import TemporaryFavourite from "@/src/components/features/account/favourites/TemporaryFavourite";
 
 const icons: Record<FoodAndDrinkFeaturesEnum, StaticImageData> = {
     [FoodAndDrinkFeaturesEnum.WI_FI]: wifi,

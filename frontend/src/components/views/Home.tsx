@@ -3,13 +3,13 @@ import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import PaginationWithEclipses from "@/src/components/ui/pagination/PaginationWithEclipses";
 import {notFound, redirect} from "next/navigation";
 import FoodAndDrinkSearch from "@/src/components/shared/food-and-drink/search/FoodAndDrinkSearch";
-import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
+import FoodAndDrinkFiltration from "@/src/components/features/home/filtration/FoodAndDrinkFiltration";
 import FoodAndDrinkSort from "@/src/components/shared/food-and-drink/sort/FoodAndDrinkSort";
-import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
+import FoodAndDrinkGeoMessage from "@/src/components/features/home/geo-message/FoodAndDrinkGeoMessage";
 import FoodAndDrinkList from "@/src/components/shared/food-and-drink/list/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 
-export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {features?: string[]} & {page: number}
+export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}
 
 export type PropsType = {
   searchParams: FoodAndDrinkSearchParamsType
@@ -17,10 +17,12 @@ export type PropsType = {
 
 const Home = async ({searchParams}: PropsType) => {
     const {page, ...restParams} = searchParams
+    const {sort, sortBy, type, rating} = restParams
+    const {name} = restParams
     if(page < 1 || isNaN(page)){
         redirect('/')
     }
-    const foodAndDrinkListApiResponse = await foodAndDrinkService.find({limit: 20, page, ...restParams})
+    const foodAndDrinkListApiResponse = await foodAndDrinkService.find({limit: 5, page, ...restParams})
     if(!foodAndDrinkListApiResponse){
         return <div>Завантаження...</div>
     }
@@ -29,22 +31,20 @@ const Home = async ({searchParams}: PropsType) => {
     }
     const {data: {total, totalPages, data: foodAndDrinkList}} = foodAndDrinkListApiResponse
     if(page > totalPages && totalPages !== 0){
-        console.log(totalPages)
-        console.log('It works')
         redirect('/')
     }
     return (
         <div className="flex justify-between">
-            <div className="w-[21%] h-[80vh]">
-                <FoodAndDrinkFiltration/>
+            <div className="w-[18%] h-[80vh]">
+                <FoodAndDrinkFiltration initialTypeValue={type} initialRating={rating} initialFeatures={restParams['features[]']} initialAverageReceipt={[restParams['averageReceipt[gte]'] ?? 0, restParams['averageReceipt[lte]'] ?? 5000]}/>
             </div>
             <div className="w-[77%] flex flex-col gap-3">
                 <TabMenu/>
                 <div className="flex items-center justify-between">
                     <h1>Знайдено: {total}</h1>
                     <div className="flex gap-3">
-                        <FoodAndDrinkSort/>
-                        <FoodAndDrinkSearch type={'public'}/>
+                        <FoodAndDrinkSort initialSortValue={sort} initialSortByValue={sortBy}/>
+                        <FoodAndDrinkSearch type={'public'} initialValue={name}/>
                     </div>
                 </div>
                 <FoodAndDrinkGeoMessage sortBy={searchParams.sortBy}/>

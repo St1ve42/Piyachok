@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import Users from "@/src/components/views/superadmin/users/Users";
+import Users from "@/src/components/views/superadmin/Users";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {redirect} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";

@@ -25,11 +25,11 @@
     "next": "16.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-flexible-star-rating": "^1.0.7",
     "react-hook-form": "^7.72.1",
     "react-intersection-observer": "^10.0.3",
     "react-leaflet": "^5.0.0",
     "react-leaflet-custom-control": "^1.5.0",
+    "react-simple-star-rating": "^5.1.7",
     "swiper": "^12.1.4",
     "uuid": "^14.0.0",
     "zustand": "^5.0.12"

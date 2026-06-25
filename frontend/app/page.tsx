@@ -1,11 +1,11 @@
-import Home from "@/src/components/views/home/Home";
+import Home from "@/src/components/views/Home";
 import { queryFoodAndDrinkValidator } from "@/src/validators/food-and-drink/query-food-and-drink.validator";
 import { redirect } from "next/navigation";
 
 type PropsType = {
-    searchParams: Promise<Record<'page' | 'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'features[]' | 'sortBy', string | undefined> & {
+    searchParams: Promise<Record<'page' | 'name' | 'type' | 'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]' | 'sortBy', string | undefined> & {
         sort: 'asc' | 'desc'
-    }>
+    } & {'features[]': string | string[]}>
 }
 
 export default async function HomePage({searchParams}: PropsType) {

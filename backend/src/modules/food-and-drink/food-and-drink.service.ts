@@ -198,7 +198,7 @@ export class FoodAndDrinkService {
                   id,
               )
             : null;
-        if (userId) {
+        if (userId && foodAndDrink.ownerId !== userId) {
             const existsUserView =
                 await this.foodAndDrinkViewsService.existsUserView(
                     userId,
@@ -237,10 +237,14 @@ export class FoodAndDrinkService {
             cityId,
         });
         await this.foodAndDrinkRepository.save(foodAndDrink);
-        owner.role = (await this.roleService.findBy({
-            name: GlobalUserRoleEnum.ADMIN,
-        })) as Role;
-        owner.ownerOf = foodAndDrink;
+        if (
+            (owner.role.name as GlobalUserRoleEnum) === GlobalUserRoleEnum.USER
+        ) {
+            owner.role = (await this.roleService.findBy({
+                name: GlobalUserRoleEnum.ADMIN,
+            })) as Role;
+            owner.ownerOf = foodAndDrink;
+        }
         await this.userRepository.save(owner);
         await this.foodAndDrinkStatisticsService.create(foodAndDrink.id);
         return (await this.findById(foodAndDrink.id)) as FoodAndDrink;
@@ -275,7 +279,7 @@ export class FoodAndDrinkService {
         const { owner } = (await this.findById(id, {
             owner: true,
         })) as FoodAndDrink;
-        if (owner.role.name !== GlobalUserRoleEnum.SUPERADMIN.toString()) {
+        if (owner.role.name === GlobalUserRoleEnum.ADMIN.toString()) {
             owner.role = (await this.roleService.findBy({
                 name: GlobalUserRoleEnum.USER,
             })) as Role;

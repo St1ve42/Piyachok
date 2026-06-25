@@ -4,19 +4,22 @@ import {Key} from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 
 type PropsType = {
+    initialValue?: string
     type: 'public' | 'moderate' | 'all'
     accessCookie?: string
 }
 
-export const useFoodAndDrinkSearch = ({type, accessCookie}: PropsType) => {
+export const useFoodAndDrinkSearch = ({type, accessCookie, initialValue}: PropsType) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [inputValue, setInputValue] = useState<string>('')
-    const [debouncedInputValue, setDebouncedInputValue] = useState<string>('')
+    const [inputValue, setInputValue] = useState<string>(initialValue ?? '')
+    const [debouncedInputValue, setDebouncedInputValue] = useState<string>(initialValue ?? '')
     const foodAndDrinkResponse = useFoodAndDrinkSearchQuery(debouncedInputValue, type, accessCookie)
     const {pathname, router, createQueryString} = useURL()
     useEffect(() => {
-        const timer = setTimeout(() => setDebouncedInputValue(inputValue), 500)
-        return () => clearTimeout(timer)
+        if(inputValue){
+            const timer = setTimeout(() => setDebouncedInputValue(inputValue), 500)
+            return () => clearTimeout(timer)
+        }
     }, [inputValue]);
     useEffect(() => {
         if(!debouncedInputValue){

@@ -1,6 +1,6 @@
 'use client'
 import {Label, ListBox, Select} from "@heroui/react";
-import useUserSort from "@/src/components/features/superadmin/users/sort/useUserSort";
+import useUserSort from "@/src/components/features/account/superadmin/users/sort/useUserSort";
 
 const UserSort = () => {
     const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useUserSort()

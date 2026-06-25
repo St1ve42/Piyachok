@@ -1,7 +1,7 @@
 'use client'
 import { Button, Dropdown, Header, Label} from "@heroui/react";
 import {Funnel} from "@gravity-ui/icons"
-import useUserFilter from "@/src/components/features/superadmin/users/filter/useUserFilter";
+import useUserFilter from "@/src/components/features/account/superadmin/users/filter/useUserFilter";
 
 const UserFilter = () => {
     const {handleFilterChange} = useUserFilter()

@@ -20,3 +20,6 @@ body{
 button{
     cursor: pointer;
 }
+svg.star-svg {
+    display: inline;
+}

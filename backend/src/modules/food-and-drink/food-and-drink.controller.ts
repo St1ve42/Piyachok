@@ -49,7 +49,6 @@ import {
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
-import { FoodAndDrinkTypeEnum } from './enums/food-and-drink-type.enum';
 import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
 import { FoodAndDrinkOwnerInfoPresenter } from './presenters/food-and-drink-owner-info.presenter';
 import { OptionalAuthGuard } from '../../shared/guards/optional-auth.guard';
@@ -60,6 +59,10 @@ import { ResponseFindStatisticByFoodAndDrinkDto } from '../food-and-drink-statis
 import { ResponseFoodAndDrinkFindViewsDto } from '../food-and-drinks-views/dto/response-food-and-drink-find-views.dto';
 import { QueryFoodAndDrinkViewsDto } from '../food-and-drinks-views/dto/query-food-and-drink-views.dto';
 import { FoodAndDrinkViewsService } from '../food-and-drinks-views/food-and-drink-views.service';
+import {
+    FoodAndDrinkTypeTranslate,
+    type FoodAndDrinkTypeTranslateType,
+} from './constants/FoodAndDrinkTypeTranslate';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -131,16 +134,16 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Список типів',
-        description: 'Отримує список типів закладу',
+        summary: 'Об`єкт типів з перекладом',
+        description: 'Отримує об`єкт типів з перекладом',
     })
     @ApiOkResponse({
-        description: 'Успішно отримано список типів закладу',
-        example: Object.values(FoodAndDrinkTypeEnum),
+        description: 'Успішно отримано об`єкт типів з перекладом',
+        example: FoodAndDrinkTypeTranslate,
     })
     @Get('/types')
-    findTypes(): FoodAndDrinkTypeEnum[] {
-        return Object.values(FoodAndDrinkTypeEnum);
+    findTypes(): FoodAndDrinkTypeTranslateType {
+        return FoodAndDrinkTypeTranslate;
     }
 
     @ApiOperation({
@@ -522,9 +525,12 @@ export class FoodAndDrinkController {
         )
         foodAndDrinkId: string,
         @Query() query: QueryFoodAndDrinkViewsDto,
+        @Req() req: IUserRequest,
     ): Promise<ResponseFoodAndDrinkFindViewsDto> {
+        const user = req.user;
         return await this.foodAndDrinkViewsService.findViews(
             foodAndDrinkId,
+            user.role,
             query,
         );
     }

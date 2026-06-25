@@ -12,6 +12,8 @@ type PropsType = {
 function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     const [page, setPage] = useState(1);
     const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
+    console.log('Input page value: ', inputPageValue)
+    console.log('Current page value: ', currentPage)
     const router = useRouter();
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -30,7 +32,7 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     }, [currentPage]);
 
     useEffect(() => {
-      const timer = setTimeout(() => router.push(pathname + '?' + createQueryString('page', inputPageValue)), 500)
+      const timer = setTimeout(() => router.push(pathname + '?' + createQueryString('page', inputPageValue), {scroll: false}), 500)
       return () => clearTimeout(timer)
     }, [inputPageValue]);
 
@@ -59,8 +61,9 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
         return pages;
     };
 
+
     return (
-        <div className="w-full max-w-2xs overflow-x-auto sm:max-w-full mb-5">
+        <div className="w-full max-w-2xs sm:max-w-full mb-5">
             <Pagination className="justify-center">
                 <div className="flex items-center gap-3">
                   <p>Сторінка: </p>
@@ -70,7 +73,7 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
                 </div>
                 <Pagination.Content>
                     <Pagination.Item>
-                        <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page-1}`))
+                        <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page-1}`), {scroll: false})
                         }>
                             <Pagination.PreviousIcon />
                         </Pagination.Previous>
@@ -82,14 +85,14 @@ function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
                             </Pagination.Item>
                         ) : (
                             <Pagination.Item key={p}>
-                                <Pagination.Link isActive={p === currentPage} onPress={() => setPage(p)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${p}`))}>
+                                <Pagination.Link isActive={p === currentPage} onPress={() => setPage(p)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${p}`), {scroll: false})}>
                                     {p}
                                 </Pagination.Link>
                             </Pagination.Item>
                         ),
                     )}
                     <Pagination.Item>
-                        <Pagination.Next isDisabled={page === totalPages} onPress={() => setPage((p) => p + 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page+1}`))}>
+                        <Pagination.Next isDisabled={page === totalPages} onPress={() => setPage((p) => p + 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page+1}`), {scroll: false})}>
                             <Pagination.NextIcon />
                         </Pagination.Next>
                     </Pagination.Item>

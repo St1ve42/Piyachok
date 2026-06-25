@@ -5,7 +5,7 @@ export function useURL(){
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
-    const createQueryString = useCallback((name: string, value: string | null, action: "set" | "append" | "delete" = "set", initialSearchParams: string = searchParams.toString()) =>{
+    const createQueryString = useCallback((name: string, value: string | null | undefined, action: "set" | "append" | "delete" = "set", initialSearchParams: string = searchParams.toString()) =>{
         const query = new URLSearchParams(initialSearchParams)
         if(value){
             switch(action){

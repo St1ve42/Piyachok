@@ -26,7 +26,8 @@ const SignIn = () => {
                         }} style={{display: !isShownPassword ? 'block' : 'none'}}/>
                         <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)} style={{display: isShownPassword ? 'block' : 'none'}}/>
                     </div>
-                    {errorMessage && <div className="absolute text-red-600 text-[10px] leading-none mt-7 self-start">{errorMessage}</div>}
+                    {errors.password && <div className="absolute text-red-600 text-[10px] leading-none self-start mt-1">{errors.password.message}</div>}
+                    {errorMessage && <div className="absolute text-red-600 text-[10px] leading-none mt-5 self-start">{errorMessage}</div>}
                 </div>
                 <button type="submit" className="sign-up-btn bg-black text-white mt-10" disabled={!isValid || isLoading}
                         style={{opacity: (isValid && !isLoading) ? 1 : 0.8, cursor: (isValid && !isLoading) ? 'pointer' : 'default'}}>

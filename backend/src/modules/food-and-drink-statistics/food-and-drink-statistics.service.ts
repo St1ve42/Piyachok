@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FoodAndDrinkStatistic } from './entities/food-and-drink-statistic.entity';
 import { Repository } from 'typeorm';
@@ -34,7 +38,7 @@ export class FoodAndDrinkStatisticsService {
             select: ['totalFavourites', 'totalViews'],
         });
         if (!statistics) {
-            throw new ConflictException('У заклада відсутня статистика');
+            throw new NotFoundException('У заклада відсутня статистика');
         }
         return statistics;
     }

@@ -1,7 +1,6 @@
 import {Metadata} from "next";
 import Statistics from "@/src/components/features/account/statistics/Statistics";
 import {FC} from "react";
-import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {userService} from "@/src/services/users.service";
 import {getAccessCookie} from "@/src/services/server.service";
 
@@ -21,11 +20,7 @@ const StatisticsPage: FC<PropsType> = async ({searchParams}) => {
     if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    const foodAndDrinkViewStatisticsResponse = await foodAndDrinkService.findViewStatistics(foodAndDrinkResponse.data.id, {start, end}, requestInit)
-    if(!foodAndDrinkViewStatisticsResponse.success){
-        return <div>{foodAndDrinkViewStatisticsResponse.data.message}</div>
-    }
-    return <Statistics start={start} end={end} foodAndDrinkViews={foodAndDrinkViewStatisticsResponse.data}/>
+    return <Statistics start={start} end={end} id={foodAndDrinkResponse.data.id}/>
 }
 
 export default StatisticsPage

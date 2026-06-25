@@ -1,6 +1,6 @@
 'use client'
 import { Button, Header, ListBox, SearchField, Label } from "@heroui/react";
-import useUsersSearch from "@/src/components/features/superadmin/users/search/useUsersSearch";
+import useUsersSearch from "@/src/components/features/account/superadmin/users/search/useUsersSearch";
 import {FC} from "react";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 

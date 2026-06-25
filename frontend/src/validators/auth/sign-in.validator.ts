@@ -3,5 +3,5 @@ import {credentialsSchema} from "@/src/validators/shared/credentials.schema";
 
 export const signInValidator = Joi.object({
     email: credentialsSchema.email,
-    password: credentialsSchema.password
+    password: Joi.string().required()
 })

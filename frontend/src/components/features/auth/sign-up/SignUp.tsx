@@ -8,27 +8,31 @@ import Image from "next/image";
 const SignUp = () => {
     const {isLoading, previousApiResponse, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenCity, setIsOpenCity, regionId, regionInputValue, cityInputValue, errors, register, isValid, regionQuery, cityQuery, ref, handleCityInputChange, handleRegionInputChange, handleRegionSelect, handleCitySelect, regions, cities, apiErrorMessage, handleSubmit, handleFormSubmit} = useSignUp()
     return (
-        <section className="h-full flex justify-center items-center ">
-            <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-[50%] p-3 sign-up-form gap-5">
+        <section className="h-full flex justify-center">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-[40vw] px-4 py-2 sign-up-form gap-3">
                 <h1 className='text-xl text-center'>Створити акаунт</h1>
                 <div className="flex justify-between w-full">
                     <div className="w-[48%] relative">
-                        <input type='text' className="w-full" placeholder='Ім`я' disabled={isLoading} {...register('name')}></input>
+                        <label>Ім&#39;я</label>
+                        <input type='text' className="w-full" placeholder='Введіть ім`я' disabled={isLoading} {...register('name')}></input>
                         {errors.name && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.name.message}</div>}
                     </div>
                     <div className="w-[48%] relative">
-                        <input type='text' className="w-full" placeholder='Прізвище' disabled={isLoading} {...register('surname')}></input>
+                        <label>Прізвище</label>
+                        <input type='text' className="w-full" placeholder='Введіть прізвище' disabled={isLoading} {...register('surname')}></input>
                         {errors.surname && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.surname.message}</div>}
                     </div>
                 </div>
                 <div className="relative w-full">
-                    <input type='number' className="w-full" placeholder='Вік' min={1} max={100} disabled={isLoading} {...register('age')}></input>
+                    <label>Вік</label>
+                    <input type='number' className="w-full" placeholder='Введіть вік' min={1} max={100} disabled={isLoading} {...register('age')}></input>
                     {errors.age && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.age.message}</div>}
                 </div>
                 <div className="flex gap-2">
                     <div className="relative w-full">
+                        <label>Область</label>
                         <input
-                            placeholder={'Область'}
+                            placeholder={'Введіть область'}
                             value={regionInputValue}
                             onChange={handleRegionInputChange}
                             onFocus={() => regionInputValue && setIsOpenRegion(true)}
@@ -57,8 +61,9 @@ const SignUp = () => {
                         {errors.regionId && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.regionId.message}</div>}
                     </div>
                     <div className="relative w-[96%]">
+                        <label>Місто</label>
                         <input
-                            placeholder={'Місто'}
+                            placeholder={'Введіть місто'}
                             value={cityInputValue}
                             onChange={handleCityInputChange}
                             onFocus={() => cityInputValue && setIsOpenCity(true)}
@@ -90,33 +95,40 @@ const SignUp = () => {
                 <input type="hidden" {...register('regionId')} />
                 <input type="hidden" {...register('cityId')} />
                 {!previousApiResponse && <div className='relative w-full'>
-                    <input type='email' className='w-full' placeholder='Електронна пошта' disabled={isLoading} {...register('email')}></input>
+                    <label>Імейл</label>
+                    <input type='email' className='w-full' placeholder='Введіть імейл' disabled={isLoading} {...register('email')}></input>
                     {'email' in errors && errors.email && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.email.message}</div>}
                 </div>}
-                {!previousApiResponse && <div className="relative">
-                    <input type={isShownPassword ? 'text' : 'password'} placeholder='Пароль' disabled={isLoading} className='w-full pr-10 psw' {...register('password')}></input>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
-                        <Image src={Vision} alt={"Показати пароль"} height={25} width={25} onClick={() => {
-                            setIsShownPassword(true)
-                        }} style={{display: !isShownPassword ? 'block' : 'none'}}/>
-                        <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)}
-                               style={{display: isShownPassword ? 'block' : 'none'}}/>
+                {!previousApiResponse && <div>
+                    <label>Пароль</label>
+                    <div className="relative">
+                        <input type={isShownPassword ? 'text' : 'password'} placeholder='Введіть пароль' disabled={isLoading} className='w-full pr-10 psw' {...register('password')}></input>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
+                            <Image src={Vision} alt={"Показати пароль"} height={25} width={25} onClick={() => {
+                                setIsShownPassword(true)
+                            }} style={{display: !isShownPassword ? 'block' : 'none'}}/>
+                            <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)}
+                                   style={{display: isShownPassword ? 'block' : 'none'}}/>
+                        </div>
+                        {'password' in errors && errors.password && <div className="mt-1 absolute text-red-600 text-[10px] leading-none">{errors.password.message}</div>}
                     </div>
-                    {'password' in errors && errors.password && <div className="mt-1 absolute text-red-600 text-[10px] leading-none">{errors.password.message}</div>}
                 </div>}
                 {!previousApiResponse && <div className="relative mt-[5px]">
-                    <input type={isShownRepeatedPassword ? 'text' : 'password'} placeholder='Повторіть пароль'
-                           className='w-full pr-10 psw' disabled={isLoading} {...register('repeatedPassword')}></input>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
-                        <Image src={Vision} alt={"Показати пароль"} height={25} width={25} onClick={() => {
-                            setIsShownRepeatedPassword(true)
-                        }} style={{display: !isShownRepeatedPassword ? 'block' : 'none'}}/>
-                        <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownRepeatedPassword(false)}
-                               style={{display: isShownRepeatedPassword ? 'block' : 'none'}}/>
+                    <label>Повторіть пароль</label>
+                    <div className="relative">
+                        <input type={isShownRepeatedPassword ? 'text' : 'password'} placeholder='Введіть пароль'
+                               className='w-full pr-10 psw' disabled={isLoading} {...register('repeatedPassword')}></input>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
+                            <Image src={Vision} alt={"Показати пароль"} height={25} width={25} onClick={() => {
+                                setIsShownRepeatedPassword(true)
+                            }} style={{display: !isShownRepeatedPassword ? 'block' : 'none'}}/>
+                            <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownRepeatedPassword(false)}
+                                   style={{display: isShownRepeatedPassword ? 'block' : 'none'}}/>
+                        </div>
+                        {'repeatedPassword' in errors && errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
                     </div>
-                    {'repeatedPassword' in errors && errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
                     {apiErrorMessage &&
-                        <div className="absolute text-red-600 text-xs leading-none mt-6">{apiErrorMessage}</div>}
+                        <div className="absolute text-red-600 text-xs leading-none mt-4">{apiErrorMessage}</div>}
                 </div>}
                 <button type="submit" className="text-center sign-up-btn bg-black text-white mt-6" disabled={!isValid || isLoading}
                         style={{opacity: isValid && !isLoading ? 1 : 0.8, cursor: isValid && !isLoading ? 'pointer' : 'default'}}>{isLoading ? 'Завантаження...' : 'Зареєструватись'}

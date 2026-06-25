@@ -4,6 +4,7 @@ import useFoodAndDrinkSearch from "@/src/components/shared/food-and-drink/search
 import {FC} from "react";
 
 type PropsType = {
+    initialValue?: string
     type: 'public' | 'moderate' | 'all'
     accessCookie?: string
 }

@@ -3,9 +3,14 @@ import {useURL} from "@/src/hooks/shared/useURL";
 import {Key} from "@heroui/react";
 import {useErrorStore} from "@/src/hooks/shared/useSharedStore";
 
-const useFoodAndDrinkSort = () => {
-    const [sort, setSort] = useState<string | null>(null)
-    const [sortBy, setSortBy] = useState<string | null>(null)
+type PropsType = {
+    initialSortByValue?: string,
+    initialSortValue?: string
+}
+
+const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) => {
+    const [sort, setSort] = useState<string | undefined>(initialSortValue)
+    const [sortBy, setSortBy] = useState<string | undefined>(initialSortByValue)
     const {pathname, router, createQueryString} = useURL()
     const {error, setError} = useErrorStore()
     const handleSuccess = (position: GeolocationPosition) => {

@@ -7,6 +7,7 @@ import {authService} from "@/src/services/auth.service";
 import {removeTokens} from "@/src/actions/server.actions";
 import {useRouter} from "next/navigation";
 import {Comment, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
+import Link from "next/link";
 
 type PropsType = {
     user: IUser
@@ -30,43 +31,63 @@ const Sidebar: FC<PropsType> = ({user}) => {
                     await handleExit()
                 }
             }}>
-                <ListBox.Item href={'/account'} textValue={'Профіль'}>
-                    <Person/> Профіль
+                <ListBox.Item textValue={'Профіль'}>
+                    <Link href={'/account'} className="flex w-full items-center gap-3">
+                        <Person/> Профіль
+                    </Link>
                 </ListBox.Item>
-                <ListBox.Item href={'/account/favourites'} textValue={'Улюблені'}>
-                    <Heart/> Улюблені
+                <ListBox.Item textValue={'Улюблені'}>
+                    <Link href={'/account/favourites'} className="flex w-full items-center gap-3">
+                        <Heart/> Улюблені
+                    </Link>
                 </ListBox.Item>
-                <ListBox.Item href={'/account/comments'} textValue={'Коментарі'}>
-                    <Comment/>
-                    Коментарі
+                <ListBox.Item textValue={'Коментарі'}>
+                    <Link href={'/account/comments'} className="flex w-full items-center gap-3">
+                        <Comment/>
+                        Коментарі
+                    </Link>
                 </ListBox.Item>
-                <ListBox.Item href={'/account/reviews'} textValue={'Відгуки'}>
-                    <Star/>
-                    Відгуки
+                <ListBox.Item textValue={'Відгуки'}>
+                    <Link href={'/account/reviews'} className="flex w-full items-center gap-3">
+                        <Star/>
+                        Відгуки
+                    </Link>
                 </ListBox.Item>
-                <ListBox.Item href={'/account/food-and-drink/create'} textValue={'Створити заклад'}>
-                    <Plus/>
-                    Створити заклад
+                <ListBox.Item textValue={'Створити заклад'}>
+                    <Link href={'/account/food-and-drink/create'} className="flex w-full items-center gap-3">
+                        <Plus/>
+                        Створити заклад
+                    </Link>
                 </ListBox.Item>
-                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item href={'/account/food-and-drink'} textValue={'Заклад'}>
-                    <House/>
-                    Заклад
+                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item textValue={'Заклад'}>
+                    <Link href={'/account/food-and-drink'} className="flex w-full items-center gap-3">
+                        <House/>
+                        Заклад
+                    </Link>
                 </ListBox.Item>}
-                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item href={'/account/statistics'} textValue={'Статистика'}>
-                    <ChartColumn/>
-                    Статистика
+                {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item textValue={'Статистика'}>
+                    <Link href={'/account/statistics'} className="flex w-full items-center gap-3">
+                        <ChartColumn/>
+                        Статистика
+                    </Link>
                 </ListBox.Item>}
-                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/food-and-drinks/moderate'} textValue={'Модерація закладів'}>
-                    <Shield/>
-                    Модерація закладів
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Модерація закладів'}>
+                    <Link href={'/account/superadmin/food-and-drinks/moderate'} className="flex w-full items-center gap-3">
+                        <Shield/>
+                        Модерація закладів
+                    </Link>
                 </ListBox.Item>}
-                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/food-and-drinks'} textValue={'Усі заклади'}>
-                    <ListUl/>
-                    Усі заклади
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Усі заклади'}>
+                    <Link href={'/account/superadmin/food-and-drinks'} className="flex w-full items-center gap-3">
+                        <ListUl/>
+                        Усі заклади
+                    </Link>
                 </ListBox.Item>}
-                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item href={'/account/superadmin/users'} textValue={'Усі користувачі'}>
-                    <Persons/>
-                    Усі користувачі
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Усі користувачі'}>
+                    <Link href={'/account/superadmin/users'} className="flex w-full items-center gap-3">
+                        <Persons/>
+                        Усі користувачі
+                    </Link>
                 </ListBox.Item>}
                 <ListBox.Item id={'exit'} textValue={'Вихід'}>
                     <ArrowRightFromSquare/>

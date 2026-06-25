@@ -1,14 +1,14 @@
 import {FC} from "react";
 import {IUserListData} from "@/src/interfaces/users/IUserListData";
-import UserCard from "@/src/components/features/superadmin/users/card/UserCard";
+import UserCard from "@/src/components/features/account/superadmin/users/card/UserCard";
 import PaginationWithEclipses from "@/src/components/ui/pagination/PaginationWithEclipses";
 import {Heading} from "@heroui/react";
-import UsersSearch from "@/src/components/features/superadmin/users/search/UsersSearch";
+import UsersSearch from "@/src/components/features/account/superadmin/users/search/UsersSearch";
 import { redirect } from "next/navigation";
 import Limit from "@/src/components/ui/limitation/Limit";
-import UserSort from "@/src/components/features/superadmin/users/sort/UserSort";
+import UserSort from "@/src/components/features/account/superadmin/users/sort/UserSort";
 import NoResults from "@/src/components/ui/no-results/NoResults";
-import UserFilter from "@/src/components/features/superadmin/users/filter/UserFilter";
+import UserFilter from "@/src/components/features/account/superadmin/users/filter/UserFilter";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 
 type PropsType = {
