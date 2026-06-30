@@ -6,7 +6,7 @@ import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {authService} from "@/src/services/auth.service";
 import {removeTokens} from "@/src/actions/server.actions";
 import {useRouter} from "next/navigation";
-import {Comment, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
+import {Comment, Comments, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
 import Link from "next/link";
 
 type PropsType = {
@@ -26,7 +26,7 @@ const Sidebar: FC<PropsType> = ({user}) => {
     return (
         <section className="w-[20%] h-fit border-2 rounded-2xl">
             <Header className="text-xl text-black border-b-[1px] rounded-t-2xl pl-3">Особистий кабінет</Header>
-            <ListBox aria-label={'бокова панель'} onAction = {async (key: Key | null) => {
+            <ListBox className="gap-0" aria-label={'бокова панель'} onAction = {async (key: Key | null) => {
                 if(key === 'exit'){
                     await handleExit()
                 }
@@ -87,6 +87,24 @@ const Sidebar: FC<PropsType> = ({user}) => {
                     <Link href={'/account/superadmin/users'} className="flex w-full items-center gap-3">
                         <Persons/>
                         Усі користувачі
+                    </Link>
+                </ListBox.Item>}
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Усі коментарі'}>
+                    <Link href={'/account/superadmin/comments'} className="flex w-full items-center gap-3">
+                        <Comments/>
+                        Усі коментарі
+                    </Link>
+                </ListBox.Item>}
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Усі новини'}>
+                    <Link href={'/account/superadmin/news'} className="flex w-full items-center gap-3">
+                        <Persons/>
+                        Усі новини
+                    </Link>
+                </ListBox.Item>}
+                {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Item textValue={'Усі відгуки'}>
+                    <Link href={'/account/superadmin/reviews'} className="flex w-full items-center gap-3">
+                        <Star/>
+                        Усі відгуки
                     </Link>
                 </ListBox.Item>}
                 <ListBox.Item id={'exit'} textValue={'Вихід'}>

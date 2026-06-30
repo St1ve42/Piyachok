@@ -19,6 +19,8 @@ import { Token } from '../../tokens/entities/token.entity';
 import { hash } from 'bcrypt';
 import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entity';
 import { UserView } from '../../food-and-drinks-views/entity/user-views.entity';
+import { Review } from '../../reviews/entities/review.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity()
 export class User {
@@ -94,6 +96,16 @@ export class User {
         nullable: true,
     })
     userViews?: UserView[] | null;
+
+    @OneToMany(() => Review, (review) => review.user, {
+        nullable: true,
+    })
+    reviews?: Review[] | null;
+
+    @OneToMany(() => Comment, (comment) => comment.user, {
+        nullable: true,
+    })
+    comments?: Comment[] | null;
 
     @Column({ default: false })
     isVerified: boolean;

@@ -11,6 +11,7 @@ import { StorageModule } from '../storage/storage.module';
 import { TokensModule } from '../tokens/tokens.module';
 import { RolesModule } from '../roles/roles.module';
 import { FoodAndDrinkFavouritesModule } from '../food-and-drink-favourites/food-and-drink-favourites.module';
+import { ReviewsModule } from '../reviews/reviews.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { FoodAndDrinkFavouritesModule } from '../food-and-drink-favourites/food-
         TokensModule,
         RolesModule,
         FoodAndDrinkFavouritesModule,
+        ReviewsModule,
     ],
     controllers: [UsersController],
     providers: [UsersService],

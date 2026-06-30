@@ -36,10 +36,10 @@ export class FoodAndDrinkService {
         }
     }
 
-    async findFeatures():Promise<IApiResponse<string[]>> {
+    async findFeatures():Promise<IApiResponse<Record<string, string>>> {
         try{
             const endpoint = '/food-and-drinks/features';
-            const foodAndDrinkList = await fetchApi<string[]>(endpoint, {cache: 'force-cache'})
+            const foodAndDrinkList = await fetchApi<Record<string, string>>(endpoint)
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){

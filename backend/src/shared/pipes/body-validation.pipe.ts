@@ -8,6 +8,7 @@ import {
 import { RegionsService } from '../../modules/regions/regions.service';
 import { FoodAndDrinkService } from '../../modules/food-and-drink/food-and-drink.service';
 import { UsersService } from '../../modules/users/users.service';
+import { ReviewsService } from '../../modules/reviews/reviews.service';
 
 interface CanCheckExistence {
     isExistsById(id: number | string): Promise<boolean>;
@@ -45,3 +46,8 @@ export class FoodAndDrinkBodyValidationPipe extends BodyValidationPipe(
 
 @Injectable()
 export class UserBodyValidationPipe extends BodyValidationPipe(UsersService) {}
+
+@Injectable()
+export class ReviewBodyValidationPipe extends BodyValidationPipe(
+    ReviewsService,
+) {}

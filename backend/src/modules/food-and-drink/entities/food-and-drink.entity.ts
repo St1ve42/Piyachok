@@ -23,6 +23,8 @@ import { UserView } from '../../food-and-drinks-views/entity/user-views.entity';
 import { City } from '../../cities/entities/city.entity';
 import { FoodAndDrinkDaysEnum } from '../enums/food-and-drink-days.enum';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
+import { Review } from '../../reviews/entities/review.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Index(['name'])
 @Index(['averageReceipt'])
@@ -150,6 +152,16 @@ export class FoodAndDrink {
         nullable: true,
     })
     userViews: UserView[] | null;
+
+    @OneToMany(() => Review, (review) => review.foodAndDrink, {
+        nullable: true,
+    })
+    reviews: Review[] | null;
+
+    @OneToMany(() => Comment, (comment) => comment.foodAndDrink, {
+        nullable: true,
+    })
+    comments: Comment[] | null;
 
     distance?: string;
 }

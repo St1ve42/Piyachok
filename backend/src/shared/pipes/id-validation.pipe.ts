@@ -37,3 +37,4 @@ function idValidationPipe(strategy: 'increment' | 'uuid') {
 export class RegionIdValidationPipe extends idValidationPipe('increment') {}
 export class FoodAndDrinkIdValidationPipe extends idValidationPipe('uuid') {}
 export class UserIdValidationPipe extends idValidationPipe('uuid') {}
+export class ReviewIdValidationPipe extends idValidationPipe('uuid') {}

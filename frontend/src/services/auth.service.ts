@@ -9,6 +9,7 @@ import {ISignIn} from "@/src/interfaces/auth/ISignIn";
 import {IRecoveryRequest} from "@/src/interfaces/auth/IRecoveryRequest";
 import {IRecovery} from "@/src/interfaces/auth/IRecovery";
 import {fetchApi} from "@/src/lib/fetch.api";
+import {IChangePassword} from "@/src/interfaces/account/IChangePassword";
 
 export class AuthService{
     async singUp(dto: ISignUp): Promise<IApiResponse<IResponseMessage>>{
@@ -81,6 +82,17 @@ export class AuthService{
     async recovery(dto: IRecovery, token: string): Promise<IApiResponse<IUser>>{
         try{
             const response = await fetchApi<IUser>(`/auth/password/recovery/${token}`, {method: 'POST', body: JSON.stringify(dto)})
+            return {success: true, ...response}
+        }
+        catch (e){
+            console.log(`Сталась помилка в ${this.recovery.name}:`, e)
+            return getErrorResponse(e);
+        }
+    }
+
+    async changePassword(dto: IChangePassword): Promise<IApiResponse<IResponseMessage>>{
+        try{
+            const response = await fetchApi<IResponseMessage>(`/auth/password/change`, {method: 'POST', body: JSON.stringify(dto)})
             return {success: true, ...response}
         }
         catch (e){

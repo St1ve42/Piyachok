@@ -14,6 +14,9 @@ import { UsersModule } from '../users/users.module';
 import { FoodAndDrinkFavouritesModule } from '../food-and-drink-favourites/food-and-drink-favourites.module';
 import { FoodAndDrinkStatisticsModule } from '../food-and-drink-statistics/food-and-drink-statistics.module';
 import { FoodAndDrinkViewsModule } from '../food-and-drinks-views/food-and-drink-views.module';
+import { Review } from '../reviews/entities/review.entity';
+import { Comment } from '../comments/entities/comment.entity';
+import { ReviewsModule } from '../reviews/reviews.module';
 
 @Module({
     imports: [
@@ -23,6 +26,8 @@ import { FoodAndDrinkViewsModule } from '../food-and-drinks-views/food-and-drink
             FoodAndDrinkViewsPerDay,
             UserView,
             User,
+            Review,
+            Comment,
         ]),
         forwardRef(() => UsersModule),
         forwardRef(() => TagsModule),
@@ -31,6 +36,7 @@ import { FoodAndDrinkViewsModule } from '../food-and-drinks-views/food-and-drink
         FoodAndDrinkFavouritesModule,
         FoodAndDrinkStatisticsModule,
         FoodAndDrinkViewsModule,
+        ReviewsModule,
     ],
     controllers: [FoodAndDrinkController],
     providers: [FoodAndDrinkService],

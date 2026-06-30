@@ -63,6 +63,14 @@ export class FoodAndDrinkFindOnePresenter {
     rating: number | null;
 
     @ApiProperty({
+        example: 200,
+        description: 'Середній чек закладу',
+        nullable: true,
+    })
+    @Expose()
+    averageReceipt: number;
+
+    @ApiProperty({
         example: '1.5 км',
         description: 'Відстань від користувача до закладу',
         nullable: true,

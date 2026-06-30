@@ -12,8 +12,6 @@ type PropsType = {
 function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
     const [page, setPage] = useState(1);
     const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
-    console.log('Input page value: ', inputPageValue)
-    console.log('Current page value: ', currentPage)
     const router = useRouter();
     const pathname = usePathname()
     const searchParams = useSearchParams()

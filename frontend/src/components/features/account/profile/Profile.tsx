@@ -14,7 +14,7 @@ import {
     Header,
     Modal
 } from '@heroui/react';
-import {Pencil, TrashBin, EllipsisVertical} from "@gravity-ui/icons";
+import {Pencil, TrashBin, EllipsisVertical, Key} from "@gravity-ui/icons";
 import Verified from "@/src/public/verified.png"
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import Image from "next/image";
@@ -119,6 +119,9 @@ const Profile: FC<PropsType> = ({user, type, id}) => {
                   </Modal> :
                     <Button className="bg-green-500" onClick={handleRestore}>Відновити акаунт</Button>
                   )}
+                    <Link href={'/account/change-password'}>
+                        <Button className="bg-orange-500"><Key/> Змінити пароль</Button>
+                    </Link>
                     <Button onClick={handleEdit}>{isOpenEdit ? 'Скасувати' : <div className="flex items-center gap-2"><Pencil/> Редагувати</div>}</Button>
                 </div>
             </div>

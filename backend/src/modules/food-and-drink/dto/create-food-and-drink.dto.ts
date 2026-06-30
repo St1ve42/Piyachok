@@ -97,6 +97,7 @@ export class CreateFoodAndDrinkDto {
         description: 'Середня вартість однієї позиції меню в гривнях',
     })
     @IsNumber()
+    @Min(1)
     averageReceipt: number;
 
     @ApiProperty({

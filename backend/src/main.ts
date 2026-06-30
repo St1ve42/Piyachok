@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import {
     BadRequestException,
     ClassSerializerInterceptor,
-    ValidationError,
     ValidationPipe,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -23,57 +22,12 @@ async function bootstrap() {
             },
             validationError: { target: false, value: false },
             exceptionFactory: (errors) => {
-                const mapErrors = (
-                    validationErrors: ValidationError[],
-                    parentProperty = '',
-                ): { property: string; message: string }[] => {
-                    //Рекурсивне витягування помилок
-                    return validationErrors.flatMap((error) => {
-                        // Формуємо повний шлях до поля (наприклад: "tags.0.name")
-                        const propertyPath = parentProperty
-                            ? `${parentProperty}.${error.property}`
-                            : error.property;
-
-                        // Якщо у цього вузла є вкладені помилки (children)
-                        if (error.children && error.children.length > 0) {
-                            const childErrors = mapErrors(
-                                error.children,
-                                propertyPath,
-                            );
-
-                            // Якщо у самого вузла теж є констрейнти (буває рідко, але можливо),
-                            // додаємо їх до результату разом з помилками дітей
-                            if (error.constraints) {
-                                return [
-                                    {
-                                        property: propertyPath,
-                                        message: Object.values(
-                                            error.constraints,
-                                        )[0],
-                                    },
-                                    ...childErrors,
-                                ];
-                            }
-
-                            return childErrors;
-                        }
-
-                        // Базовий випадок: якщо є констрейнти на поточному рівні
-                        return {
-                            property: propertyPath,
-                            message: error.constraints
-                                ? Object.values(error.constraints)[0]
-                                : 'Validation failed',
-                        };
-                    });
-                };
-
-                const result = mapErrors(errors);
-
                 return new BadRequestException({
                     statusCode: 400,
                     errorCode: 'BAD_REQUEST',
-                    messages: result,
+                    message: errors[0].constraints
+                        ? Object.values(errors[0].constraints)[0]
+                        : 'Сталась помилка',
                 });
             },
         }),

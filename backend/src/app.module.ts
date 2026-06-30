@@ -18,7 +18,6 @@ import { FirebaseModule } from './modules/firebase/firebase.module';
 import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.module';
 import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
 import { TagsModule } from './modules/tags/tags.module';
-import { SuperadminModule } from './modules/superadmin/superadmin.module';
 import { SuperadminUsersModule } from './modules/protected-users/superadmin-users.module';
 import { RouterModule } from '@nestjs/core';
 import { SuperadminFoodAndDrinkModule } from './modules/protected-food-and-drink/superadmin-food-and-drink.module';
@@ -26,6 +25,9 @@ import { StorageModule } from './modules/storage/storage.module';
 import { UtilsModule } from './modules/utils/utils.module';
 import { FoodAndDrinkFavouritesModule } from './modules/food-and-drink-favourites/food-and-drink-favourites.module';
 import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-and-drink-views.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { SuperadminReviewsModule } from './modules/superadmin-reviews/superadmin-reviews.module';
 
 @Module({
     imports: [
@@ -87,12 +89,10 @@ import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-an
         FoodAndDrinkModule,
         FoodAndDrinkStatisticsModule,
         TagsModule,
-        SuperadminModule,
         SuperadminUsersModule,
         RouterModule.register([
             {
                 path: 'superadmin',
-                module: SuperadminModule,
                 children: [
                     {
                         path: '/users',
@@ -106,6 +106,10 @@ import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-an
                         path: '/roles',
                         module: RolesModule,
                     },
+                    {
+                        path: '/reviews',
+                        module: SuperadminReviewsModule,
+                    },
                 ],
             },
         ]),
@@ -114,6 +118,9 @@ import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-an
         UtilsModule,
         FoodAndDrinkFavouritesModule,
         FoodAndDrinkViewsModule,
+        ReviewsModule,
+        CommentsModule,
+        SuperadminReviewsModule,
     ],
     controllers: [],
     providers: [

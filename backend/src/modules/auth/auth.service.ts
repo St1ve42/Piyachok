@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     ConflictException,
     ForbiddenException,
     Injectable,
@@ -94,6 +95,9 @@ export class AuthService {
         signUpWithServiceTestDto: SignUpWithServiceDto,
         token: string,
     ): Promise<ResponseUserWithTokensDto> {
+        if (Object.keys(signUpWithServiceTestDto).length === 0) {
+            throw new BadRequestException('Body є необхідним');
+        }
         const payload = await this.firebaseService.verifyToken(token);
         const createUserDto: CreateUserDto = {
             name: payload.name?.split(' ')[0] ?? signUpWithServiceTestDto.name,
@@ -329,7 +333,7 @@ export class AuthService {
         user: User,
     ): Promise<ResponseMessageDto> {
         const { id: userId } = user;
-        const { password, oldPassword } = dto;
+        const { newPassword, oldPassword } = dto;
         if (!user.password) {
             throw new UnauthorizedException(
                 new ErrorResponse(
@@ -347,7 +351,7 @@ export class AuthService {
                 ),
             );
         }
-        if (password === oldPassword) {
+        if (newPassword === oldPassword) {
             throw new ConflictException(
                 new ErrorResponse(
                     'AUTH_PASSWORD_CONFLICT',
@@ -355,7 +359,7 @@ export class AuthService {
                 ),
             );
         }
-        const hashedPassword = await hash(password, 10);
+        const hashedPassword = await hash(newPassword, 10);
         await this.userService.updateById(userId, { password: hashedPassword });
         await this.tokenService.updateBy({ userId }, { isBlocked: true });
         return {

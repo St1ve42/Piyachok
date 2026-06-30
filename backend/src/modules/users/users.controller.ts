@@ -44,8 +44,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FoodAndDrinkOwnerInfoPresenter } from '../food-and-drink/presenters/food-and-drink-owner-info.presenter';
 import { UserPresenter } from './presenters/user.presenter';
 import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
-import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/find.presenter';
+import {
+    FoodAndDrinkResponseFindPresenter,
+    ReviewFindPresenter,
+} from '../../shared/presenters/find.presenter';
 import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { ReviewsService } from '../reviews/reviews.service';
+import { Review } from '../reviews/entities/review.entity';
 
 @ApiTags('Користувачі')
 @Controller('users')
@@ -54,6 +59,7 @@ export class UsersController {
         private readonly usersService: UsersService,
         private readonly foodAndDrinkService: FoodAndDrinkService,
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
+        private readonly reviewsService: ReviewsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -248,7 +254,6 @@ export class UsersController {
         type: ResponseErrorDto,
     })
     @Get('/me/favourites')
-    @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
         type: FoodAndDrinkResponseFindPresenter,
@@ -262,5 +267,18 @@ export class UsersController {
             req.user.data.id,
             query,
         );
+    }
+
+    @Get('/me/reviews')
+    @UseGuards(AuthGuard('jwt'))
+    @SerializeOptions({
+        type: ReviewFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async myReviews(
+        @Query() query: BaseQueryDto,
+        @Req() req: IUserRequest,
+    ): Promise<{ data: Review[]; total: number; totalPages: number }> {
+        return await this.reviewsService.findMyReviews(req.user.data.id, query);
     }
 }

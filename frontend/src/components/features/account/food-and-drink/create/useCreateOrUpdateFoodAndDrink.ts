@@ -60,7 +60,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink}: PropsType) => {
           setCityInputValue(city)
           setFoodAndDrinkTypeValue(type)
           setValue('type', type)
-          appendBusinessHour(businessHours)
+          appendBusinessHour(businessHours, {shouldFocus: false})
         }
     }, []);
 

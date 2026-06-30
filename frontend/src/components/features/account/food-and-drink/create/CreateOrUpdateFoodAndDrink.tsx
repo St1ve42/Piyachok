@@ -41,7 +41,7 @@ const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
     }
     return (
         <Form onSubmit={handleSubmit(mode === 'create' ? handleCreateFormSubmit : handleUpdateFormSubmit)} className="flex flex-col gap-8 w-[40vw]">
-            <h1 className="font-bold text-2xl">Створення закладу</h1>
+            <h1 className="font-bold text-2xl">{mode === 'create' ? 'Створення закладу' : 'Оновлення закладу'}</h1>
             <div className="flex flex-col gap-1 relative w-[25vw]">
                 <Label isRequired htmlFor="name" className="font-bold">Назва</Label>
                 <Input placeholder={'Введіть назву'} type="text" required={true} id="name" {...register('name')} defaultValue={createInputDefaultValue('name')}/>

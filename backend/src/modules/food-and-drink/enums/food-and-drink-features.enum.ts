@@ -1,6 +1,6 @@
 export enum FoodAndDrinkFeaturesEnum {
     WI_FI = 'WI-FI',
-    PARKING = 'Парковка',
-    LIVE_MUSIC = 'Жива музика',
-    IS_24_HOURS = '24/7',
+    PARKING = 'parking',
+    LIVE_MUSIC = 'live_music',
+    IS_24_HOURS = '24-7',
 }

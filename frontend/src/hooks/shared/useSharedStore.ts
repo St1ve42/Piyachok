@@ -39,7 +39,7 @@ export const useConfirmAgeStore = create<IConfirmAge>()(
       }),
         {
             name: 'isConfirmedAge',
-            storage: createJSONStorage(() => sessionStorage)
+            storage: createJSONStorage(() => localStorage)
         }
     )
 )

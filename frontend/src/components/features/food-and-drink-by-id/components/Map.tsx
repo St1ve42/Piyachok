@@ -98,7 +98,7 @@ const Map: FC<PropsType> = ({foodAndDrinkPosition, foodAndDrinkLocationInfo}) =>
 
     navigator.geolocation.getCurrentPosition(handleConfirmLocation, handleRejectLocation)
   }
-  return <MapContainer center={foodAndDrinkPosition} zoom={15} scrollWheelZoom={true} className="h-[21rem] z-0">
+  return <MapContainer center={foodAndDrinkPosition} zoom={15} scrollWheelZoom={true} className="h-[25rem] z-0">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

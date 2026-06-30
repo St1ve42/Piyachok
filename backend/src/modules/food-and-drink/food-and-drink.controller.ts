@@ -25,9 +25,12 @@ import { AuthGuard } from '@nestjs/passport';
 import type { IUserRequest } from '../auth/interfaces/IUserRequest';
 import { FoodAndDrinkInfoPresenter } from './presenters/food-and-drink-info.presenter';
 import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
-import { FoodAndDrinkResponseFindPresenter } from '../../shared/presenters/find.presenter';
+import {
+    FoodAndDrinkResponseFindPresenter,
+    ReviewFindPresenter,
+    ReviewStatisticsFindPresenter,
+} from '../../shared/presenters/find.presenter';
 import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
-import { FoodAndDrinkRemoveTagDto } from './dto/food-and-drink-remove-tag.dto';
 import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -49,7 +52,6 @@ import {
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
-import { FoodAndDrinkFeaturesEnum } from './enums/food-and-drink-features.enum';
 import { FoodAndDrinkOwnerInfoPresenter } from './presenters/food-and-drink-owner-info.presenter';
 import { OptionalAuthGuard } from '../../shared/guards/optional-auth.guard';
 import type { IOptionalUserRequest } from '../auth/interfaces/IOptionalUserRequest';
@@ -63,6 +65,14 @@ import {
     FoodAndDrinkTypeTranslate,
     type FoodAndDrinkTypeTranslateType,
 } from './constants/FoodAndDrinkTypeTranslate';
+import {
+    FoodAndDrinkFeaturesTranslate,
+    type FoodAndDrinkFeaturesTranslateType,
+} from './constants/FoodAndDrinkFeaturesTranslate';
+import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { ReviewsService } from '../reviews/reviews.service';
+import { Review } from '../reviews/entities/review.entity';
+import { ReviewStatisticsPresenter } from '../reviews/presenter/ReviewStatisticsPresenter';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -73,6 +83,7 @@ export class FoodAndDrinkController {
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
         private readonly foodAndDrinkStatisticService: FoodAndDrinkStatisticsService,
         private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
+        private readonly reviewService: ReviewsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -147,16 +158,16 @@ export class FoodAndDrinkController {
     }
 
     @ApiOperation({
-        summary: 'Список особливостей',
-        description: 'Отримує список особливостей закладу',
+        summary: 'Об`єкт особливостей з перекладом',
+        description: 'Отримує об`єкт особливостей з перекладом',
     })
     @ApiOkResponse({
         description: 'Успішно отримано список особливості закладу',
-        example: Object.values(FoodAndDrinkFeaturesEnum),
+        example: FoodAndDrinkFeaturesTranslate,
     })
     @Get('/features')
-    findFeatures(): FoodAndDrinkFeaturesEnum[] {
-        return Object.values(FoodAndDrinkFeaturesEnum);
+    findFeatures(): FoodAndDrinkFeaturesTranslateType {
+        return FoodAndDrinkFeaturesTranslate;
     }
 
     @ApiOperation({
@@ -279,43 +290,6 @@ export class FoodAndDrinkController {
         id: string,
     ): Promise<void> {
         await this.foodAndDrinkService.delete(id);
-    }
-
-    @ApiCookieAuth('accessToken')
-    @ApiOperation({
-        summary: 'Видалення тегів',
-        description:
-            'Дозволяє власнику видалити вибрані теги з закладу. Теги використовуються для категоризації і пошуку закладів.',
-    })
-    @ApiParam({
-        name: 'id',
-        description: 'UUID ідентифікатор закладу',
-        example: '550e8400-e29b-41d4-a716-446655440000',
-    })
-    @ApiNoContentResponse({
-        description: 'Теги успішно видалено',
-    })
-    @ApiUnauthorizedResponse({
-        description: 'Користувач не авторизований',
-        type: ResponseErrorDto,
-    })
-    @ApiForbiddenResponse({
-        description: 'Немає прав для редагування тегів цього закладу',
-        type: ResponseErrorDto,
-    })
-    @UseGuards(AuthGuard('jwt'), CanManageOrCheckStatisticsFoodAndDrinkGuard)
-    @Post(':id/tags/remove')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    async removeTags(
-        @Param(
-            'id',
-            FoodAndDrinkIdValidationPipe,
-            FoodAndDrinkBodyValidationPipe,
-        )
-        id: string,
-        @Body() removeTagsDto: FoodAndDrinkRemoveTagDto,
-    ): Promise<void> {
-        await this.tagsService.remove(id, removeTagsDto);
     }
 
     @ApiCookieAuth('accessToken')
@@ -533,5 +507,65 @@ export class FoodAndDrinkController {
             user.role,
             query,
         );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Статистика переглядів за певний період часу',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description:
+            'Успішно отримано статистику переглядів за певний період часу',
+        type: ResponseFoodAndDrinkFindViewsDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Користувач не є власником цього закладу',
+        type: ResponseErrorDto,
+    })
+    @Get(':id/reviews')
+    @SerializeOptions({
+        type: ReviewFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async findReviews(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Query() query: BaseQueryDto,
+    ): Promise<{ data: Review[]; total: number; totalPages: number }> {
+        return await this.reviewService.getFoodAndDrinkReviews(
+            foodAndDrinkId,
+            query,
+        );
+    }
+
+    @Get(':id/reviews/statistics')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard('jwt'))
+    @SerializeOptions({
+        type: ReviewStatisticsFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async findReviewStatistics(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        id: string,
+    ): Promise<{ data: ReviewStatisticsPresenter[]; total: number }> {
+        return await this.reviewService.getReviewStatistics(id);
     }
 }

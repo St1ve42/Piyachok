@@ -5,6 +5,9 @@ import { FoodAndDrinkFindOnePresenter } from '../../modules/food-and-drink/prese
 import { SuperadminFoodAndDrinkFindOnePresenter } from '../../modules/protected-food-and-drink/presenters/superadmin-food-and-drink-find-one.presenter';
 import { SuperadminUserFindOnePresenter } from '../../modules/protected-users/dto/superadmin-user-find-one.presenter';
 import { ApiProperty } from '@nestjs/swagger';
+import { ReviewPresenter } from '../../modules/reviews/presenter/ReviewPresenter';
+import { SuperadminReviewsFindOnePresenter } from '../../modules/superadmin-reviews/dto/superadmin-reviews-find-one-presenter';
+import { ReviewStatisticsPresenter } from '../../modules/reviews/presenter/ReviewStatisticsPresenter';
 
 function createFindPresenter<T>(DataCls: ClassConstructor<T>) {
     class FindPresenter extends BaseQueryPresenter {
@@ -44,3 +47,14 @@ export const ProtectedUserFindPresenter =
     createFindPresenter<SuperadminUserFindOnePresenter>(
         SuperadminUserFindOnePresenter,
     );
+
+export const ReviewFindPresenter =
+    createFindPresenter<ReviewPresenter>(ReviewPresenter);
+
+export const SuperadminReviewFindPresenter =
+    createFindPresenter<SuperadminReviewsFindOnePresenter>(
+        SuperadminReviewsFindOnePresenter,
+    );
+
+export const ReviewStatisticsFindPresenter =
+    createFindPresenter<ReviewStatisticsPresenter>(ReviewStatisticsPresenter);

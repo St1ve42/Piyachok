@@ -1,6 +1,6 @@
 'use client'
 import {Check, Xmark} from "@gravity-ui/icons";
-import {FC, MouseEventHandler, useState} from "react";
+import {FC, MouseEventHandler} from "react";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {useRouter} from "next/navigation";
@@ -11,22 +11,15 @@ type PropsType = {
 
 const Decision: FC<PropsType> = ({id}) => {
     const router = useRouter()
-    const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const handleAccept: MouseEventHandler<SVGSVGElement> = async () => {
         const response = await superadminFoodAndDrinkService.setStatus(id, FoodAndDrinkStatusEnum.ACTIVE);
-        if(!response.success){
-            setErrorMessage(response.data.message)
-        }
-        else{
+        if(response.success){
             router.refresh()
         }
     }
     const handleReject: MouseEventHandler<SVGSVGElement> = async () => {
         const response = await superadminFoodAndDrinkService.setStatus(id, FoodAndDrinkStatusEnum.INACTIVE)
-        if(!response.success){
-            setErrorMessage(response.data.message)
-        }
-        else{
+        if(response.success){
             router.refresh()
         }
     }

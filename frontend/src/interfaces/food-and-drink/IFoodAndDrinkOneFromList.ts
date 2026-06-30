@@ -10,13 +10,6 @@ export interface Location {
   coordinates: Coordinates;
 }
 
-export interface Features {
-  isWifi: boolean;
-  isParking: boolean;
-  isLiveMusic: boolean;
-  is24hrs: boolean;
-}
-
 export interface IFoodAndDrinkOneFromList {
   id: string;
   name: string;
@@ -24,7 +17,8 @@ export interface IFoodAndDrinkOneFromList {
   location: Location;
   city: string;
   mainImage: string | null;
-  rating: number;
+  rating: number | null;
+  averageReceipt: number;
   distance: string | null;
   features?: string[];
 }

@@ -17,13 +17,13 @@ const FeatureSelection: FC<PropsType> = ({handleFeatureCheck, initialFeatures, i
         <div>
             <Label>Особливості {isShownTextAboutOptional && <span>(не обов&#39;язково)</span>}</Label>
             <div className="grid grid-cols-2 gap-3 mt-2">
-                {featuresQuery.data && featuresQuery.data.success && featuresQuery.data.data.map(feature => <div key={feature}>
-                    <Checkbox id={feature} name={'features[]'} value={feature} onChange={handleFeatureCheck(feature)} defaultSelected={initialFeatures && initialFeatures.some(featureFromApi => featureFromApi === feature)}>
+                {featuresQuery.data && featuresQuery.data.success && Object.entries(featuresQuery.data.data).map(([featureInEnglish, featureInUkrainian]) => <div key={featureInEnglish}>
+                    <Checkbox id={featureInEnglish} name={'features[]'} value={featureInEnglish} onChange={handleFeatureCheck(featureInEnglish)} defaultSelected={initialFeatures && initialFeatures.some(featureFromApi => featureFromApi === featureInEnglish)}>
                         <Checkbox.Control>
                             <Checkbox.Indicator />
                         </Checkbox.Control>
                         <Checkbox.Content>
-                            <Label htmlFor={feature}>{feature}</Label>
+                            <Label htmlFor={featureInUkrainian}>{featureInUkrainian}</Label>
                         </Checkbox.Content>
                     </Checkbox>
                 </div>)}

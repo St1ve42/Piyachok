@@ -107,7 +107,7 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                             </Modal.Backdrop>
                         </Modal>
                     }
-                    <Link href={'/account/food-and-drink/update'}>
+                    <Link href={`/account/superadmin/food-and-drinks/${id}/update`}>
                       <Button className="self-end"><Pencil/>Редагувати</Button>
                     </Link>
                     <Modal>
@@ -155,9 +155,9 @@ const FoodAndDrink: FC<PropsType> = (props) => {
             </Card>}
             {errorMessage && <div className="absolute text-red-600 w-[56%] text-[10px] mt-14 leading-none">{errorMessage}</div>}
             <div className="flex gap-4 mt-2">
-                <div className="flex flex-col gap-4 flex-1">
+                <div className="flex flex-col gap-4 flex-1" style={{width: props.mode === 'user' ? '68%' : '100%'}}>
                     {images ? <div className="relative rounded-md overflow-hidden">
-                        <Swiper className="relative w-full h-[21rem] bg-gray-100"
+                        <Swiper className="relative w-full h-[25rem] bg-gray-100"
                                 modules={[Navigation, Pagination]}
                                 spaceBetween={50}
                                 navigation={true}
@@ -167,7 +167,7 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                         >
                             {images.map((image => <SwiperSlide key={image}><Image src={utils.buildStorageURL(image)} alt={name} fill className="object-cover"/></SwiperSlide>))}
                         </Swiper>
-                    </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-[21rem] rounded-sm border-black border-solid border-2"/>}
+                    </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-[25rem] rounded-sm border-black border-solid border-2"/>}
                     <div className="bg-white p-4 rounded-md shadow-sm flex flex-col gap-2">
                         <div className="flex items-start justify-between">
                             <div>
@@ -192,7 +192,16 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                                 <h3 className="font-semibold">Контакти</h3>
                                 <div className="flex items-center gap-2"><Smartphone/>{phone}</div>
                                 <div className="flex items-center gap-2 mt-1"><MapPin/> {location.street}, {city}</div>
-                                {site && <div className="flex items-center gap-2"><Globe/> <Link href={site} className="text-blue-600 w-[100px]">{site}</Link></div>}
+                                {site && <div className="flex items-center gap-2 w-full min-w-0">
+                                    <Globe className="shrink-0" />
+                                    <Link
+                                        href={site}
+                                        target={'_blank'}
+                                        className="text-blue-600 block truncate w-full"
+                                    >
+                                        {site}
+                                    </Link>
+                                </div>}
                             </div>
                             <div>
                                 <h3 className="font-semibold mb-2">Години роботи</h3>
@@ -207,9 +216,6 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                                             return <li key={uuidv4()} className="flex justify-between"><span>{day}</span><span>{open} - {close}</span></li>
                                         }
                                     })}
-                                    {/*{businessHours.map((bh, i) => (*/}
-                                    {/*    <li key={i} className="flex justify-between"><span>{bh.day}</span><span>{bh.open} - {bh.close}</span></li>*/}
-                                    {/*))}*/}
                                 </ul>
                             </div>
                             <div>
@@ -242,7 +248,7 @@ const FoodAndDrink: FC<PropsType> = (props) => {
                     </div>
                     <div></div>
                 </div>
-                {props.mode === 'user' && <div className="h-[21rem] w-[32%] flex-shrink-0">
+                {props.mode === 'user' && <div className="h-[23rem] w-[32%] flex-shrink-0">
                     <Map foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region: props.foodAndDrink.region, city: props.foodAndDrink.city}}/>
                     <div></div>
                 </div>}
