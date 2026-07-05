@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import FoodAndDrink from "@/src/components/shared/food-and-drink/FoodAndDrink";
+import FoodAndDrink from "@/src/components/features/food-and-drink/food-and-drink-info/FoodAndDrink";
 import {getAccessCookie} from "@/src/services/server.service";
 import {userService} from "@/src/services/users.service";
 

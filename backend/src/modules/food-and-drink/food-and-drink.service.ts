@@ -94,6 +94,8 @@ export class FoodAndDrinkService {
                                 filter['tags'] = { name: value };
                             } else if (enums.includes(key)) {
                                 filter[key] = value;
+                            } else if (key === 'city') {
+                                filter['city'] = { name: Like(`%${value}%`) };
                             } else {
                                 filter[key] = Like(`%${value}%`);
                             }
@@ -218,7 +220,8 @@ export class FoodAndDrinkService {
                 );
             }
         }
-        return { ...foodAndDrink, isFavourite };
+        const isOwner = userId ? foodAndDrink.ownerId === userId : null;
+        return { ...foodAndDrink, isFavourite, isOwner };
     }
 
     async create(

@@ -46,11 +46,12 @@ import { UserPresenter } from './presenters/user.presenter';
 import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
 import {
     FoodAndDrinkResponseFindPresenter,
-    ReviewFindPresenter,
+    ReviewWithFoodAndDrinkFindPresenter,
 } from '../../shared/presenters/find.presenter';
 import { BaseQueryDto } from '../../shared/dto/base-query.dto';
 import { ReviewsService } from '../reviews/reviews.service';
 import { Review } from '../reviews/entities/review.entity';
+import { UserReviewQueryDto } from '../reviews/dto/user-review-query.dto';
 
 @ApiTags('Користувачі')
 @Controller('users')
@@ -272,11 +273,11 @@ export class UsersController {
     @Get('/me/reviews')
     @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
-        type: ReviewFindPresenter,
+        type: ReviewWithFoodAndDrinkFindPresenter,
         excludeExtraneousValues: true,
     })
     async myReviews(
-        @Query() query: BaseQueryDto,
+        @Query() query: UserReviewQueryDto,
         @Req() req: IUserRequest,
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
         return await this.reviewsService.findMyReviews(req.user.data.id, query);

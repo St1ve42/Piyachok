@@ -1,12 +1,12 @@
-import TabMenu from "@/src/components/ui/tab-menu/TabMenu";
+import TabMenu from "@/src/components/shared/ui/TabMenu";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
-import PaginationWithEclipses from "@/src/components/ui/pagination/PaginationWithEclipses";
+import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 import {notFound, redirect} from "next/navigation";
-import FoodAndDrinkSearch from "@/src/components/shared/food-and-drink/search/FoodAndDrinkSearch";
-import FoodAndDrinkFiltration from "@/src/components/features/home/filtration/FoodAndDrinkFiltration";
-import FoodAndDrinkSort from "@/src/components/shared/food-and-drink/sort/FoodAndDrinkSort";
-import FoodAndDrinkGeoMessage from "@/src/components/features/home/geo-message/FoodAndDrinkGeoMessage";
-import FoodAndDrinkList from "@/src/components/shared/food-and-drink/list/FoodAndDrinkList";
+import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
+import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
+import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
+import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
+import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 
 export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}

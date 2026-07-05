@@ -20,4 +20,8 @@ export class SuperadminReviewsQuery extends BaseQueryDto {
     @IsOptional()
     @IsNumber()
     rating?: number;
+
+    @IsOptional()
+    @IsString()
+    name?: string;
 }

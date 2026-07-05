@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import Statistics from "@/src/components/features/account/statistics/Statistics";
+import Statistics from "@/src/components/views/account/Statistics";
 import {FC} from "react";
 import {userService} from "@/src/services/users.service";
 import {getAccessCookie} from "@/src/services/server.service";

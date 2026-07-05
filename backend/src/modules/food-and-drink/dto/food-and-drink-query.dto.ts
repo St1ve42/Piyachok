@@ -114,4 +114,13 @@ export class FoodAndDrinkQueryDto extends BaseQueryDto {
     @Min(-180)
     @Max(180)
     lng?: number;
+
+    @ApiProperty({
+        example: 'м. Львів',
+        description: 'Місто закладу (2-50 символів)',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    city?: string;
 }

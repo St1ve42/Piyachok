@@ -4,7 +4,6 @@ import {FC} from "react";
 import {IUser} from "@/src/interfaces/users/IUser";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {authService} from "@/src/services/auth.service";
-import {removeTokens} from "@/src/actions/server.actions";
 import {useRouter} from "next/navigation";
 import {Comment, Comments, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
 import Link from "next/link";
@@ -19,7 +18,6 @@ const Sidebar: FC<PropsType> = ({user}) => {
     const handleExit = async() => {
         const response = await authService.logOut()
         if(response.success){
-            await removeTokens()
             router.refresh()
         }
     }

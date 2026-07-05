@@ -1,4 +1,7 @@
-import { IFoodAndDrinkQuery } from '@/src/interfaces/shared/IBaseQuery';
+import {
+  IFoodAndDrinkQuery,
+  IReviewQuery,
+} from "@/src/interfaces/shared/IBaseQuery";
 import { QueryDirector } from '@/src/lib/query.director';
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {fetchApi} from "@/src/lib/fetch.api";
@@ -10,6 +13,8 @@ import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkBy
 import {IFoodAndDrinkTotalStatistics} from "@/src/interfaces/food-and-drink/IFoodAndDrinkTotalStatistics";
 import {IFoodAndDrinkViewStatistics} from "@/src/interfaces/food-and-drink/IFoodAndDrinkViewStatistics";
 import {IFoodAndDrinkViewStatisticsQuery} from "@/src/interfaces/food-and-drink/IFoodAndDrinkViewStatisticsQuery";
+import {IFoodAndDrinReviewStatisticsListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinReviewStatistics";
+import {IReviewWithCreatorListData} from "@/src/interfaces/reviews/IReviewWithCreatorListData";
 
 export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkListData>> {
@@ -130,6 +135,30 @@ export class FoodAndDrinkService {
             const queryDirector = new QueryDirector(endpoint, query)
             const fullEndpoint = queryDirector.build()
             const response = await fetchApi<IFoodAndDrinkViewStatistics>(fullEndpoint, {...requestInit})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findReviewStatistics(id: string, requestInit?: RequestInit): Promise<IApiResponse<IFoodAndDrinReviewStatisticsListData>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}/reviews/statistics`;
+            const response = await fetchApi<IFoodAndDrinReviewStatisticsListData>(endpoint, {...requestInit})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findReviews(id: string, query?: IReviewQuery, requestInit?: RequestInit): Promise<IApiResponse<IReviewWithCreatorListData>> {
+        try{
+            const endpoint = `/food-and-drinks/${id}/reviews`;
+            const queryDirector = new QueryDirector(endpoint, query);
+            const fullEndpoint = queryDirector.build();
+            const response = await fetchApi<IReviewWithCreatorListData>(fullEndpoint, {...requestInit})
             return {success: true, ...response}
         }
         catch (e){

@@ -33,4 +33,11 @@ export interface IUsersQuery extends IBaseQuery{
     sort?: 'asc' | 'desc'
 }
 
+export interface IReviewQuery extends IBaseQuery{
+    [key: string]: unknown
+    rating?: number
+    sortBy?: string,
+    sort?: 'asc' | 'desc'
+}
+
 

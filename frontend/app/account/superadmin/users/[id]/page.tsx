@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {notFound} from "next/navigation";
-import Profile from "@/src/components/features/account/profile/Profile";
+import Profile from "@/src/components/views/account/profile/Profile";
 import {getAccessCookie} from "@/src/services/server.service";
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {

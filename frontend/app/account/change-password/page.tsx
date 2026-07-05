@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ChangePassword from "@/src/components/features/account/change-password/ChangePassword";
+import ChangePassword from "@/src/components/views/account/ChangePassword";
 
 export const metadata: Metadata = {
   title: "Зміна паролю",

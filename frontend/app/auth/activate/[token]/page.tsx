@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Activation from "@/src/components/features/auth/activation/Activation";
+import Activation from "@/src/components/views/auth/activation/Activation";
 export const metadata: Metadata = {
     title: 'Активація'
 }

@@ -1,16 +1,19 @@
 import type {Metadata} from "next";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
-import {notFound} from "next/navigation";
-import FoodAndDrinkByID from "@/src/components/features/food-and-drink-by-id/FoodAndDrinkByID";
+import { notFound, redirect } from "next/navigation";
+import FoodAndDrinkByID from "@/src/components/views/FoodAndDrinkByID";
 import {cookies} from "next/headers";
 import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
+import {ReviewSortByEnum} from "@/src/enums/ReviewSortByEnum";
+import {SortEnum} from "@/src/enums/shared/SortEnum";
+import {queryReviewValidator} from "@/src/validators/review/query-review.validator";
 
 type Props = {
     params: Promise<Record<'foodAndDrinkId', string | undefined>>,
-    searchParams: Promise<unknown>
+    searchParams: Promise<Record<'rating', string | undefined> & {sortBy?: ReviewSortByEnum, sort?: SortEnum}>
 }
 
-export const getFoodAndDrinkById = async ({params}: Props): Promise<IFoodAndDrinkById> => {
+export const getFoodAndDrinkById = async ({params}: Props): Promise<{foodAndDrink: IFoodAndDrinkById, id: string}> => {
     const {foodAndDrinkId} = await params
     if(!foodAndDrinkId){
         notFound()
@@ -22,11 +25,11 @@ export const getFoodAndDrinkById = async ({params}: Props): Promise<IFoodAndDrin
     if(!foodAndDrinkResponse.success){
         notFound()
     }
-    return foodAndDrinkResponse.data
+    return {foodAndDrink: foodAndDrinkResponse.data, id: foodAndDrinkId}
 }
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
-    const foodAndDrink = await getFoodAndDrinkById(props)
+    const { foodAndDrink } = await getFoodAndDrinkById(props);
     return {
         title: foodAndDrink.name
     }
@@ -34,8 +37,14 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 
 const FoodAndDrinkByIdPage = async (props: Props) => {
-    const foodAndDrink = await getFoodAndDrinkById(props)
-    return <FoodAndDrinkByID foodAndDrink={foodAndDrink}/>
+    const { foodAndDrink, id } = await getFoodAndDrinkById(props);
+    const awaitedSearchParams = await props.searchParams
+    const {error, value} = queryReviewValidator.validate(awaitedSearchParams)
+    if(error){
+        redirect(`/food-and-drinks/${id}`)
+    }
+    const {page} = value
+    return <FoodAndDrinkByID foodAndDrink={foodAndDrink} searchParams={value} page={page ?? 1}/>
 
 }
 

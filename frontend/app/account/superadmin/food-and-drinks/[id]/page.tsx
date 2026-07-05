@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {notFound} from "next/navigation";
-import FoodAndDrink from "@/src/components/shared/food-and-drink/FoodAndDrink";
+import FoodAndDrink from "@/src/components/features/food-and-drink/food-and-drink-info/FoodAndDrink";
 import {getAccessCookie} from "@/src/services/server.service";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";

@@ -185,4 +185,10 @@ export class FoodAndDrinkInfoPresenter {
     })
     @Expose()
     isFavourite: boolean | null;
+
+    @ApiPropertyOptional({
+        example: true,
+    })
+    @Expose()
+    isOwner: boolean | null;
 }

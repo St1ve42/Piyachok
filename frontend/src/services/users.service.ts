@@ -4,9 +4,13 @@ import {getErrorResponse} from "@/src/errors/get.error.response";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {IUpdateMe} from "@/src/interfaces/users/IUpdateMe";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
-import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
-import {IFoodAndDrinkQuery} from "@/src/interfaces/shared/IBaseQuery";
+import { IFoodAndDrinkListData } from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import {
+  IBaseQuery,
+  IFoodAndDrinkQuery,
+} from "@/src/interfaces/shared/IBaseQuery";
 import {QueryDirector} from "@/src/lib/query.director";
+import {IReviewWithFoodAndDrinkListData} from "@/src/interfaces/reviews/IReviewWithFoodAndDrinkListData";
 
 export class UsersService{
     async me(requestOptions?: RequestInit): Promise<IApiResponse<IUser>>{
@@ -74,7 +78,20 @@ export class UsersService{
             const endpoint = '/users/me/favourites';
             const queryDirector = new QueryDirector(endpoint, query);
             const fullEndpoint = queryDirector.build();
-            const response = await fetchApi<IFoodAndDrinkListData>(fullEndpoint, {cache: 'no-store', ...requestOptions})
+            const response = await fetchApi<IFoodAndDrinkListData>(fullEndpoint, {next: {revalidate: 15, tags: ['my-favourite-food-and-drinks']}, ...requestOptions})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async findMyReviews(query?: IBaseQuery, requestOptions?: RequestInit): Promise<IApiResponse<IReviewWithFoodAndDrinkListData>>{
+        try{
+            const endpoint = '/users/me/reviews';
+            const queryDirector = new QueryDirector(endpoint, query);
+            const fullEndpoint = queryDirector.build();
+            const response = await fetchApi<IReviewWithFoodAndDrinkListData>(fullEndpoint, {cache: 'no-store', ...requestOptions})
             return {success: true, ...response}
         }
         catch (e){

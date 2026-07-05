@@ -14,9 +14,9 @@ type Props = {
 const AccountLayout = async ({children}: Props) => {
     const user = await getUserFromHeaders()
     return (
-        <div className="flex h-full justify-evenly">
+        <div className="flex h-full gap-10">
             <Sidebar user={user}/>
-            <section className="w-[70%]">
+            <section className="w-[75%]">
                 {children}
             </section>
         </div>

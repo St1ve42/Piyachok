@@ -27,11 +27,10 @@ import { FoodAndDrinkInfoPresenter } from './presenters/food-and-drink-info.pres
 import { FoodAndDrinkQueryDto } from './dto/food-and-drink-query.dto';
 import {
     FoodAndDrinkResponseFindPresenter,
-    ReviewFindPresenter,
+    ReviewWithOwnerFindPresenter,
     ReviewStatisticsFindPresenter,
 } from '../../shared/presenters/find.presenter';
 import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
-import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
@@ -69,17 +68,16 @@ import {
     FoodAndDrinkFeaturesTranslate,
     type FoodAndDrinkFeaturesTranslateType,
 } from './constants/FoodAndDrinkFeaturesTranslate';
-import { BaseQueryDto } from '../../shared/dto/base-query.dto';
 import { ReviewsService } from '../reviews/reviews.service';
 import { Review } from '../reviews/entities/review.entity';
 import { ReviewStatisticsPresenter } from '../reviews/presenter/ReviewStatisticsPresenter';
+import { ReviewQueryDto } from '../reviews/dto/review-query-dto';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
 export class FoodAndDrinkController {
     constructor(
         private readonly foodAndDrinkService: FoodAndDrinkService,
-        private readonly tagsService: TagsService,
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
         private readonly foodAndDrinkStatisticService: FoodAndDrinkStatisticsService,
         private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
@@ -533,7 +531,7 @@ export class FoodAndDrinkController {
     })
     @Get(':id/reviews')
     @SerializeOptions({
-        type: ReviewFindPresenter,
+        type: ReviewWithOwnerFindPresenter,
         excludeExtraneousValues: true,
     })
     async findReviews(
@@ -543,7 +541,7 @@ export class FoodAndDrinkController {
             FoodAndDrinkBodyValidationPipe,
         )
         foodAndDrinkId: string,
-        @Query() query: BaseQueryDto,
+        @Query() query: ReviewQueryDto,
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
         return await this.reviewService.getFoodAndDrinkReviews(
             foodAndDrinkId,
@@ -553,7 +551,6 @@ export class FoodAndDrinkController {
 
     @Get(':id/reviews/statistics')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
         type: ReviewStatisticsFindPresenter,
         excludeExtraneousValues: true,

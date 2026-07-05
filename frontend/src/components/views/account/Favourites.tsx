@@ -2,8 +2,8 @@ import {Heading} from "@heroui/react";
 import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
 import {FC} from "react";
 import {redirect} from "next/navigation";
-import FoodAndDrinkList from "@/src/components/shared/food-and-drink/list/FoodAndDrinkList";
-import PaginationWithEclipses from "@/src/components/ui/pagination/PaginationWithEclipses";
+import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
+import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 
 type PropsType = {
     foodAndDrinkListData: IFoodAndDrinkListData

@@ -2,7 +2,7 @@ import type {Metadata} from "next";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {notFound} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";
-import CreateOrUpdateFoodAndDrink from "@/src/components/features/account/food-and-drink/create/CreateOrUpdateFoodAndDrink";
+import CreateOrUpdateFoodAndDrink from "@/src/components/views/account/create-or-update/CreateOrUpdateFoodAndDrink";
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { id } = await params;
@@ -36,7 +36,7 @@ const SuperadminFoodAndDrinkUpdatePage = async ({params}: Props) => {
     else if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    return <CreateOrUpdateFoodAndDrink foodAndDrink={foodAndDrinkResponse.data} mode={'update'}/>
+    return <CreateOrUpdateFoodAndDrink foodAndDrink={foodAndDrinkResponse.data} mode={'update'} urlToRedirect={`/account/superadmin/food-and-drinks/${id}`}/>
 }
 
 export default SuperadminFoodAndDrinkUpdatePage;

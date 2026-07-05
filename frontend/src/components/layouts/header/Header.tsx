@@ -1,10 +1,10 @@
 'use client'
 import Image from "next/image";
 import Logo from "@/src/public/logo.png"
-import Menu from "@/src/components/ui/menu/Menu";
+import Menu from "@/src/components/shared/ui/Menu";
 import Link from "next/link";
 import { ReactNode } from "react";
-import WelcomeModal from "@/src/components/ui/welcome-modal/WelcomeModal";
+import WelcomeModal from "@/src/components/shared/components/welcome-modal/WelcomeModal";
 
 interface HeaderProps {
     profileSlot: ReactNode;

@@ -1,6 +1,6 @@
 'use client'
-import TabMenu from "@/src/components/ui/tab-menu/TabMenu";
-import ReadOnlyStarRating from "@/src/components/ui/read-only-star-rating/ReadOnlyStarRating";
+import TabMenu from "@/src/components/shared/ui/TabMenu";
+import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 
 const News = () => {
     return <div className="flex justify-between">

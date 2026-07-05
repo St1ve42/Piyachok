@@ -1,5 +1,5 @@
-import ForgotPassword from "@/src/components/features/auth/forgot-password/ForgotPassword";
-import RecoveryPassword from "@/src/components/features/auth/recovery/RecoveryPassword";
+import ForgotPassword from "@/src/components/views/auth/forgot-password/ForgotPassword";
+import RecoveryPassword from "@/src/components/views/auth/recovery/RecoveryPassword";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {

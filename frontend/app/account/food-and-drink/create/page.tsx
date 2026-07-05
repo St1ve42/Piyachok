@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import CreateOrUpdateFoodAndDrink from "@/src/components/features/account/food-and-drink/create/CreateOrUpdateFoodAndDrink";
+import CreateOrUpdateFoodAndDrink from "@/src/components/views/account/create-or-update/CreateOrUpdateFoodAndDrink";
 
 export const metadata: Metadata = {
     title: 'Створення закладу'

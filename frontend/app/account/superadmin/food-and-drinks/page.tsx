@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import SuperadminFoodAndDrinks from "@/src/components/features/account/superadmin/food-and-drinks/SuperadminFoodAndDrinks";
+import SuperadminFoodAndDrinks from "@/src/components/views/superadmin/SuperadminFoodAndDrinks";
 import {redirect} from "next/navigation";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import { getAccessCookie } from "@/src/services/server.service";
