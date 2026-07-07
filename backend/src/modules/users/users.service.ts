@@ -26,8 +26,8 @@ import { City } from '../cities/entities/city.entity';
 import { GlobalUserRoleEnum } from './enums/global.user.role.enum';
 import { StorageService } from '../storage/storage.service';
 import { itemNameEnum } from '../storage/enums/itemNameEnum';
-import { SuperadminUserQueryDto } from '../protected-users/dto/superadmin-user-query.dto';
-import { SuperadminUserSearchDto } from '../protected-users/dto/superadmin-user-search.dto';
+import { SuperadminUserQueryDto } from '../superadmin-users/dto/superadmin-user-query.dto';
+import { SuperadminUserSearchDto } from '../superadmin-users/dto/superadmin-user-search.dto';
 import { TokensService } from '../tokens/tokens.service';
 import { Role } from '../roles/entities/role.entity';
 import { RolesService } from '../roles/roles.service';
@@ -123,24 +123,23 @@ export class UsersService {
         const { page, limit, skip, sortBy, sort, ...search } = query;
         const filter: FindOptionsWhere<User> = {};
         const order: FindOptionsOrder<User> = {};
-        if (search) {
-            (
-                Object.entries(search) as [
-                    keyof SuperadminUserSearchDto,
-                    SuperadminUserSearchDto[keyof SuperadminUserSearchDto],
-                ][]
-            ).forEach(([key, value]) => {
-                if (value) {
-                    switch (typeof value) {
+        const searchEntries = Object.entries(search) as [
+            keyof SuperadminUserSearchDto,
+            SuperadminUserSearchDto[keyof SuperadminUserSearchDto],
+        ][];
+        if (searchEntries.length > 0) {
+            searchEntries.forEach(([searchBy, search]) => {
+                if (search) {
+                    switch (typeof search) {
                         case 'string':
-                            if (key === 'role') {
-                                filter[key] = { name: value };
+                            if (searchBy === 'role') {
+                                filter[searchBy] = { name: search };
                             } else {
-                                filter[key] = Like(`%${value}%`);
+                                filter[searchBy] = Like(`%${search}%`);
                             }
                             break;
                         default:
-                            filter[key] = value;
+                            filter[searchBy] = search;
                             break;
                     }
                 }

@@ -5,7 +5,6 @@ import {notFound, redirect} from "next/navigation";
 import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
 import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
-import FoodAndDrinkGeoMessage from "@/src/components/features/food-and-drink/geo-message/FoodAndDrinkGeoMessage";
 import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 
@@ -23,6 +22,7 @@ const Home = async ({searchParams}: PropsType) => {
         redirect('/')
     }
     const foodAndDrinkListApiResponse = await foodAndDrinkService.find({limit: 5, page, ...restParams})
+    console.log(foodAndDrinkListApiResponse)
     if(!foodAndDrinkListApiResponse){
         return <div>Завантаження...</div>
     }
@@ -47,7 +47,6 @@ const Home = async ({searchParams}: PropsType) => {
                         <FoodAndDrinkSearch type={'public'} initialValue={name}/>
                     </div>
                 </div>
-                <FoodAndDrinkGeoMessage sortBy={searchParams.sortBy}/>
                 <FoodAndDrinkList mode={'default'} foodAndDrinkList={foodAndDrinkList} href={'/food-and-drink/'}/>
                 {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
             </div>

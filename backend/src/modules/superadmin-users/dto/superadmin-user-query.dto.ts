@@ -1,11 +1,11 @@
-import { BaseQueryDto } from '../../../shared/dto/base-query.dto';
+import { QueryBaseDto } from '../../../shared/dto/query-base.dto';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { SortEnum } from '../../../shared/enums/sort.enum';
 import { UserSortByEnum } from '../enums/UserSortByEnum';
 import { GlobalUserRoleEnum } from '../../users/enums/global.user.role.enum';
 
-export class SuperadminUserQueryDto extends BaseQueryDto {
+export class SuperadminUserQueryDto extends QueryBaseDto {
     @ApiProperty({ example: 'Олександр' })
     @IsOptional()
     @IsString()

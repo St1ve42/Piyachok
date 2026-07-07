@@ -3,5 +3,5 @@ import { FoodAndDrinkInfoPresenter } from './food-and-drink-info.presenter';
 
 export class ShortFoodAndDrinkInfoPresenter extends PickType(
     FoodAndDrinkInfoPresenter,
-    ['id', 'name', 'type', 'mainImage'],
+    ['id', 'name'],
 ) {}

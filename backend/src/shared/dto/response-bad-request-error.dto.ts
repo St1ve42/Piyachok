@@ -6,20 +6,8 @@ export class ResponseBadRequestErrorDto {
     @ApiProperty({ example: 'BAD_REQUEST' })
     error: string;
     @ApiProperty({
-        example: [
-            {
-                property: 'password',
-                message:
-                    'Пароль повинен містити принаймні 8 символів, 1 велику літеру, 1 маленьку літеру, 1 цифру, 1 символ та не перевищувати 16 символів',
-            },
-            {
-                property: 'phone',
-                message: "Телефон повинен бути вигляду '+380000000000'",
-            },
-        ],
+        example:
+            'Пароль повинен містити принаймні 8 символів, 1 велику літеру, 1 маленьку літеру, 1 цифру, 1 символ та не перевищувати 16 символів',
     })
-    messages: {
-        property: string;
-        message: string;
-    }[];
+    messages: string[];
 }

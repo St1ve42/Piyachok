@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { RegionsService } from './regions.service';
-import { StringSearchQueryDto } from '../../shared/dto/base-query.dto';
+import { StringSearchQueryDto } from '../../shared/dto/query-base.dto';
 import { RegionBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
 import { CitiesService } from '../cities/cities.service';
 import { ResponseRegionListDto } from './dto/response-region-list.dto';

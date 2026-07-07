@@ -29,6 +29,7 @@ import {
     FoodAndDrinkResponseFindPresenter,
     ReviewWithOwnerFindPresenter,
     ReviewStatisticsFindPresenter,
+    CommentFindPresenter,
 } from '../../shared/presenters/find.presenter';
 import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
@@ -72,6 +73,10 @@ import { ReviewsService } from '../reviews/reviews.service';
 import { Review } from '../reviews/entities/review.entity';
 import { ReviewStatisticsPresenter } from '../reviews/presenter/ReviewStatisticsPresenter';
 import { ReviewQueryDto } from '../reviews/dto/review-query-dto';
+import { ContactManagerDto } from './dto/contact-manager.dto';
+import { QueryCommentDto } from '../comments/dto/query-comment.dto';
+import { CommentsService } from '../comments/comments.service';
+import { Comment } from '../comments/entities/comment.entity';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -81,7 +86,8 @@ export class FoodAndDrinkController {
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
         private readonly foodAndDrinkStatisticService: FoodAndDrinkStatisticsService,
         private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
-        private readonly reviewService: ReviewsService,
+        private readonly reviewsService: ReviewsService,
+        private readonly commentsService: CommentsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -507,9 +513,10 @@ export class FoodAndDrinkController {
         );
     }
 
-    @ApiCookieAuth('accessToken')
     @ApiOperation({
-        summary: 'Статистика переглядів за певний період часу',
+        summary: 'Відгуки про закладу',
+        description:
+            'Отримує список всіх відгуків про закладу з підтримкою фільтрації та сортування.',
     })
     @ApiParam({
         name: 'id',
@@ -517,16 +524,15 @@ export class FoodAndDrinkController {
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
     @ApiOkResponse({
-        description:
-            'Успішно отримано статистику переглядів за певний період часу',
-        type: ResponseFoodAndDrinkFindViewsDto,
+        description: 'Успішно отримано список відгуків про закладу',
+        type: ReviewWithOwnerFindPresenter,
     })
-    @ApiUnauthorizedResponse({
-        description: 'Користувач не авторизований',
-        type: ResponseErrorDto,
+    @ApiBadRequestResponse({
+        description: 'Помилка валідації даних',
+        type: ResponseBadRequestErrorDto,
     })
-    @ApiForbiddenResponse({
-        description: 'Користувач не є власником цього закладу',
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
         type: ResponseErrorDto,
     })
     @Get(':id/reviews')
@@ -543,12 +549,29 @@ export class FoodAndDrinkController {
         foodAndDrinkId: string,
         @Query() query: ReviewQueryDto,
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
-        return await this.reviewService.getFoodAndDrinkReviews(
+        return await this.reviewsService.getFoodAndDrinkReviews(
             foodAndDrinkId,
             query,
         );
     }
 
+    @ApiOperation({
+        summary: 'Статистика відгуків',
+        description: 'Отримує статистику розподілу відгуків за рейтингами.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано статистику розподілу відгуків',
+        type: ReviewStatisticsFindPresenter,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
     @Get(':id/reviews/statistics')
     @HttpCode(HttpStatus.OK)
     @SerializeOptions({
@@ -563,6 +586,91 @@ export class FoodAndDrinkController {
         )
         id: string,
     ): Promise<{ data: ReviewStatisticsPresenter[]; total: number }> {
-        return await this.reviewService.getReviewStatistics(id);
+        return await this.reviewsService.getReviewStatistics(id);
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Контакт з менеджером закладу',
+        description:
+            'Дозволяє користувачу відправити повідомлення менеджеру закладу харчування.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiNoContentResponse({
+        description: 'Повідомлення успішно відправлено',
+    })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
+    @Post(':id/contact')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @UseGuards(AuthGuard('jwt'))
+    async contact(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Body() contactManagerDto: ContactManagerDto,
+        @Req() req: IUserRequest,
+    ): Promise<void> {
+        await this.foodAndDrinkService.contact(
+            contactManagerDto,
+            foodAndDrinkId,
+            req.user.data,
+        );
+    }
+
+    @ApiOperation({
+        summary: 'Коментарі про заклад',
+        description:
+            'Отримує список всіх коментарів про заклад з підтримкою фільтрації та сортування.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список коментарів про заклад',
+        type: CommentFindPresenter,
+    })
+    @ApiBadRequestResponse({
+        description: 'Помилка валідації даних',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
+    @Get(':id/comments')
+    @SerializeOptions({
+        type: CommentFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async findComments(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Query() query: QueryCommentDto,
+    ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
+        return await this.commentsService.find(query, { foodAndDrinkId });
     }
 }

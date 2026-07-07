@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useURL} from "@/src/hooks/shared/useURL";
-import {Key} from "@heroui/react";
+import { Key, toast } from "@heroui/react";
 import {useErrorStore} from "@/src/hooks/shared/useSharedStore";
 
 type PropsType = {
@@ -17,11 +17,13 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
         let query = createQueryString(`sortBy`, 'distance')
         query = createQueryString(`lat`, position.coords.latitude.toString(), "set", query)
         query = createQueryString(`lng`, position.coords.longitude.toString(), "set", query)
+        toast('На основі вашої геолокації')
         router.push(pathname + '?' + createQueryString(`sort`, sort, "set", query))
     };
 
     const handleError = (err: GeolocationPositionError) => {
         setError(err.message);
+        toast('Не вдалось визначити Ваше місцеположення. Будь ласка, увімкніть геолокацію')
         setSortBy('reset')
         setSort('reset')
     };

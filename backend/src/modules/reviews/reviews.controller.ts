@@ -20,11 +20,44 @@ import { ReviewIdValidationPipe } from '../../shared/pipes/id-validation.pipe';
 import { ReviewBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
 import { ReviewComplaintDto } from './dto/review-complaint.dto';
 import { Review } from './entities/review.entity';
+import {
+    ApiTags,
+    ApiCookieAuth,
+    ApiOperation,
+    ApiCreatedResponse,
+    ApiUnauthorizedResponse,
+    ApiBadRequestResponse,
+    ApiNoContentResponse,
+    ApiNotFoundResponse,
+    ApiForbiddenResponse,
+    ApiParam,
+} from '@nestjs/swagger';
+import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
+import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
 
+@ApiTags('Відгуки')
 @Controller('reviews')
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
 
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Створення відгуку',
+        description:
+            "Дозволяє авторизованому користувачеві створити новий відгук про заклад харчування. Відгук буде прив'язаний до користувача і закладу.",
+    })
+    @ApiCreatedResponse({
+        description: 'Відгук успішно створено',
+        type: ReviewPresenter,
+    })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
     @Post()
     @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
@@ -38,6 +71,32 @@ export class ReviewsController {
         return this.reviewsService.create(createReviewDto, req.user.data.id);
     }
 
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Видалення відгуку',
+        description:
+            'Дозволяє авторизованому користувачеві видалити свій відгук про заклад.',
+    })
+    @ApiNoContentResponse({
+        description: 'Відгук успішно видалено',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор відгуку',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Заборонено видалювати цей відгук',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Відгук не знайдено',
+        type: ResponseErrorDto,
+    })
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(AuthGuard('jwt'), ReviewPermissionGuard)
@@ -48,6 +107,32 @@ export class ReviewsController {
         await this.reviewsService.delete(id);
     }
 
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Подання скарги на відгук',
+        description:
+            'Дозволяє авторизованому користувачеві подати скаргу на відгук іншого користувача.',
+    })
+    @ApiNoContentResponse({
+        description: 'Скарга успішно подана',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор відгуку',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Відгук не знайдено',
+        type: ResponseErrorDto,
+    })
     @Post(':id/complaint')
     @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(AuthGuard('jwt'))

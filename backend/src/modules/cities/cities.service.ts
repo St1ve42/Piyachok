@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StringSearchQueryDto } from '../../shared/dto/base-query.dto';
+import { StringSearchQueryDto } from '../../shared/dto/query-base.dto';
 import { City } from './entities/city.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';

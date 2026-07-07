@@ -170,7 +170,7 @@ export class ReviewsService {
                 'Ви не можете надсилати скаргу на свій же відгук',
             );
         }
-        const { foodAndDrinkName, creatorName, creatorSurname, text } =
+        const { foodAndDrinkEmail, creatorName, creatorSurname, text } =
             (await this.reviewRepository
                 .createQueryBuilder('review')
                 .innerJoin('review.foodAndDrink', 'foodAndDrink')
@@ -179,20 +179,20 @@ export class ReviewsService {
                 .select([
                     'review.id AS id',
                     'text',
-                    'foodAndDrink.name AS foodAndDrinkName',
+                    'foodAndDrink.email AS foodAndDrinkEmail',
                     'user.name AS creatorName',
                     'user.surname AS creatorSurname',
                 ])
                 .getRawOne()) as {
                 id: string;
-                foodAndDrinkName: string;
+                foodAndDrinkEmail: string;
                 creatorName: string;
                 creatorSurname: string;
                 text: string;
             };
         console.log(
             `Користувач ${name} ${surname} надіслав скаргу: 
-             Заклад: "${foodAndDrinkName}";
+             Імейл закладу: ${foodAndDrinkEmail};
              Автор відгуку: ${creatorName} ${creatorSurname}
              Текст відгуку: "${text}"; 
              Причина: "${reason}"`,

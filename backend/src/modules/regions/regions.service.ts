@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { Region } from './entities/region.entity';
-import { StringSearchQueryDto } from '../../shared/dto/base-query.dto';
+import { StringSearchQueryDto } from '../../shared/dto/query-base.dto';
 
 @Injectable()
 export class RegionsService {

@@ -47,11 +47,15 @@ import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food
 import {
     FoodAndDrinkResponseFindPresenter,
     ReviewWithFoodAndDrinkFindPresenter,
+    UserCommentFindPresenter,
 } from '../../shared/presenters/find.presenter';
-import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { QueryBaseDto } from '../../shared/dto/query-base.dto';
 import { ReviewsService } from '../reviews/reviews.service';
 import { Review } from '../reviews/entities/review.entity';
 import { UserReviewQueryDto } from '../reviews/dto/user-review-query.dto';
+import { QueryCommentDto } from '../comments/dto/query-comment.dto';
+import { Comment } from '../comments/entities/comment.entity';
+import { CommentsService } from '../comments/comments.service';
 
 @ApiTags('Користувачі')
 @Controller('users')
@@ -61,6 +65,7 @@ export class UsersController {
         private readonly foodAndDrinkService: FoodAndDrinkService,
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
         private readonly reviewsService: ReviewsService,
+        private readonly commentsService: CommentsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -261,7 +266,7 @@ export class UsersController {
         excludeExtraneousValues: true,
     })
     async myFavourites(
-        @Query() query: BaseQueryDto,
+        @Query() query: QueryBaseDto,
         @Req() req: IUserRequest,
     ): Promise<{ data: FoodAndDrink[]; total: number; totalPages: number }> {
         return await this.foodAndDrinkFavouritesService.findMyFavourites(
@@ -270,6 +275,20 @@ export class UsersController {
         );
     }
 
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Мої відгуки',
+        description:
+            'Дозволяє користувачу отримати список своїх відгуків про заклади з підтримкою фільтрації та пошуку.',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список відгуків',
+        type: ReviewWithFoodAndDrinkFindPresenter,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
     @Get('/me/reviews')
     @UseGuards(AuthGuard('jwt'))
     @SerializeOptions({
@@ -281,5 +300,33 @@ export class UsersController {
         @Req() req: IUserRequest,
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
         return await this.reviewsService.findMyReviews(req.user.data.id, query);
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Мої коментарі',
+        description:
+            'Дозволяє користувачу отримати список своїх коментарів про заклади з підтримкою фільтрації та пошуку.',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список коментарів',
+        type: UserCommentFindPresenter,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @Get('/me/comments')
+    @UseGuards(AuthGuard('jwt'))
+    @SerializeOptions({
+        type: UserCommentFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async MyComments(
+        @Query() query: QueryCommentDto,
+        @Req() req: IUserRequest,
+    ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
+        const userId = req.user.data.id;
+        return await this.commentsService.find(query, { userId });
     }
 }

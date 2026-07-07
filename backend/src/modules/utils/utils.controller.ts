@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { GetCoordinatesDto } from './dto/get-coordinates-dto';
 import { UtilsService } from './utils.service';
 import { CoordinatesPresenter } from '../food-and-drink/presenters/location.presenter';
@@ -38,6 +38,7 @@ export class UtilsController {
         type: ResponseErrorDto,
     })
     @Post('coordinates')
+    @HttpCode(HttpStatus.OK)
     async getCoordinates(
         @Body() dto: GetCoordinatesDto,
     ): Promise<CoordinatesPresenter> {

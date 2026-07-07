@@ -1,8 +1,8 @@
 import { IsDate, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseQueryDto } from '../../../shared/dto/base-query.dto';
+import { QueryBaseDto } from '../../../shared/dto/query-base.dto';
 
-export class QueryFoodAndDrinkViewsDto extends BaseQueryDto {
+export class QueryFoodAndDrinkViewsDto extends QueryBaseDto {
     @ApiProperty({ example: '2026-07-12', type: 'string' })
     @IsDate()
     @IsOptional()

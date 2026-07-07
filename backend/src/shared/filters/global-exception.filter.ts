@@ -33,6 +33,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             path: httpAdapter.getRequestUrl(ctx.getRequest()),
             ...message,
+            status,
         };
         httpAdapter.reply(ctx.getResponse(), responseBody, status);
     }

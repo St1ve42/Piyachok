@@ -49,6 +49,9 @@ export class FoodAndDrink {
         coordinates?: { lat: number; lng: number };
     };
 
+    @Column({ unique: true })
+    email: string;
+
     @Column()
     cityId: number;
 
@@ -110,15 +113,11 @@ export class FoodAndDrink {
     @Column()
     ownerId: string;
 
-    @Column({ nullable: true })
-    managerId?: string;
-
     @ManyToOne(() => User, (user) => user.ownerOf)
     @JoinColumn({ name: 'ownerId' })
     owner: User;
 
-    @ManyToOne(() => User, (user) => user.managerOf, { nullable: true })
-    @JoinColumn({ name: 'managerId' })
+    @OneToMany(() => User, (user) => user.managerOf, { nullable: true })
     managers?: User | null;
 
     @ManyToMany(() => Tag, (tag) => tag.foodAndDrinks, {

@@ -1,7 +1,7 @@
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BaseQueryDto {
+export class QueryBaseDto {
     @ApiProperty({
         example: 10,
         description:
@@ -36,7 +36,7 @@ export class BaseQueryDto {
     skip: number = 0;
 }
 
-export class StringSearchQueryDto extends BaseQueryDto {
+export class StringSearchQueryDto extends QueryBaseDto {
     @ApiProperty({
         example: 'Закарпатська',
         description: 'Текстовий запит для пошуку',

@@ -17,6 +17,7 @@ import { FoodAndDrinkViewsModule } from '../food-and-drinks-views/food-and-drink
 import { Review } from '../reviews/entities/review.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { ReviewsModule } from '../reviews/reviews.module';
+import { CommentsModule } from '../comments/comments.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { ReviewsModule } from '../reviews/reviews.module';
         FoodAndDrinkStatisticsModule,
         FoodAndDrinkViewsModule,
         ReviewsModule,
+        CommentsModule,
     ],
     controllers: [FoodAndDrinkController],
     providers: [FoodAndDrinkService],

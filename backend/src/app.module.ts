@@ -18,9 +18,9 @@ import { FirebaseModule } from './modules/firebase/firebase.module';
 import { FoodAndDrinkModule } from './modules/food-and-drink/food-and-drink.module';
 import { FoodAndDrinkStatisticsModule } from './modules/food-and-drink-statistics/food-and-drink-statistics.module';
 import { TagsModule } from './modules/tags/tags.module';
-import { SuperadminUsersModule } from './modules/protected-users/superadmin-users.module';
+import { SuperadminUsersModule } from './modules/superadmin-users/superadmin-users.module';
 import { RouterModule } from '@nestjs/core';
-import { SuperadminFoodAndDrinkModule } from './modules/protected-food-and-drink/superadmin-food-and-drink.module';
+import { SuperadminFoodAndDrinkModule } from './modules/superadmin-food-and-drink/superadmin-food-and-drink.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UtilsModule } from './modules/utils/utils.module';
 import { FoodAndDrinkFavouritesModule } from './modules/food-and-drink-favourites/food-and-drink-favourites.module';
@@ -28,6 +28,7 @@ import { FoodAndDrinkViewsModule } from './modules/food-and-drinks-views/food-an
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { SuperadminReviewsModule } from './modules/superadmin-reviews/superadmin-reviews.module';
+import { SuperadminCommentsModule } from './modules/superadmin-comments/superadmin-comments.module';
 
 @Module({
     imports: [
@@ -110,6 +111,10 @@ import { SuperadminReviewsModule } from './modules/superadmin-reviews/superadmin
                         path: '/reviews',
                         module: SuperadminReviewsModule,
                     },
+                    {
+                        path: '/comments',
+                        module: SuperadminCommentsModule,
+                    },
                 ],
             },
         ]),
@@ -121,6 +126,7 @@ import { SuperadminReviewsModule } from './modules/superadmin-reviews/superadmin
         ReviewsModule,
         CommentsModule,
         SuperadminReviewsModule,
+        SuperadminCommentsModule,
     ],
     controllers: [],
     providers: [

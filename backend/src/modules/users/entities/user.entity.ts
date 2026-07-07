@@ -74,6 +74,9 @@ export class User {
     @Column()
     regionId: number;
 
+    @Column({ nullable: true })
+    managedFoodAndDrinkId?: string;
+
     @ManyToOne(() => Region, (region) => region.users, { eager: true })
     @JoinColumn({ name: 'regionId' })
     region: Region;
@@ -89,6 +92,7 @@ export class User {
     @ManyToOne(() => FoodAndDrink, (foodAndDrink) => foodAndDrink.managers, {
         nullable: true,
     })
+    @JoinColumn({ name: 'managedFoodAndDrinkId' })
     managerOf?: FoodAndDrink | null;
 
     @OneToMany(() => UserView, (userView) => userView.user, {

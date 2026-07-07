@@ -1,24 +1,152 @@
-import { Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { Comment } from './entities/comment.entity';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { SuperadminQueryCommentDto } from './dto/superadmin-query-comment.dto';
+import { User } from '../users/entities/user.entity';
+import { isUUID } from 'class-validator';
+import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
+import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
+import { UserQueryCommentDto } from './dto/user-query-comment.dto';
+import { QueryCommentDto } from './dto/query-comment.dto';
 
 @Injectable()
 export class CommentsService {
-    create() {
-        return 'This action adds a new comment';
+    constructor(
+        @InjectRepository(Comment)
+        private readonly commentRepository: Repository<Comment>,
+        @InjectRepository(FoodAndDrink)
+        private readonly foodAndDrinkRepository: Repository<FoodAndDrink>,
+    ) {}
+
+    async create(
+        createCommentDto: CreateCommentDto,
+        userId: string,
+    ): Promise<Comment> {
+        const { foodAndDrinkId } = createCommentDto;
+        const existsFoodAndDrink = await this.foodAndDrinkRepository.existsBy({
+            id: foodAndDrinkId,
+        });
+        if (!existsFoodAndDrink) {
+            throw new NotFoundException(
+                `Закладу з id ${foodAndDrinkId} не знайдено`,
+            );
+        }
+        const comment = this.commentRepository.create({
+            ...createCommentDto,
+            userId,
+        });
+        await this.commentRepository.save(comment);
+        return (await this.commentRepository.findOneBy({
+            id: comment.id,
+        })) as Comment;
     }
 
-    findAll() {
-        return `This action returns all comments`;
+    async find(
+        query:
+            | SuperadminQueryCommentDto
+            | UserQueryCommentDto
+            | QueryCommentDto,
+        additionalFilter: FindOptionsWhere<Comment> = {},
+    ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
+        const { limit, page, skip, sort, sortBy, ...search } = query;
+        const filter: FindOptionsWhere<Comment> = additionalFilter;
+        const order: FindOptionsOrder<Comment> = {};
+        const searchEntries = Object.entries(search) as [
+            keyof SuperadminQueryCommentDto,
+            SuperadminQueryCommentDto[keyof SuperadminQueryCommentDto],
+        ][];
+        if (searchEntries.length > 0) {
+            searchEntries.forEach(([searchBy, search]) => {
+                if (search) {
+                    switch (typeof search) {
+                        case 'string':
+                            if (searchBy === 'userName') {
+                                filter['user'] = { name: ILike(`%${search}%`) };
+                            } else if (searchBy === 'foodAndDrinkName') {
+                                filter['foodAndDrink'] = {
+                                    name: ILike(`%${search}%`),
+                                };
+                            } else {
+                                filter[searchBy] = ILike(`%${search}%`);
+                            }
+                            break;
+                        default:
+                            filter[searchBy] = search;
+                            break;
+                    }
+                }
+            });
+        }
+        if (sortBy && sort) {
+            order[sortBy] = sort;
+        }
+        const [data, total] = await this.commentRepository.findAndCount({
+            where: filter,
+            take: limit,
+            skip: (page - 1) * limit + skip,
+            relations: { user: true, foodAndDrink: true },
+            select: {
+                id: true,
+                text: true,
+                createdAt: true,
+                updatedAt: true,
+                user: {
+                    id: true,
+                    name: true,
+                    surname: true,
+                    photo: true,
+                },
+                foodAndDrink: {
+                    id: true,
+                    name: true,
+                },
+            },
+            order,
+            relationLoadStrategy: 'query',
+        });
+        const totalPages = Math.ceil((total - skip) / limit);
+        return { data, total, totalPages, ...query };
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} comment`;
+    async findById(id: string): Promise<Comment | null> {
+        return await this.commentRepository.findOneBy({ id });
     }
 
-    update(id: number) {
-        return `This action updates a #${id} comment`;
+    async updateById(
+        id: string,
+        updateCommentDto: UpdateCommentDto,
+    ): Promise<void> {
+        await this.commentRepository.update(id, updateCommentDto);
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} comment`;
+    async remove(id: string): Promise<void> {
+        await this.commentRepository.delete(id);
+    }
+
+    async hasPermission(id: string, user: User): Promise<boolean> {
+        if (!isUUID(id)) {
+            throw new BadRequestException(
+                `Id ${id} не є коректним. Воно має бути формату uuid (наприклад, e2fecad4-8ca7-4a76-8354-8331309df863)`,
+            );
+        }
+        const comment = await this.commentRepository.findOne({
+            where: { id },
+            select: ['userId'],
+        });
+        if (!comment) {
+            throw new NotFoundException(`Коментар з id ${id} не знайдено`);
+        }
+        return (
+            comment.userId === user.id ||
+            (user.role.name as GlobalUserRoleEnum) ===
+                GlobalUserRoleEnum.SUPERADMIN
+        );
     }
 }

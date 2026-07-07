@@ -1,4 +1,4 @@
-import { BaseQueryDto } from '../../../shared/dto/base-query.dto';
+import { QueryBaseDto } from '../../../shared/dto/query-base.dto';
 import {
     ArrayMinSize,
     IsArray,
@@ -17,7 +17,7 @@ import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import { FoodAndDrinkSortByEnum } from '../enums/food-and-drink-sort-by.enum';
 import { SortEnum } from '../../../shared/enums/sort.enum';
 
-export class FoodAndDrinkQueryDto extends BaseQueryDto {
+export class FoodAndDrinkQueryDto extends QueryBaseDto {
     @ApiProperty({
         example: 'Ресторан Україна',
         description: 'Назва закладу (2-50 символів)',

@@ -25,24 +25,25 @@ import {
 import { User } from '../users/entities/user.entity';
 import { TagsService } from '../tags/tags.service';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
-import { SuperadminFoodAndDrinkQueryDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-query.dto';
+import { SuperadminFoodAndDrinkQueryDto } from '../superadmin-food-and-drink/dto/superadmin-food-and-drink-query.dto';
 import { StorageService } from '../storage/storage.service';
 import { itemNameEnum } from '../storage/enums/itemNameEnum';
 import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
 import { UtilsService } from '../utils/utils.service';
-import { SuperadminFoodAndDrinkStatusDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-status.dto';
+import { SuperadminFoodAndDrinkStatusDto } from '../superadmin-food-and-drink/dto/superadmin-food-and-drink-status.dto';
 import { FoodAndDrinkSortByEnum } from './enums/food-and-drink-sort-by.enum';
 import { CoordinatesDto } from './dto/coordinates.dto';
 import { SortEnum } from '../../shared/enums/sort.enum';
 import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
 import { RolesService } from '../roles/roles.service';
 import { Role } from '../roles/entities/role.entity';
-import { SuperadminFoodAndDrinkBindOwnershipDto } from '../protected-food-and-drink/dto/superadmin-food-and-drink-bind-ownership.dto';
+import { SuperadminFoodAndDrinkBindOwnershipDto } from '../superadmin-food-and-drink/dto/superadmin-food-and-drink-bind-ownership.dto';
 import { UsersService } from '../users/users.service';
 import { ResponseFindActiveFoodAndDrinkByIdDto } from './dto/response-find-active-food-and-drink-by-id.dto';
 import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food-and-drink-favourites.service';
 import { FoodAndDrinkStatisticsService } from '../food-and-drink-statistics/food-and-drink-statistics.service';
 import { FoodAndDrinkViewsService } from '../food-and-drinks-views/food-and-drink-views.service';
+import { ContactManagerDto } from './dto/contact-manager.dto';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -135,6 +136,8 @@ export class FoodAndDrinkService {
                     userLat: lat,
                 })
                 .where(filter)
+                .take(limit)
+                .skip((page - 1) * limit + skip)
                 .orderBy('distance', 'ASC');
             const { entities, raw } = await queryBuilder.getRawAndEntities();
             const total = await this.foodAndDrinkRepository.countBy(filter);
@@ -456,6 +459,24 @@ export class FoodAndDrinkService {
         oldOwner.ownerOf = null;
         await this.userService.updateRole(userToBind, GlobalUserRoleEnum.ADMIN);
         await this.userService.updateRole(oldOwner, GlobalUserRoleEnum.USER);
+    }
+
+    async contact(
+        contactManagerDto: ContactManagerDto,
+        foodAndDrinkId: string,
+        user: User,
+    ): Promise<void> {
+        const { message } = contactManagerDto;
+        const { email: foodAndDrinkEmail } =
+            (await this.foodAndDrinkRepository.findOne({
+                where: { id: foodAndDrinkId },
+                select: ['id', 'email'],
+            })) as FoodAndDrink;
+        const { name, surname, email: userEmail } = user;
+        console.log(`Повідомлення: ${message}`);
+        console.log(`Імейл закладу: ${foodAndDrinkEmail}`);
+        console.log(`Відправник: ${name} ${surname}, ${userEmail}`);
+        console.log(`Лист успішно надіслано на пошту закладу!`);
     }
 
     private async checkExisting(

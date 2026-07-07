@@ -5,6 +5,5 @@ export class ShortUserInfoPresenter extends PickType(UserPresenter, [
     'id',
     'name',
     'surname',
-    'email',
     'photo',
 ]) {}

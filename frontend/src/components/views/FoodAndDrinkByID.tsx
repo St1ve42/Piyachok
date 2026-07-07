@@ -43,7 +43,7 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
     <div className="flex flex-col w-[64%]">
         <FoodAndDrink foodAndDrink={foodAndDrink} mode={'user'}/>
     </div>
-    <div className="flex flex-col w-[36%] gap-4">
+    <div className="flex flex-col w-[36%] gap-4 mb-2">
         <div className="h-[25rem] w-full flex-shrink-0 mt-2">
             <MapWrapper foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region, city}}/>
         </div>

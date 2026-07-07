@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Favourite } from './entity/favourite.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
-import { BaseQueryDto } from '../../shared/dto/base-query.dto';
+import { QueryBaseDto } from '../../shared/dto/query-base.dto';
 import { FoodAndDrinkStatistic } from '../food-and-drink-statistics/entities/food-and-drink-statistic.entity';
 
 @Injectable()
@@ -54,7 +54,7 @@ export class FoodAndDrinkFavouritesService {
 
     async findMyFavourites(
         userId: string,
-        query: BaseQueryDto,
+        query: QueryBaseDto,
     ): Promise<{ data: FoodAndDrink[]; total: number; totalPages: number }> {
         const { skip, page, limit } = query;
         const favourites = await this.favouriteRepository.find({
