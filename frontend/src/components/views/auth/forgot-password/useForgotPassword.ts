@@ -14,6 +14,7 @@ const useForgotPassword = () => {
     const allFields = watch()
     const [isLoading, setIsLoading] = useState(false)
     const [formState, formAction] = useActionState<{success: boolean, status: number, data: IResponseMessage | IError | null}, FormData>(recoveryRequest, {data: null, success: false, status: 0})
+    const [message, setMessage] = useState<string | null>(null)
 
     useEffect(() => {
         const formData = localStorage.getItem('forgotPasswordFormData')
@@ -39,13 +40,20 @@ const useForgotPassword = () => {
         if(isLoading){
             setIsLoading(false)
         }
+        setMessage(formState.data?.message)
     }, [formState]);
 
     useEffect(() => {
         localStorage.setItem('forgotPasswordFormData', JSON.stringify(allFields))
     }, [allFields]);
 
-    return {register, errors, isValid, formState, formAction, isLoading, setIsLoading}
+    const onFocus = () => {
+        if(message){
+            setMessage(null)
+        }
+    }
+
+    return {register, errors, isValid, formAction, isLoading, setIsLoading, onFocus, message}
 }
 
 export default useForgotPassword

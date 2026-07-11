@@ -7,7 +7,7 @@ type PropsType = {
   currentLimit?: number
 }
 
-const Limit: FC<PropsType> = ({currentLimit = 20}) => {
+const Limit: FC<PropsType> = ({currentLimit = 5}) => {
   const [inputLimitValue, setInputLimitValue] = useState<string | undefined>(undefined)
   const {router, pathname, createQueryString} = useURL()
   useEffect(() => {
@@ -16,6 +16,7 @@ const Limit: FC<PropsType> = ({currentLimit = 20}) => {
         return () => clearTimeout(timer)
       }
   }, [inputLimitValue]);
+    console.log(currentLimit)
   return <div className="flex items-center gap-3">
     <p className="text-sm">К-сть: </p>
     <Input value={inputLimitValue ?? currentLimit} type='text' className="w-[40px] h-[30px]" onChange={(e) => setInputLimitValue(e.target.value)}/>

@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import { FC } from "react";
 
-const Map = dynamic(() => import("@/src/components/features/food-and-drink/components/Map"), {
+const Map = dynamic(() => import("@/src/components/features/food-and-drink/Map"), {
     ssr: false,
     loading: () => <div className="h-[25rem] w-[32%] flex-shrink-0 bg-gray-200 animate-pulse"></div>,
 });

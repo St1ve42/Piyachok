@@ -32,7 +32,6 @@ class ReviewService {
         try{
             const endpoint = `/reviews/${id}/complaint`;
             const response = await fetchApi(endpoint, {method: 'POST', body: JSON.stringify(reviewComplaintDto),...requestInit})
-            console.log(response)
             return {success: true, ...response}
         }
         catch (e){

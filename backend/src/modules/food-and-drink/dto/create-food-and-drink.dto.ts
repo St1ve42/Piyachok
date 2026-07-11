@@ -4,6 +4,7 @@ import {
     ArrayNotEmpty,
     ArrayUnique,
     IsArray,
+    IsEmail,
     IsEnum,
     IsInt,
     IsNumber,
@@ -58,6 +59,13 @@ export class CreateFoodAndDrinkDto {
     @IsObject()
     @ValidateNested()
     location: LocationDto;
+
+    @ApiProperty({
+        description: 'Географічна локація закладу',
+    })
+    @IsString()
+    @IsEmail()
+    email: string;
 
     @ApiProperty({
         example: 42,

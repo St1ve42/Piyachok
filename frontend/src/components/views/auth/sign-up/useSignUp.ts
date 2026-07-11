@@ -185,7 +185,13 @@ const useSignUp = () => {
         setIsLoading(false)
     }
 
-    return {isLoading, previousApiResponse, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isOpenCity, setIsOpenCity, regionInputValue, setRegionInputValue, cityInputValue, setCityInputValue, register, setValue, isValid, errors, regionQuery, cityQuery, ref, handleRegionInputChange, handleRegionSelect, handleCityInputChange, handleCitySelect, regionId, regions, cities, handleFormSubmit, handleSubmit, apiErrorMessage}
+    const onFocusInput = () => {
+        if(apiErrorMessage){
+            setApiErrorMessage(null)
+        }
+    }
+
+    return {isLoading, previousApiResponse, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isOpenCity, setIsOpenCity, regionInputValue, setRegionInputValue, cityInputValue, setCityInputValue, register, setValue, isValid, errors, regionQuery, cityQuery, ref, handleRegionInputChange, handleRegionSelect, handleCityInputChange, handleCitySelect, regionId, regions, cities, handleFormSubmit, handleSubmit, apiErrorMessage, onFocusInput}
 }
 
 export default useSignUp

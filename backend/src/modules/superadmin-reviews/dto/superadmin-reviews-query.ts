@@ -26,5 +26,13 @@ export class SuperadminReviewsQuery extends QueryBaseDto {
     })
     @IsOptional()
     @IsString()
-    name?: string;
+    foodAndDrinkName?: string;
+
+    @ApiPropertyOptional({
+        example: 'Ресторан Україна',
+        description: 'Фільтр за назвою закладу',
+    })
+    @IsOptional()
+    @IsString()
+    userName?: string;
 }

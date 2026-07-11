@@ -5,7 +5,7 @@ import {notFound, redirect} from "next/navigation";
 import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
 import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/FoodAndDrinkFiltration";
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
-import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
+import FoodAndDrinkList from "@/src/components/features/food-and-drink/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 
 export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}
@@ -21,8 +21,7 @@ const Home = async ({searchParams}: PropsType) => {
     if(page < 1 || isNaN(page)){
         redirect('/')
     }
-    const foodAndDrinkListApiResponse = await foodAndDrinkService.find({limit: 5, page, ...restParams})
-    console.log(foodAndDrinkListApiResponse)
+    const foodAndDrinkListApiResponse = await foodAndDrinkService.find({page, ...restParams})
     if(!foodAndDrinkListApiResponse){
         return <div>Завантаження...</div>
     }

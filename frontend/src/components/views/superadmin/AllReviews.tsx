@@ -10,13 +10,14 @@ import {userQueryReviewType} from "@/src/validators/review/user-query-review.val
 import {FC} from "react";
 import SuperadminReviewCard from "@/src/components/features/reviews/cards/SuperadminReviewCard";
 import SuperadminReviewFilter from "@/src/components/features/reviews/superadmin-filter/SuperadminReviewFilter";
+import Limit from "@/src/components/shared/components/limitation/Limit";
 
 type PropsType = {
     searchParams: userQueryReviewType
 }
 
 const AllReviews: FC<PropsType> = async ({searchParams}) => {
-    const {page, sort, sortBy, rating} = searchParams
+    const {page, sort, sortBy, rating, limit} = searchParams
     const {search, searchBy, ...restSearchParams} = searchParams
     const accessCookie = await getAccessCookie()
     const searchObj = searchBy ? {[searchBy]: search} : {[UserReviewSearchByEnum.TEXT]: search}
@@ -26,6 +27,7 @@ const AllReviews: FC<PropsType> = async ({searchParams}) => {
     }
     const {total, totalPages} = reviews.data
     const filterAndSortComponent = <div className="flex justify-end items-center gap-2">
+        <Limit currentLimit={limit}/>
         <ReviewSort initialSortValue={sort} initialSortByValue={sortBy}/>
         <SuperadminReviewFilter/>
         <ReviewSearch searchBy={searchBy} type={'superadmin'}/>

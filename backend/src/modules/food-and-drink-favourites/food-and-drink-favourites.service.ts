@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Favourite } from './entity/favourite.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -64,9 +64,6 @@ export class FoodAndDrinkFavouritesService {
             take: limit,
             skip: limit * (page - 1) + skip,
         });
-        if (favourites.length === 0) {
-            throw new NotFoundException('У Вас відсутні уподобання');
-        }
         const total = await this.favouriteRepository.countBy({ userId });
         const totalPages = Math.ceil((total - skip) / limit);
         return {

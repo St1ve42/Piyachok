@@ -7,10 +7,10 @@ import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDr
 import { IFoodAndDrinkListData } from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
 import {
   IBaseQuery,
-  IFoodAndDrinkQuery,
 } from "@/src/interfaces/shared/IBaseQuery";
-import {QueryDirector} from "@/src/lib/query.director";
 import {IReviewWithFoodAndDrinkListData} from "@/src/interfaces/reviews/IReviewWithFoodAndDrinkListData";
+import {ICommentWithFoodAndDrinkListData} from "@/src/interfaces/comments/ICommentWithFoodAndDrinkListData";
+import {fetchApi20} from "@/src/lib/fetch.api.2.0";
 
 export class UsersService{
     async me(requestOptions?: RequestInit): Promise<IApiResponse<IUser>>{
@@ -73,30 +73,22 @@ export class UsersService{
         }
     }
 
-    async findMyFavouriteFoodAndDrinks(query?: IFoodAndDrinkQuery, requestOptions?: RequestInit): Promise<IApiResponse<IFoodAndDrinkListData>>{
-        try{
-            const endpoint = '/users/me/favourites';
-            const queryDirector = new QueryDirector(endpoint, query);
-            const fullEndpoint = queryDirector.build();
-            const response = await fetchApi<IFoodAndDrinkListData>(fullEndpoint, {next: {revalidate: 15, tags: ['my-favourite-food-and-drinks']}, ...requestOptions})
-            return {success: true, ...response}
-        }
-        catch (e){
-            return getErrorResponse(e)
-        }
+    async findMyFavouriteFoodAndDrinks(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<IFoodAndDrinkListData>>{
+        const endpoint = '/users/me/favourites';
+        const baseHeaders: RequestInit = {next: {revalidate: 15, tags: ['my-favourite-food-and-drinks']}}
+        return await fetchApi20<IFoodAndDrinkListData>(endpoint, baseHeaders, {query, accessCookie})
     }
 
-    async findMyReviews(query?: IBaseQuery, requestOptions?: RequestInit): Promise<IApiResponse<IReviewWithFoodAndDrinkListData>>{
-        try{
-            const endpoint = '/users/me/reviews';
-            const queryDirector = new QueryDirector(endpoint, query);
-            const fullEndpoint = queryDirector.build();
-            const response = await fetchApi<IReviewWithFoodAndDrinkListData>(fullEndpoint, {cache: 'no-store', ...requestOptions})
-            return {success: true, ...response}
-        }
-        catch (e){
-            return getErrorResponse(e)
-        }
+    async findMyReviews(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<IReviewWithFoodAndDrinkListData>>{
+        const endpoint = '/users/me/reviews';
+        const baseHeaders: RequestInit = {next: {revalidate: 15, tags: ['my-reviews']}}
+        return await fetchApi20<IReviewWithFoodAndDrinkListData>(endpoint, baseHeaders, {query, accessCookie})
+    }
+
+    async findMyComments(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<ICommentWithFoodAndDrinkListData>>{
+        const endpoint = '/users/me/comments';
+        const baseHeaders: RequestInit = {next: {revalidate: 15, tags: ['my-comments']}}
+        return await fetchApi20<ICommentWithFoodAndDrinkListData>(endpoint, baseHeaders, {query, accessCookie})
     }
 }
 

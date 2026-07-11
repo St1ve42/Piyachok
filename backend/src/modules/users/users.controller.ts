@@ -53,7 +53,6 @@ import { QueryBaseDto } from '../../shared/dto/query-base.dto';
 import { ReviewsService } from '../reviews/reviews.service';
 import { Review } from '../reviews/entities/review.entity';
 import { UserReviewQueryDto } from '../reviews/dto/user-review-query.dto';
-import { QueryCommentDto } from '../comments/dto/query-comment.dto';
 import { Comment } from '../comments/entities/comment.entity';
 import { CommentsService } from '../comments/comments.service';
 
@@ -323,7 +322,7 @@ export class UsersController {
         excludeExtraneousValues: true,
     })
     async MyComments(
-        @Query() query: QueryCommentDto,
+        @Query() query: QueryBaseDto,
         @Req() req: IUserRequest,
     ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
         const userId = req.user.data.id;

@@ -11,7 +11,7 @@ export class QueryBaseDto {
     @IsInt()
     @Min(1)
     @IsOptional()
-    limit: number = 10;
+    limit: number = 5;
 
     @ApiProperty({
         example: 1,

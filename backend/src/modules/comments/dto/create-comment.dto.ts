@@ -8,8 +8,8 @@ export class CreateCommentDto {
         description: 'Текст коментарю (50-500 символів)',
     })
     @IsString()
-    @MinLength(50)
-    @MaxLength(500)
+    @MinLength(1)
+    @MaxLength(250)
     text: string;
 
     @ApiProperty({

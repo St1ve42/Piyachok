@@ -1,9 +1,7 @@
 import {Metadata} from "next";
-import Favourites from "@/src/components/views/account/Favourites";
+import MyFavourites from "@/src/components/views/account/MyFavourites";
 import {FC} from "react";
 import {redirect} from "next/navigation";
-import {userService} from "@/src/services/users.service";
-import {getAccessCookie} from "@/src/services/server.service";
 
 export const metadata: Metadata = {
     title: 'Мої улюблені'
@@ -19,12 +17,7 @@ const FavouritesPage: FC<PropsType> = async ({searchParams}) => {
     if(isNaN(page) || page < 1){
         redirect('/account/favourites')
     }
-    const accessToken = await getAccessCookie()
-    const favouriteFoodAndDrinkList = await userService.findMyFavouriteFoodAndDrinks({page}, {headers: {'Cookie': accessToken}})
-    if(!favouriteFoodAndDrinkList.success){
-        return <div>{favouriteFoodAndDrinkList.data.message}</div>
-    }
-    return <Favourites foodAndDrinkListData={favouriteFoodAndDrinkList.data} page={page}/>
+    return <MyFavourites page={page}/>
 }
 
 export default FavouritesPage

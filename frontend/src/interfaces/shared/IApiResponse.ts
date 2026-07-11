@@ -1,16 +1,16 @@
 import {IError} from "@/src/interfaces/shared/IError";
 
-export interface FailedApiResponse {
+export interface IFailedApiResponse {
     success: false,
     status: number,
     data: IError
 }
 
-interface SuccessfulApiResponse<T> {
+export interface ISuccessfulApiResponse<T> {
     success: true,
     status: number,
     data: T
 }
 
 
-export type IApiResponse<T = null> = FailedApiResponse | SuccessfulApiResponse<T>
+export type IApiResponse<T = null> = IFailedApiResponse | ISuccessfulApiResponse<T>

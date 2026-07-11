@@ -19,9 +19,8 @@ const ReviewComplaintModal: FC<PropsType> = ({id, isOpen, onOpenChange}) => {
     const [reviewTextLength, setReviewTextLength] = useState<number>(0)
     const handleSendComplaintSubmit = async (formData: IReviewComplaint) => {
         const response = await reviewService.sendComplaint(id, formData)
-        console.log(response)
         if(response.success){
-            toast('Ви успішно надіслали скаргу! Дякую, що дбаєте за порядком в системі', {
+            toast.success('Ви успішно надіслали скаргу! Дякую, що дбаєте за порядком в системі', {
                 timeout: 10 * 1000,
             });
         }

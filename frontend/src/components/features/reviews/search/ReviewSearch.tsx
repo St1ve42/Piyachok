@@ -1,8 +1,9 @@
 'use client'
 import {Button, Header, Label, ListBox, SearchField} from "@heroui/react";
-import {FC} from "react";
+import {FC, JSX} from "react";
 import useReviewSearch from "@/src/components/features/reviews/search/useReviewSearch";
 import {UserReviewSearchByEnum} from "@/src/enums/review/UserReviewSearchByEnum";
+import {IReviewWithCreatorAndFoodAndDrink} from "@/src/interfaces/reviews/IReviewWithCreatorAndFoodAndDrink";
 
 type PropsType = {
     searchBy?: UserReviewSearchByEnum
@@ -12,6 +13,20 @@ type PropsType = {
 
 const ReviewSearch: FC<PropsType> = ({searchBy = UserReviewSearchByEnum.TEXT, isDropdown = true, type}) => {
   const {inputValue, pathname, router, createQueryString, usersReviewsResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useReviewSearch({searchBy, isDropdown, type})
+  const mapCallback: (review: IReviewWithCreatorAndFoodAndDrink) => JSX.Element = (review) => {
+      let search: string
+      switch (searchBy) {
+          case UserReviewSearchByEnum.FOOD_AND_DRINK_NAME:
+            search = review['foodAndDrink']['name']
+            break
+          case UserReviewSearchByEnum.USER_NAME:
+            search = review['creator']['name']
+            break
+          default:
+            search = review[searchBy]
+      }
+      return <ListBox.Item className="line-clamp-3" key={review.id} id={search} textValue={search}>{search}</ListBox.Item>
+  }
   return (
     <div className="flex gap-3 items-center">
       <div className="relative w-[250px]">
@@ -30,7 +45,7 @@ const ReviewSearch: FC<PropsType> = ({searchBy = UserReviewSearchByEnum.TEXT, is
                 ? <ListBox.Item>Завантаження...</ListBox.Item>
                 : (usersReviewsResponse.data.success ?
                   (usersReviewsResponse.data.data.data.length !==0
-                    ? usersReviewsResponse.data.data.data.map((review) => <ListBox.Item className="line-clamp-3" key={review.id} id={searchBy === UserReviewSearchByEnum.NAME ? review['foodAndDrink']['name']: review[searchBy]} textValue={searchBy === UserReviewSearchByEnum.NAME ? review['foodAndDrink']['name']: review[searchBy]}>{searchBy === UserReviewSearchByEnum.NAME ? review['foodAndDrink']['name']: review[searchBy]}</ListBox.Item>)
+                    ? usersReviewsResponse.data.data.data.map(mapCallback)
                     : <Header className="text-[16px]">Відгуків не знайдено</Header>)
                   : <Header className="text-[16px]">Сталась помилка при пошуку</Header>)
               }

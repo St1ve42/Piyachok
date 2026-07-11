@@ -20,14 +20,19 @@ export class SuperadminReviewsService {
         if (entries.length > 0) {
             entries.forEach(([filterKey, filterValue]) => {
                 if (filterValue) {
+                    const likeValue = Like(`%${filterValue}%`);
                     switch (typeof filterValue) {
                         case 'string':
-                            if (filterKey === 'name') {
+                            if (filterKey === 'foodAndDrinkName') {
                                 filter['foodAndDrink'] = {
-                                    name: Like(`%${filterValue}%`),
+                                    name: likeValue,
+                                };
+                            } else if (filterKey === 'userName') {
+                                filter['user'] = {
+                                    name: likeValue,
                                 };
                             } else {
-                                filter[filterKey] = Like(`%${filterValue}%`);
+                                filter[filterKey] = likeValue;
                             }
                             break;
                         case 'number':
@@ -58,6 +63,8 @@ export class SuperadminReviewsService {
             .innerJoin('review.user', 'user')
             .innerJoin('review.foodAndDrink', 'foodAndDrink')
             .select(select)
+            .take(limit)
+            .skip((page - 1) * limit + skip)
             .where(filter)
             .getManyAndCount();
         const totalPages = Math.ceil((total - skip) / limit);

@@ -20,8 +20,8 @@ export const getFoodAndDrinkById = async ({params}: Props): Promise<{foodAndDrin
     }
     const cookieStore = await cookies()
     const accessTokenCookie = cookieStore.get('accessToken')
-    const requestInit: RequestInit | undefined = accessTokenCookie ? {headers: {'Cookie': `${accessTokenCookie.name}=${accessTokenCookie.value}`}} : undefined
-    const foodAndDrinkResponse = await foodAndDrinkService.findById(foodAndDrinkId, requestInit)
+    const accessToken = accessTokenCookie ? `${accessTokenCookie.name}=${accessTokenCookie.value}` : undefined
+    const foodAndDrinkResponse = await foodAndDrinkService.findById(foodAndDrinkId, accessToken)
     if(!foodAndDrinkResponse.success){
         notFound()
     }
@@ -41,10 +41,9 @@ const FoodAndDrinkByIdPage = async (props: Props) => {
     const awaitedSearchParams = await props.searchParams
     const {error, value} = queryReviewValidator.validate(awaitedSearchParams)
     if(error){
-        redirect(`/food-and-drinks/${id}`)
+        redirect(`/food-and-drink/${id}`)
     }
-    const {page} = value
-    return <FoodAndDrinkByID foodAndDrink={foodAndDrink} searchParams={value} page={page ?? 1}/>
+    return <FoodAndDrinkByID foodAndDrink={foodAndDrink} searchParams={value}/>
 
 }
 

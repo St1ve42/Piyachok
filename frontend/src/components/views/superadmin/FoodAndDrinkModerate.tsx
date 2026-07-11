@@ -2,7 +2,7 @@
 import {Heading} from "@heroui/react";
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
 import {FC} from "react";
-import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
+import FoodAndDrinkList from "@/src/components/features/food-and-drink/FoodAndDrinkList";
 import {IFullData} from "@/src/interfaces/shared/IFullData";
 import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
 import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
@@ -13,13 +13,13 @@ import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/Food
 type PropsType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
     page: number
-    limit: number
+    limit?: number
     accessCookie: string
 }
 
 const FoodAndDrinkModerate: FC<PropsType> = ({foodAndDrinkListData, page, accessCookie, limit}) => {
     const {data, total, totalPages} = foodAndDrinkListData
-    if((page > totalPages && totalPages !== 0) || limit > 20){
+    if((page > totalPages && totalPages !== 0) || (limit && limit > 20)){
         redirect('/account/superadmin/food-and-drinks/moderate')
     }
     return (

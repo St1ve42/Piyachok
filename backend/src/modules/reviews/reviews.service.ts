@@ -17,6 +17,7 @@ import { ReviewStatisticsPresenter } from './presenter/ReviewStatisticsPresenter
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
 import { ReviewQueryDto } from './dto/review-query-dto';
 import { UserReviewQueryDto } from './dto/user-review-query.dto';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
 export class ReviewsService {
@@ -25,6 +26,8 @@ export class ReviewsService {
         private readonly reviewRepository: Repository<Review>,
         @InjectRepository(FoodAndDrink)
         private readonly foodAndDrinkRepository: Repository<FoodAndDrink>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
     async create(
@@ -160,7 +163,7 @@ export class ReviewsService {
         user: User,
     ): Promise<void> {
         const { reason } = reviewComplaintDto;
-        const { name, surname } = user;
+        const { email: userEmail } = user;
         const exists = await this.reviewRepository.existsBy({
             id,
             userId: user.id,
@@ -170,33 +173,44 @@ export class ReviewsService {
                 'Ви не можете надсилати скаргу на свій же відгук',
             );
         }
-        const { foodAndDrinkEmail, creatorName, creatorSurname, text } =
+        const { foodAndDrinkEmail, foodAndDrinkName } =
             (await this.reviewRepository
                 .createQueryBuilder('review')
                 .innerJoin('review.foodAndDrink', 'foodAndDrink')
-                .innerJoin('review.user', 'user')
                 .where('review.id = :id', { id })
                 .select([
                     'review.id AS id',
-                    'text',
                     'foodAndDrink.email AS foodAndDrinkEmail',
-                    'user.name AS creatorName',
-                    'user.surname AS creatorSurname',
+                    'foodAndDrink.name as foodAndDrinkName',
                 ])
                 .getRawOne()) as {
                 id: string;
                 foodAndDrinkEmail: string;
-                creatorName: string;
-                creatorSurname: string;
-                text: string;
+                foodAndDrinkName: string;
             };
-        console.log(
-            `Користувач ${name} ${surname} надіслав скаргу: 
-             Імейл закладу: ${foodAndDrinkEmail};
-             Автор відгуку: ${creatorName} ${creatorSurname}
-             Текст відгуку: "${text}"; 
-             Причина: "${reason}"`,
-        );
+        const superadmins = await this.userRepository.findBy({
+            role: { name: GlobalUserRoleEnum.SUPERADMIN },
+        });
+        //admin email + superadmin emails + foodAndDrinkName + userEmail + reviewId
+        console.log(`
+            ========== [EMAIL OUTBOX] НАДІСЛАНО НА: ${foodAndDrinkEmail}, ${UtilsService.outputArray(superadmins.map((superadmin) => superadmin.email))} ==========
+            Тема: [Пиячок] Скарга!
+            
+            Увага! На сторінці вашого закладу "${foodAndDrinkName}" було зафіксовано скаргу від користувача.
+            
+            Деталі інциденту:
+            ----------------------------------------------------------------------
+            • Хто поскаржився (Email): ${userEmail}
+            • ID об'єкта в базі (Review/Promo ID): ${id}
+            ----------------------------------------------------------------------
+            
+            Обґрунтування скарги від користувача:
+            ${reason}
+            
+            ----------------------------------------------------------------------
+            🛠 Дія для Суперадміна/Власника: Перевірте об'єкт за ID в адмін-панелі для модерації.
+            ======================================================================
+        `);
     }
 
     async findMyReviews(

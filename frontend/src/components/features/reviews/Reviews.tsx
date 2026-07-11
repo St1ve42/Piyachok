@@ -19,7 +19,7 @@ type PropsType = {
 
 const Reviews: FC<PropsType> = async ({foodAndDrinkId, user, isOwner, searchParams}) => {
     const {sort, sortBy, page, rating} = searchParams
-    const reviews = await foodAndDrinkService.findReviews(foodAndDrinkId, {...searchParams, limit: 5})
+    const reviews = await foodAndDrinkService.findReviews(foodAndDrinkId, {...searchParams})
     const totalPages = reviews.success ? reviews.data.totalPages : 0
     const filterAndSortComponent = <div className="flex w-full items-center gap-3">
         <ReviewFilter/>

@@ -59,7 +59,14 @@ const useSignIn = () => {
             }
         }
     }
-    return {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, handleSignInWithSocialNetwork, isLoading}
+
+    const onFocusInput = () => {
+        if(errorMessage){
+            setErrorMessage(null)
+        }
+    }
+
+    return {register, handleSubmit, errors, isValid, isShownPassword, setIsShownPassword, errorMessage, onSubmit, handleSignInWithSocialNetwork, isLoading, onFocusInput}
 }
 
 export default useSignIn

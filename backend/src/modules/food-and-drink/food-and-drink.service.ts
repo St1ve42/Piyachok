@@ -464,32 +464,58 @@ export class FoodAndDrinkService {
     async contact(
         contactManagerDto: ContactManagerDto,
         foodAndDrinkId: string,
-        user: User,
+        user: User | null,
     ): Promise<void> {
-        const { message } = contactManagerDto;
-        const { email: foodAndDrinkEmail } =
+        const { message, email: userEmail, subject } = contactManagerDto;
+        const sender = user
+            ? `${user.name} ${user.surname}`
+            : 'Анонімний гість';
+        const { email: foodAndDrinkEmail, name } =
             (await this.foodAndDrinkRepository.findOne({
                 where: { id: foodAndDrinkId },
-                select: ['id', 'email'],
+                select: ['id', 'email', 'name'],
             })) as FoodAndDrink;
-        const { name, surname, email: userEmail } = user;
-        console.log(`Повідомлення: ${message}`);
-        console.log(`Імейл закладу: ${foodAndDrinkEmail}`);
-        console.log(`Відправник: ${name} ${surname}, ${userEmail}`);
-        console.log(`Лист успішно надіслано на пошту закладу!`);
+        console.log(`
+        ========== [EMAIL OUTBOX] НАДІСЛАНО НА: "${foodAndDrinkEmail}" ==========
+        Тема: [Пиячок] Нове запитання від користувача стосовно закладу ${name}
+        
+        Привіт! На платформі «Пиячок» користувач залишив звернення до вашого закладу.
+        
+        Деталі повідомлення:
+        ----------------------------------------------------------------------
+        • Відправник: ${sender} 
+        • Зворотний Email для відповіді: ${userEmail}
+        • Тема звернення: ${subject}
+        ----------------------------------------------------------------------
+        
+        Текст повідомлення:
+        ${message}
+        
+        ----------------------------------------------------------------------
+        💡 Щоб відповісти клієнту, просто напишіть йому на пошту: ${userEmail}
+        ======================================================================
+        `);
     }
 
     private async checkExisting(
         foodAndDrink: CreateFoodAndDrinkDto | UpdateFoodAndDrinkDto,
         ownerId?: string,
     ): Promise<void> {
-        const { phone, location } = foodAndDrink;
+        const { phone, location, email } = foodAndDrink;
         let isExistsFoodAndDrink = phone
             ? await this.existsByParams({ phone })
             : false;
         if (isExistsFoodAndDrink) {
             throw new ConflictException(
                 'Цей телефон вже прив`язаний до інакшого закладу. Виберіть інакший варіант.',
+            );
+        }
+        isExistsFoodAndDrink = email
+            ? await this.existsByParams({ email })
+            : false;
+        if (isExistsFoodAndDrink) {
+            throw new ConflictException(
+                'Цей імейл вже прив`язаний до інакшого закладу. Виберіть інакший варіант.',
             );
         }
         isExistsFoodAndDrink =

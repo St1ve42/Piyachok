@@ -3,7 +3,7 @@
 import {useFoodAndDrinkTotalStatistics} from "@/src/hooks/tanstack-query/useFoodAndDrinkTotalStatistics";
 import {FC} from "react";
 import {Eye} from "@gravity-ui/icons"
-import Favourite from "@/src/components/features/food-and-drink/components/Favourite";
+import Favourite from "@/src/components/features/food-and-drink/Favourite";
 
 type PropsType = {
     foodAndDrinkId: string,

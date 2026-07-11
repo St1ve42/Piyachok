@@ -40,4 +40,15 @@ export interface IReviewQuery extends IBaseQuery{
     sort?: 'asc' | 'desc'
 }
 
+export interface IFoodAndDrinkCommentQuery extends IBaseQuery{
+    [key: string]: unknown
+    sortBy?: string,
+    sort?: 'asc' | 'desc'
+}
+
+export interface IUserCommentQuery extends IBaseQuery{
+    [key: string]: unknown,
+    text?: string
+}
+
 

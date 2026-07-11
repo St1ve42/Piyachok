@@ -3,8 +3,8 @@ import {Button, Dropdown} from "@heroui/react";
 import { EllipsisVertical, TrashBin, Eye } from "@gravity-ui/icons";
 import {FC} from "react";
 import {reviewService} from "@/src/services/review.service";
-import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     reviewId: string,
@@ -12,11 +12,10 @@ type PropsType = {
 }
 
 const UserReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId}) => {
-    const router = useRouter()
     const handleDelete = async () => {
         const response = await reviewService.delete(reviewId)
         if(response.success){
-            router.refresh()
+            await updateTagAction('my-reviews')
         }
     }
     return (

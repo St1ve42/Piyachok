@@ -17,7 +17,7 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import UsersSearch from "@/src/components/features/users/search/UsersSearch";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
 import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
-import TotalStatistics from "@/src/components/features/food-and-drink/components/TotalStatistics";
+import TotalStatistics from "@/src/components/features/food-and-drink/TotalStatistics";
 import Statistics from "@/src/components/views/account/Statistics";
 import {useSearchParams} from "next/navigation";
 import {FoodAndDrinkDaysEnum} from "@/src/enums/food-and-drink/food-and-drink-days.enum";

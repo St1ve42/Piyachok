@@ -29,7 +29,7 @@ import {
     FoodAndDrinkResponseFindPresenter,
     ReviewWithOwnerFindPresenter,
     ReviewStatisticsFindPresenter,
-    CommentFindPresenter,
+    CommentFoodAndDrinkFindPresenter,
 } from '../../shared/presenters/find.presenter';
 import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
@@ -77,6 +77,7 @@ import { ContactManagerDto } from './dto/contact-manager.dto';
 import { QueryCommentDto } from '../comments/dto/query-comment.dto';
 import { CommentsService } from '../comments/comments.service';
 import { Comment } from '../comments/entities/comment.entity';
+import { CommentFoodAndDrinkPresenter } from '../comments/presenters/comment-food-and-drink.presenter';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -617,7 +618,7 @@ export class FoodAndDrinkController {
     })
     @Post(':id/contact')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(OptionalAuthGuard)
     async contact(
         @Param(
             'id',
@@ -626,12 +627,13 @@ export class FoodAndDrinkController {
         )
         foodAndDrinkId: string,
         @Body() contactManagerDto: ContactManagerDto,
-        @Req() req: IUserRequest,
+        @Req() req: IOptionalUserRequest,
     ): Promise<void> {
+        const user = req.user ? req.user.data : null;
         await this.foodAndDrinkService.contact(
             contactManagerDto,
             foodAndDrinkId,
-            req.user.data,
+            user,
         );
     }
 
@@ -647,7 +649,7 @@ export class FoodAndDrinkController {
     })
     @ApiOkResponse({
         description: 'Успішно отримано список коментарів про заклад',
-        type: CommentFindPresenter,
+        type: CommentFoodAndDrinkPresenter,
     })
     @ApiBadRequestResponse({
         description: 'Помилка валідації даних',
@@ -659,7 +661,7 @@ export class FoodAndDrinkController {
     })
     @Get(':id/comments')
     @SerializeOptions({
-        type: CommentFindPresenter,
+        type: CommentFoodAndDrinkFindPresenter,
         excludeExtraneousValues: true,
     })
     async findComments(

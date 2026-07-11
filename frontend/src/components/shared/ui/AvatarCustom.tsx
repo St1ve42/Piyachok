@@ -5,12 +5,13 @@ import {Avatar} from "@heroui/react"
 type PropsType = {
     photo: null | string,
     defaultPhoto: string,
-    sizeMultiplier?: number
+    width?: number,
+    height?: number
 }
 
-const AvatarCustom: FC<PropsType> = ({photo, defaultPhoto, sizeMultiplier}) => {
+const AvatarCustom: FC<PropsType> = ({photo, defaultPhoto, height, width}) => {
     return (
-        <Avatar className={`size-${sizeMultiplier ?? 12}`}>
+        <Avatar style={{width, height}}>
             <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : defaultPhoto} width={100} height={100}/>
         </Avatar>
     )

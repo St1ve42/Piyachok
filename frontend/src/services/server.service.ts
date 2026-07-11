@@ -20,3 +20,4 @@ export const getAccessCookie = async (): Promise<string> => {
     }
     return `${accessTokenCookie.name}=${accessTokenCookie.value}`
 }
+

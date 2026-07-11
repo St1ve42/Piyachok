@@ -3,7 +3,7 @@ import {FC} from "react";
 import {redirect} from "next/navigation";
 import {Heading} from "@heroui/react";
 import FoodAndDrinkSearch from "@/src/components/features/food-and-drink/search/FoodAndDrinkSearch";
-import FoodAndDrinkList from "@/src/components/features/food-and-drink/list/FoodAndDrinkList";
+import FoodAndDrinkList from "@/src/components/features/food-and-drink/FoodAndDrinkList";
 import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";

@@ -79,7 +79,7 @@ const Profile: FC<PropsType> = ({user, type, id}) => {
                             </Dropdown.Menu>
                         </Dropdown.Popover>
                     </Dropdown>}
-                  {role !== GlobalUserRoleEnum.SUPERADMIN && (!isDeleted ? <Modal>
+                  {role !== GlobalUserRoleEnum.SUPERADMIN && role !== GlobalUserRoleEnum.ADMIN && (!isDeleted ? <Modal>
                     <Button variant="danger" onPress={handleOnPressDeleteButton}><TrashBin/>Видалити</Button>
                     <Modal.Backdrop>
                       <Modal.Container>

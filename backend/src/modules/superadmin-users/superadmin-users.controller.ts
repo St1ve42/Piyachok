@@ -12,7 +12,6 @@ import {
     Patch,
     Post,
     Query,
-    Req,
     Request,
     SerializeOptions,
     UploadedFile,
@@ -43,7 +42,6 @@ import { UserIdValidationPipe } from '../../shared/pipes/id-validation.pipe';
 import { UserBodyValidationPipe } from '../../shared/pipes/body-validation.pipe';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
-import { FoodAndDrinkService } from '../food-and-drink/food-and-drink.service';
 import { UserPresenter } from '../users/presenters/user.presenter';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -51,10 +49,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @UseGuards(AuthGuard('jwt'), IsSuperadminGuard)
 @Controller()
 export class SuperadminUsersController {
-    constructor(
-        private readonly usersService: UsersService,
-        private readonly foodAndDrinkService: FoodAndDrinkService,
-    ) {}
+    constructor(private readonly usersService: UsersService) {}
 
     @ApiCookieAuth('accessToken')
     @ApiOperation({
@@ -272,7 +267,6 @@ export class SuperadminUsersController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(AuthGuard('jwt'))
     async deletePhoto(
-        @Req() req: IUserRequest,
         @Param('id', UserIdValidationPipe, UserBodyValidationPipe) id: string,
     ): Promise<void> {
         const user = (await this.usersService.findById(id)) as User;

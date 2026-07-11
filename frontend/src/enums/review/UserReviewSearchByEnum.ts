@@ -1,4 +1,5 @@
 export enum UserReviewSearchByEnum {
-    NAME = 'name',
+    FOOD_AND_DRINK_NAME = 'foodAndDrinkName',
+    USER_NAME = 'userName',
     TEXT = 'text'
 }

@@ -15,7 +15,7 @@ type PropsType = {
 }
 
 const FoodAndDrinkModeratePage: FC<PropsType> = async ({searchParams}) => {
-    let {page = 1, name, limit = 20} = await searchParams
+    let {page = 1, name, limit = 5} = await searchParams
     page = Number(page)
     limit = Number(limit)
     if(page < 1 || isNaN(page) || limit < 1 || isNaN(limit)){

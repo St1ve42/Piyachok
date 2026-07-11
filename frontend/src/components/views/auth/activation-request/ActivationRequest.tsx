@@ -5,6 +5,7 @@ import Activation from '@/src/public/activation-icon.png'
 import Image from "next/image";
 import NotFinished from "@/src/public/document-checklist.png";
 import Error from "@/src/components/shared/ui/Error";
+import { Button, Heading, Surface } from "@heroui/react";
 
 const ActivationRequest = () => {
     const {seconds, previousApiResponse, activationAgainResponse, handleActivationAgain, isLoading} = useActivationRequest()
@@ -13,15 +14,15 @@ const ActivationRequest = () => {
     }
     return (
         <section className="h-full flex justify-center items-center">
-            <div className="activation flex flex-col gap-10 items-center">
-                <h1>Активація</h1>
+            <Surface variant={'default'} className="w-[600px] flex flex-col gap-10 items-center rounded-2xl p-8 shadow-lg">
+                <Heading level={3}>Активація</Heading>
                 <div className="w-full flex justify-between">
                     <p className="w-[400px]">{previousApiResponse && previousApiResponse.message}</p>
                     <Image src={Activation} width={80} alt={'Активація'}/>
                 </div>
-                <button className="activation-link bg-black text-white" onClick={handleActivationAgain} disabled={isLoading} style={{opacity: !isLoading ? 1 : 0.8, cursor: !isLoading ? 'pointer' : 'default'}}>Надіслати повторно лист</button>
-                {activationAgainResponse && (activationAgainResponse.success ? <div>{activationAgainResponse.data.message}. Вам необхідно зачекати {seconds} секунд, щоб знову надіслати.</div> : <div>{activationAgainResponse.data.message}</div>)}
-            </div>
+                <Button onClick={handleActivationAgain} isDisabled={isLoading} style={{opacity: !isLoading ? 1 : 0.8, cursor: !isLoading ? 'pointer' : 'default'}}>Надіслати повторно лист</Button>
+                {activationAgainResponse && (activationAgainResponse.success ? <div className="w-full self-start">Лист було повторно надіслано на вказану поштову скриньку. Вам необхідно зачекати {seconds} секунд, щоб знову надіслати.</div> : <div>{activationAgainResponse.data.message}</div>)}
+            </Surface>
         </section>
     )
 }

@@ -1,7 +1,7 @@
 import {ApiError} from "@/src/errors/api.error";
-import {FailedApiResponse} from "@/src/interfaces/shared/IApiResponse";
+import {IFailedApiResponse} from "@/src/interfaces/shared/IApiResponse";
 
-export const getErrorResponse = (e: unknown): FailedApiResponse => {
+export const getErrorResponse = (e: unknown): IFailedApiResponse => {
     if(e instanceof ApiError){
         const {status, data} = e
         return {

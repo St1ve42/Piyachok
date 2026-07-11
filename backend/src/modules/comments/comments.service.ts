@@ -4,7 +4,14 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import {
+    FindOptionsOrder,
+    FindOptionsRelations,
+    FindOptionsSelect,
+    FindOptionsWhere,
+    ILike,
+    Repository,
+} from 'typeorm';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -13,7 +20,6 @@ import { User } from '../users/entities/user.entity';
 import { isUUID } from 'class-validator';
 import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
-import { UserQueryCommentDto } from './dto/user-query-comment.dto';
 import { QueryCommentDto } from './dto/query-comment.dto';
 
 @Injectable()
@@ -49,15 +55,43 @@ export class CommentsService {
     }
 
     async find(
-        query:
-            | SuperadminQueryCommentDto
-            | UserQueryCommentDto
-            | QueryCommentDto,
+        query: SuperadminQueryCommentDto | QueryCommentDto,
         additionalFilter: FindOptionsWhere<Comment> = {},
     ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
         const { limit, page, skip, sort, sortBy, ...search } = query;
         const filter: FindOptionsWhere<Comment> = additionalFilter;
-        const order: FindOptionsOrder<Comment> = {};
+        const order: FindOptionsOrder<Comment> = { createdAt: 'desc' };
+        const select: FindOptionsSelect<Comment> = {
+            id: true,
+            text: true,
+            createdAt: true,
+            updatedAt: true,
+            foodAndDrink: {
+                id: true,
+                name: true,
+            },
+            user: {
+                id: true,
+                name: true,
+                surname: true,
+                photo: true,
+            },
+        };
+        const relations: FindOptionsRelations<Comment> = {
+            user: true,
+            foodAndDrink: true,
+        };
+        if (Object.values(additionalFilter).length > 0) {
+            const { userId, foodAndDrinkId } = additionalFilter;
+            if (userId) {
+                delete select['user'];
+                delete relations['user'];
+            }
+            if (foodAndDrinkId) {
+                delete select['foodAndDrink'];
+                delete relations['foodAndDrink'];
+            }
+        }
         const searchEntries = Object.entries(search) as [
             keyof SuperadminQueryCommentDto,
             SuperadminQueryCommentDto[keyof SuperadminQueryCommentDto],
@@ -91,23 +125,8 @@ export class CommentsService {
             where: filter,
             take: limit,
             skip: (page - 1) * limit + skip,
-            relations: { user: true, foodAndDrink: true },
-            select: {
-                id: true,
-                text: true,
-                createdAt: true,
-                updatedAt: true,
-                user: {
-                    id: true,
-                    name: true,
-                    surname: true,
-                    photo: true,
-                },
-                foodAndDrink: {
-                    id: true,
-                    name: true,
-                },
-            },
+            relations,
+            select,
             order,
             relationLoadStrategy: 'query',
         });
