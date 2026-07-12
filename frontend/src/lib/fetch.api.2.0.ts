@@ -1,12 +1,13 @@
 import {IError} from "@/src/interfaces/shared/IError";
 import {QueryDirector} from "@/src/lib/query.director";
 import {IGeneralQuery} from "@/src/interfaces/shared/IGeneralQuery";
+import {IBaseQuery} from "@/src/interfaces/shared/IBaseQuery";
 
 export async function fetchApi20<T = null>(
     endpoint: string,
     options: RequestInit = {},
     additionalParams?: {
-        query?: IGeneralQuery,
+        query?: IGeneralQuery | IBaseQuery,
         accessCookie?: string
     }
 ): Promise<{ data: T; status: number, success: true } | { data: IError; status: number, success: false }> {

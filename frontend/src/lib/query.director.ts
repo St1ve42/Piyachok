@@ -1,12 +1,13 @@
 import { QueryBuilder } from './query.builder';
 import { IGeneralQuery } from '@/src/interfaces/shared/IGeneralQuery';
+import {IBaseQuery} from "@/src/interfaces/shared/IBaseQuery";
 
 export class QueryDirector {
     private queryBuilder: QueryBuilder;
 
     constructor(
         private endpoint: string,
-        private query?: IGeneralQuery,
+        private query?: IGeneralQuery | IBaseQuery,
     ) {
         this.queryBuilder = new QueryBuilder(this.endpoint, this.query?.page);
     }
@@ -16,8 +17,7 @@ export class QueryDirector {
             return this.queryBuilder.build();
         }
 
-        const {page, limit, skip, sort, sortBy, ...search } = this.query;
-
+        const {page, limit, skip, ...search } = this.query;
 
         if (limit) {
             this.queryBuilder.addLimit(limit);
@@ -31,12 +31,12 @@ export class QueryDirector {
             this.queryBuilder.addSearch(search);
         }
 
-        if (sort) {
-            this.queryBuilder.addSort(sort);
+        if('sort' in this.query && this.query.sort){
+            this.queryBuilder.addSort(this.query.sort);
         }
 
-        if (sortBy) {
-            this.queryBuilder.addSortBy(sortBy);
+        if ('sortBy' in this.query && this.query.sortBy) {
+            this.queryBuilder.addSortBy(this.query.sortBy);
         }
 
 

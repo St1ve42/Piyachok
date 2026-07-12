@@ -9,6 +9,7 @@ import {CommentsSortByEnum} from "@/src/enums/comments/CommentsSortByEnum";
 import {SortEnum} from "@/src/enums/shared/SortEnum";
 
 export interface IQueryComments extends IBaseQuery{
+    [key: string]: unknown
     searchBy?: CommentSearchByEnum
     search?: string,
     sortBy?: CommentsSortByEnum,

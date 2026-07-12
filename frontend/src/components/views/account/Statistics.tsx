@@ -9,8 +9,8 @@ type PropsType = {id: string}
 
 const Statistics: FC<PropsType> = ({id}) => {
     const searchParams = useSearchParams()
-    const start = searchParams.get('start')
-    const end = searchParams.get('end')
+    const start = searchParams.get('start') ?? undefined
+    const end = searchParams.get('end') ?? undefined
     const {isLoading, data} = useFoodAndDrinkViewStatistics(id, {start, end})
     if(data && !data.success){
         return <div>{data.data.message}.</div>

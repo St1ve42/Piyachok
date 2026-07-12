@@ -40,7 +40,9 @@ const useForgotPassword = () => {
         if(isLoading){
             setIsLoading(false)
         }
-        setMessage(formState.data?.message)
+        if(formState.data){
+            setMessage(formState.data.message)
+        }
     }, [formState]);
 
     useEffect(() => {

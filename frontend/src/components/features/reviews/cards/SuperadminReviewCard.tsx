@@ -21,7 +21,7 @@ const SuperadminReviewCard: FC<PropsType> = ({review}) => {
                     <SuperadminReviewCardDropdown reviewId={id} foodAndDrinkId={foodAndDrinkId} userId={userId}/>
                 </div>
                 <div className="flex gap-3 items-center">
-                    <AvatarCustom photo={photo} defaultPhoto={UserAvatar.src} sizeMultiplier={10}/>
+                    <AvatarCustom photo={photo} defaultPhoto={UserAvatar.src}/>
                     <p>{userName} {surname}</p>
                 </div>
                 <p>{localCreatedAt}</p>

@@ -13,12 +13,12 @@ type PropType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
     page: number
     accessCookie: string
-    limit: number
+    limit?: number
 }
 
 const SuperadminFoodAndDrinks: FC<PropType> = ({foodAndDrinkListData, page, accessCookie, limit}) => {
     const {data, total, totalPages} = foodAndDrinkListData
-    if((page > totalPages && totalPages !== 0) || limit > 20){
+    if((page > totalPages && totalPages !== 0)){
         redirect('/account/superadmin/food-and-drinks')
     }
     return (

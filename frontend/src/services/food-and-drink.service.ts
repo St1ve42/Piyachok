@@ -79,7 +79,7 @@ export class FoodAndDrinkService {
         return await fetchApi20<IFoodAndDrinkTotalStatistics>(endpoint, baseRequestOptions)
     }
 
-    async findViewStatistics(id: string, query: IFoodAndDrinkViewStatisticsQuery): Promise<IApiResponse<IFoodAndDrinkViewStatistics>> {
+    async findViewStatistics(id: string, query?: IFoodAndDrinkViewStatisticsQuery): Promise<IApiResponse<IFoodAndDrinkViewStatistics>> {
         const endpoint = `/food-and-drinks/${id}/views`;
         const baseRequestOptions: RequestInit = {}
         return await fetchApi20<IFoodAndDrinkViewStatistics>(endpoint, baseRequestOptions, {query})
