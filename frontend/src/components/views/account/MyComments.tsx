@@ -1,7 +1,6 @@
 import {Heading} from "@heroui/react";
 import {userService} from "@/src/services/users.service";
 import {getAccessCookie} from "@/src/services/server.service";
-import {ICommentWithFoodAndDrink} from "@/src/interfaces/comments/ICommentWithFoodAndDrink";
 import CommentUserCard from "@/src/components/features/comments/CommentUserCard";
 import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 import {FC, JSX} from "react";
