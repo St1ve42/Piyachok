@@ -20,7 +20,7 @@ const DateRangePickerStatistics = () => {
             const endDate = end.toDate('+03').toLocaleDateString()
             let queryString = createQueryString('start', startDate)
             queryString = createQueryString('end', endDate, "set", queryString)
-            router.push(pathname + '?' + queryString)
+            router.push(pathname + '?' + queryString, {scroll: false})
         }
     }
   return <DateRangePicker className="w-80 self-end" endName="endDate" startName="startDate" onChange={handleDataRangePickerChange}>

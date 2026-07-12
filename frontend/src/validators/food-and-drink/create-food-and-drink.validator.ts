@@ -7,6 +7,7 @@ export const createFoodAndDrinkValidator = Joi.object({
     description: Joi.string().min(50).max(1000).required(),
     type: Joi.number().valid(...Object.values(FoodAndDrinkTypeEnum)).required(),
     averageReceipt: Joi.number().min(0).required(),
+    email: Joi.string().email(),
     cityId: Joi.number().required(),
     businessHours: Joi.array().items(Joi.object({
         day: Joi.string().required().valid(...Object.values(FoodAndDrinkDaysEnum)),

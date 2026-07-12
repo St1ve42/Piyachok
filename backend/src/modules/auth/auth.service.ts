@@ -120,7 +120,10 @@ export class AuthService {
     }
 
     async activate(token: string): Promise<ResponseUserWithTokensDto> {
-        const { userId } = this.tokenService.verify(token, 'activate');
+        const { userId } = this.tokenService.verify(
+            token,
+            'activate',
+        ) as IJwtActionPayload;
         const user = (await this.userService.findById(userId)) as User;
         if (user.isActive) {
             throw new ConflictException(
@@ -304,7 +307,10 @@ export class AuthService {
         dto: RecoveryDto,
         token: string,
     ): Promise<ResponseUserWithTokensDto> {
-        const { userId } = this.tokenService.verify(token, 'recovery');
+        const { userId } = this.tokenService.verify(
+            token,
+            'recovery',
+        ) as IJwtActionPayload;
         const { password } = dto;
         let user = (await this.userService.findOneByParams({
             id: userId,

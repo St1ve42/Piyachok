@@ -25,7 +25,7 @@ const ChangePassword = () => {
         }
         else{
             router.refresh()
-            toast(response.data.message, {
+            toast.success(response.data.message, {
                 timeout: 10*1000
             })
         }

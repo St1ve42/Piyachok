@@ -11,7 +11,7 @@ import CommentSearch from "@/src/components/features/comments/CommentSearch";
 import CommentSuperadminCard from "@/src/components/features/comments/CommentSuperadminCard";
 import CommentSort from "@/src/components/features/comments/CommentSort";
 import Filter from "@/src/components/shared/components/filter/Filter";
-import {CommentSearchByTranslation} from "@/src/constants/CommentSearchByTranslation";
+import {CommentSearchByTranslation} from "@/src/constants/comment-search-by-translation";
 
 type PropsType = {
     searchParams: IQueryComments

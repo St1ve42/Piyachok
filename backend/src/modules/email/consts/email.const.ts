@@ -9,4 +9,8 @@ export const EmailConst = {
         subject: "Відновлення паролю для акаунту на платформі 'Пиячок'",
         template: 'forgot-password',
     },
+    [EmailTypeEnum.CONFIRM_FOOD_AND_DRINK_EMAIL]: {
+        subject: 'Підтвердження електронної пошти закладу',
+        template: 'confirm-food-and-drink-email',
+    },
 };

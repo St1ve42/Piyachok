@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {useURL} from "@/src/hooks/shared/useURL";
 import { Key, toast } from "@heroui/react";
-import {useErrorStore} from "@/src/hooks/shared/useSharedStore";
 
 type PropsType = {
     initialSortByValue?: string,
@@ -12,7 +11,6 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
     const [sort, setSort] = useState<string | undefined>(initialSortValue)
     const [sortBy, setSortBy] = useState<string | undefined>(initialSortByValue)
     const {pathname, router, createQueryString} = useURL()
-    const {error, setError} = useErrorStore()
     const handleSuccess = (position: GeolocationPosition) => {
         let query = createQueryString(`sortBy`, 'distance')
         query = createQueryString(`lat`, position.coords.latitude.toString(), "set", query)
@@ -21,8 +19,7 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
         router.push(pathname + '?' + createQueryString(`sort`, sort, "set", query))
     };
 
-    const handleError = (err: GeolocationPositionError) => {
-        setError(err.message);
+    const handleError = () => {
         toast('Не вдалось визначити Ваше місцеположення. Будь ласка, увімкніть геолокацію')
         setSortBy('reset')
         setSort('reset')
@@ -34,7 +31,7 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
             }
             else if(sortBy === 'distance'){
                 if (!navigator.geolocation) {
-                    setError("Геолокація не підтримується");
+                    toast("Геолокація не підтримується");
                     return;
                 }
 
@@ -59,9 +56,6 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
         }
     }, [sort]);
     const handleChangeSortBy = (key: Key | null) => {
-        if(error){
-            setError(null)
-        }
         if(key){
             if(key === 'distance'){
                 setSort('asc')
@@ -70,9 +64,6 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
         }
     }
     const handleChangeSort = (key: Key | null) => {
-        if(error){
-            setError(null)
-        }
         if (key) {
             setSort(`${key}`)
         }

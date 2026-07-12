@@ -1,5 +1,5 @@
 'use client'
-import {Button, EmptyState, Form, Input, Label, Tag, TagGroup, TextArea, Heading} from "@heroui/react";
+import {Button, EmptyState, Form, Input, Label, Tag, TagGroup, TextArea} from "@heroui/react";
 import FoodAndDrinkTypeSelection from "@/src/components/features/food-and-drink/type-selection/FoodAndDrinkTypeSelection";
 import noImage from "@/src/public/no-image-icon.jpg";
 import Image from "next/image";
@@ -8,7 +8,6 @@ import FeatureSelection from "@/src/components/features/food-and-drink/feature-s
 import { v4 as uuidv4 } from "uuid";
 import useCreateOrUpdateFoodAndDrink from "@/src/components/views/account/create-or-update/useCreateOrUpdateFoodAndDrink";
 import BusinessHour from "@/src/components/features/food-and-drink/BusinessHour";
-import SuccessMark from "@/src/public/success_mark.png";
 import RegionSelection from "@/src/components/shared/components/region/RegionSelection";
 import CitySelection from "@/src/components/shared/components/city/CitySelection";
 import GalleryFilesWithSwiper from "@/src/components/features/food-and-drink/GalleryFilesWithSwiper";
@@ -21,18 +20,7 @@ type PropsType = { mode: 'create', foodAndDrink?: IFoodAndDrinkOwnerInfo } | {mo
 const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
     const {mode, foodAndDrink} = props
     const urlToRedirect = mode === 'update' ? props.urlToRedirect : undefined
-    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, handleRegionInputChange, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading} = useCreateOrUpdateFoodAndDrink({mode, foodAndDrink, urlToRedirect})
-    if(props.mode === 'create' && isSuccessCreateResponse){
-        return <div className="h-[70%] flex justify-center items-center">
-            <div className="w-[60%] flex flex-col items-center gap-2">
-                <Image src={SuccessMark} width={100} height={100} alt={'Успіх'}/>
-                <Heading level={3}>Заклад успішно створено!</Heading>
-                <div className="text-center">
-                    Тепер Ви можете переглянути створений заклад у вкладці &#39;Заклад&#39;
-                </div>
-            </div>
-        </div>
-    }
+    const {businessHoursFields, galleryFiles, tags, tagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, handleRegionInputChange, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading} = useCreateOrUpdateFoodAndDrink({mode, foodAndDrink, urlToRedirect})
     const createInputDefaultValue = <K extends keyof IFoodAndDrinkOwnerInfo>(
       foodAndDrinkProp: K
     ): IFoodAndDrinkOwnerInfo[K] | undefined => {
@@ -100,11 +88,11 @@ const CreateOrUpdateFoodAndDrink: FC<PropsType> = (props) => {
                 <Input id={'phone'} placeholder={'Введіть номер телефону'} type="text" required {...register('phone')} defaultValue={createInputDefaultValue('phone') ?? undefined}/>
                 {errors.phone && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.phone.message}</div>}
             </div>
-            <div className="flex flex-col gap-1 relative w-[25vw]">
+            {mode === 'create' && <div className="flex flex-col gap-1 relative w-[25vw]">
                 <Label isRequired htmlFor="phone" className="font-bold">Email</Label>
                 <Input placeholder={'Введіть email'} type="text" required {...register('email')} defaultValue={createInputDefaultValue('email') ?? undefined}/>
                 {errors.email && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.email.message}</div>}
-            </div>
+            </div>}
             <div className="w-[40%]">
                 <FeatureSelection initialFeatures={props.foodAndDrink?.features} handleFeatureCheck={handleFeatureCheck} isShownTextAboutOptional={true}/>
             </div>

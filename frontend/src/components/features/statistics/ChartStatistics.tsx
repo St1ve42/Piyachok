@@ -6,13 +6,14 @@ import {IFoodAndDrinkViewStatistics} from "@/src/interfaces/food-and-drink/IFood
 
 type PropsType = {
     foodAndDrinkViews: IFoodAndDrinkViewStatistics
-} & Record<'start' | 'end', string | undefined>
+} & Record<'start' | 'end', string | undefined | null>
 
 const ChartStatistics: FC<PropsType> = ({start, end, foodAndDrinkViews: {views, dates}}) => {
     const defaultEndDate = new Date()
     const defaultStartDate = structuredClone(defaultEndDate)
     defaultStartDate.setDate(defaultEndDate.getDate() - 7)
-    return <Chart options={{ chart: { type: "line" }}}>
+    return <div className="highcharts-light">
+        <Chart options={{ chart: { type: "line"}}}>
         <Title>Статистика переглядів за проміжок {start ?? defaultStartDate.toLocaleDateString()}-{end ?? defaultEndDate.toLocaleDateString()}</Title>
         <XAxis categories={dates}>Дата перегляду</XAxis>
         <YAxis>Перегляди</YAxis>
@@ -29,6 +30,7 @@ const ChartStatistics: FC<PropsType> = ({start, end, foodAndDrinkViews: {views, 
             }}}
         />
     </Chart>
+    </div>
 };
 
 export default ChartStatistics;

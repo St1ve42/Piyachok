@@ -3,10 +3,14 @@ import DateRangePickerStatistics from "@/src/components/features/statistics/Date
 import ChartStatistics from "@/src/components/features/statistics/ChartStatistics";
 import {FC} from "react";
 import {useFoodAndDrinkViewStatistics} from "@/src/hooks/tanstack-query/useFoodAndDrinkViewStatistics";
+import {useSearchParams} from "next/navigation";
 
-type PropsType = Record<'start' | 'end', string | undefined | null> & {id: string}
+type PropsType = {id: string}
 
-const Statistics: FC<PropsType> = ({start, end, id}) => {
+const Statistics: FC<PropsType> = ({id}) => {
+    const searchParams = useSearchParams()
+    const start = searchParams.get('start')
+    const end = searchParams.get('end')
     const {isLoading, data} = useFoodAndDrinkViewStatistics(id, {start, end})
     if(data && !data.success){
         return <div>{data.data.message}.</div>

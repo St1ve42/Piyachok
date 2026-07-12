@@ -18,6 +18,8 @@ import { Review } from '../reviews/entities/review.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { CommentsModule } from '../comments/comments.module';
+import { TokensModule } from '../tokens/tokens.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
     imports: [
@@ -39,6 +41,8 @@ import { CommentsModule } from '../comments/comments.module';
         FoodAndDrinkViewsModule,
         ReviewsModule,
         CommentsModule,
+        TokensModule,
+        EmailModule,
     ],
     controllers: [FoodAndDrinkController],
     providers: [FoodAndDrinkService],

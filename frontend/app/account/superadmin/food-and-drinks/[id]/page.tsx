@@ -1,10 +1,10 @@
 import type {Metadata} from "next";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {notFound} from "next/navigation";
-import FoodAndDrink from "@/src/components/features/food-and-drink/food-and-drink-info/FoodAndDrink";
 import {getAccessCookie} from "@/src/services/server.service";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
+import SuperadminFoodAndDrink from "@/src/components/views/superadmin/SuperadminFoodAndDrink";
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { id } = await params;
@@ -44,7 +44,7 @@ const SuperadminFoodAndDrinkByIdPage = async ({params, searchParams}: Props) => 
     if(!usersResponse.success){
         return <div>{usersResponse.data.message}</div>
     }
-    return <FoodAndDrink foodAndDrink={foodAndDrinkResponse.data} mode={'superadmin'} users={usersResponse.data.data}/>
+    return <SuperadminFoodAndDrink foodAndDrink={foodAndDrinkResponse.data} users={usersResponse.data.data}/>
 }
 
 export default SuperadminFoodAndDrinkByIdPage;

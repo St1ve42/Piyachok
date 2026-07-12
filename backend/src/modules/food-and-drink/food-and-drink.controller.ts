@@ -49,6 +49,7 @@ import {
     ApiCookieAuth,
     ApiParam,
     ApiConsumes,
+    ApiConflictResponse,
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
@@ -123,6 +124,28 @@ export class FoodAndDrinkController {
             createFoodAndDrinkDto,
             req.user.data,
         );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Підтвердження електронної пошти закладу',
+        description: 'Підтвердження електронної пошти закладу',
+    })
+    @ApiNoContentResponse({
+        description: 'Пошту закладу успішно підтверджено',
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Заклад підтверджено',
+        type: ResponseErrorDto,
+    })
+    @ApiConflictResponse({
+        description: 'Заклад вже підтверджено',
+        type: ResponseErrorDto,
+    })
+    @Post('/confirm/:token')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async confirmEmail(@Param('token') token: string): Promise<void> {
+        await this.foodAndDrinkService.confirmFoodAndDrinkEmail(token);
     }
 
     @ApiOperation({

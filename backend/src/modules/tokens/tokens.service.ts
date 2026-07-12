@@ -9,6 +9,7 @@ import { IJwtPayload } from '../auth/interfaces/IJwtPayload';
 import { ITokens } from '../auth/interfaces/ITokens';
 import { IJwtActionPayload } from '../auth/interfaces/IJwtActionPayload';
 import { GlobalUserRoleEnum } from '../users/enums/global.user.role.enum';
+import { IJwtFoodAndDrinkActionPayload } from '../auth/interfaces/IJwtFoodAndDrinkActionPayload';
 
 @Injectable()
 export class TokensService {
@@ -54,7 +55,7 @@ export class TokensService {
     }
 
     generateAction(
-        payload: IJwtActionPayload,
+        payload: IJwtActionPayload | IJwtFoodAndDrinkActionPayload,
         type: 'activate' | 'recovery',
     ): string {
         let secret: string;
@@ -78,7 +79,7 @@ export class TokensService {
     verify(
         token: string,
         type: 'activate' | 'recovery' | 'refresh',
-    ): IJwtActionPayload | IJwtPayload {
+    ): IJwtActionPayload | IJwtPayload | IJwtFoodAndDrinkActionPayload {
         try {
             let secret: string;
             switch (type) {

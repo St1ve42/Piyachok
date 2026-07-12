@@ -25,6 +25,7 @@ export interface ICreateFoodAndDrink {
     street: string;
     phone: string;
     averageReceipt: number;
+    email: string
     site?: string;
     instagram?: string;
     tags?: string[];

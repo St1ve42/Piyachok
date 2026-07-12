@@ -12,8 +12,9 @@ import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-ty
 import Joi from "joi";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import { IFoodAndDrinkOwnerInfo } from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
-import { redirect, useRouter} from "next/navigation";
+import { redirect } from "next/navigation";
 import { utils } from "@/src/services/utils.service";
+import {useEmailStore} from "@/src/hooks/shared/useSharedStore";
 
 type PropsType = { mode: 'create' | 'update', foodAndDrink?: IFoodAndDrinkOwnerInfo, urlToRedirect?: string}
 
@@ -27,10 +28,9 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
     const [cityInputValue, setCityInputValue] = useState<string>('')
     const [foodAndDrinkTypeValue, setFoodAndDrinkTypeValue] = useState<string>('')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
-    const [isSuccessCreateResponse, setIsSuccessCreateResponse] = useState<boolean>(false)
     const [regionInputValue, setRegionInputValue] = useState<string>('')
-    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
+    const setEmail = useEmailStore(({setEmail}) => setEmail)
 
     const {register, handleSubmit, reset, control, watch, formState: {errors, isValid}, setValue, setError} = useForm<ICreateFoodAndDrink & {tag: string}>({
         resolver: joiResolver(createFoodAndDrinkValidator, JoiOptions),
@@ -44,6 +44,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
         control,
         name: 'businessHours'
     })
+
     useEffect(() => {
         if(mode === 'update' && foodAndDrink){
           const {images, businessHours, features, tags, city, region, type} = foodAndDrink
@@ -204,7 +205,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
     }, [mode, reset]);
 
     useEffect(() => {
-      if (mode === "create" && !isSuccessCreateResponse) {
+      if (mode === "create") {
         const timer = setTimeout(() => {
           localStorage.setItem(
             "foodAndDrinkCreatingDraft",
@@ -279,10 +280,10 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
                 return
             }
         }
-        router.refresh()
-        setIsSuccessCreateResponse(true)
-        setIsLoading(false)
         localStorage.removeItem('foodAndDrinkCreatingDraft')
+        setEmail(createResponse.data.email)
+        setIsLoading(false)
+        redirect('/account/food-and-drink/confirm')
     }
 
     const handleUpdateFormSubmit = async (data: ICreateFoodAndDrink) => {
@@ -291,7 +292,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
             setIsLoading(false)
             return
         }
-        const {street, instagram, facebook, telegram, x, phone, ...restData} = data
+        const {street, email, instagram, facebook, telegram, x, phone, ...restData} = data
         const updateData: Partial<ICreateFoodAndDrinkDto> = restData
         const socialNetworks: Pick<ICreateFoodAndDrink, "instagram" | "facebook" | "x" | "telegram"> = {instagram, facebook, telegram, x}
         if(street !== foodAndDrink['location']['street']){
@@ -315,6 +316,9 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
         }
         if(phone !== foodAndDrink.phone){
           updateData['phone'] = phone
+        }
+        if(email && email !== foodAndDrink['email']){
+          updateData['email'] = email
         }
         updateData['socialNetworks'] = socialNetworks
         const {id} = foodAndDrink
@@ -341,7 +345,7 @@ const useCreateOrUpdateFoodAndDrink = ({mode, foodAndDrink, urlToRedirect}: Prop
         }
     }
 
-  return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, isSuccessCreateResponse, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading}
+  return {businessHoursFields, galleryFiles, tags, tagInput, setTagInput, fileInputRef, handleUploadFile, handleRemoveGallery, handleTriggerFileInput, handleAddDay, handleRemoveSchedule, handleRemoveTag, handleAddTag, handleTagInputKeyDown, register, handleSubmit, errors, isValid, control, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, cityInputValue, regionInputValue, handleFoodAndDrinkTypeSelection, handleFeatureCheck, regionId, handleTagInputChange, handleCreateFormSubmit, errorMessage, foodAndDrinkTypeValue, handleUpdateFormSubmit, setRegionInputValue, onRegionIdMatch, isLoading}
 }
 
 export default useCreateOrUpdateFoodAndDrink

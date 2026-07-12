@@ -1,4 +1,3 @@
-'use client'
 import {Heading} from "@heroui/react";
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
 import {FC} from "react";

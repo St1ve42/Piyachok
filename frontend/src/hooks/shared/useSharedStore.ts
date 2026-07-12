@@ -8,14 +8,14 @@ interface IStore<T> {
     setApiResponse: (data: T) => void
 }
 
-interface IError {
-    error: string | null,
-    setError: (error: string | null) => void
-}
-
 interface IConfirmAge {
   isConfirmed: boolean | null,
   setIsConfirmedAge: (isConfirmed: boolean | null) => void
+}
+
+interface IEmail {
+    email: string | null,
+    setEmail: (email: string | null) => void
 }
 
 const createSharedStore = <T>() => create<IStore<T>>(
@@ -24,12 +24,6 @@ const createSharedStore = <T>() => create<IStore<T>>(
         setApiResponse: (apiResponse: T) => set({previousApiResponse: apiResponse})
     }),
 )
-
-export const useErrorStore = create<IError>(
-    (set) => ({
-        error: null,
-        setError: (error: string | null) => set({error})
-}))
 
 export const useConfirmAgeStore = create<IConfirmAge>()(
     persist(
@@ -43,6 +37,22 @@ export const useConfirmAgeStore = create<IConfirmAge>()(
         }
     )
 )
+
+export const useEmailStore = create<IEmail>()(
+    persist(
+        (set) => ({
+            email: null,
+            setEmail: (email: string | null) => set({email}),
+            resetEmail: () => set({email: null})
+        }),
+        {
+            name: 'email',
+            storage: createJSONStorage(() => sessionStorage)
+        }
+    )
+)
+
+export const useCreateFoodAndDrinkApiStore = createSharedStore
 
 export const useResponseMessageStore = createSharedStore<IResponseMessage>()
 export const useUserFromSocialNetworkStore = createSharedStore<IUserFromSocialNetworkWithToken>()

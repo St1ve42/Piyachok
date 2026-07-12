@@ -44,6 +44,11 @@ import { FoodAndDrinkFavouritesService } from '../food-and-drink-favourites/food
 import { FoodAndDrinkStatisticsService } from '../food-and-drink-statistics/food-and-drink-statistics.service';
 import { FoodAndDrinkViewsService } from '../food-and-drinks-views/food-and-drink-views.service';
 import { ContactManagerDto } from './dto/contact-manager.dto';
+import { TokensService } from '../tokens/tokens.service';
+import { EmailService } from '../email/email.service';
+import { EmailTypeEnum } from '../email/enums/email-type.enum';
+import { IJwtFoodAndDrinkActionPayload } from '../auth/interfaces/IJwtFoodAndDrinkActionPayload';
+import { ErrorResponse } from '../../shared/error/error-response';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -60,6 +65,8 @@ export class FoodAndDrinkService {
         private readonly foodAndDrinkFavouritesService: FoodAndDrinkFavouritesService,
         private readonly foodAndDrinkStatisticsService: FoodAndDrinkStatisticsService,
         private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
+        private readonly tokensService: TokensService,
+        private readonly emailService: EmailService,
     ) {}
 
     async find(
@@ -231,7 +238,7 @@ export class FoodAndDrinkService {
         createFoodAndDrinkDto: CreateFoodAndDrinkDto,
         owner: User,
     ): Promise<FoodAndDrink> {
-        const { tags, cityId } = createFoodAndDrinkDto;
+        const { tags, cityId, email } = createFoodAndDrinkDto;
         await this.checkExisting(createFoodAndDrinkDto, owner.id);
         const allTags = tags
             ? await this.tagsService.createAndGetTags(tags)
@@ -253,7 +260,38 @@ export class FoodAndDrinkService {
         }
         await this.userRepository.save(owner);
         await this.foodAndDrinkStatisticsService.create(foodAndDrink.id);
+        const token = this.tokensService.generateAction(
+            { foodAndDrinkId: foodAndDrink.id },
+            'activate',
+        );
+        await this.emailService.sendEmail(
+            EmailTypeEnum.CONFIRM_FOOD_AND_DRINK_EMAIL,
+            email,
+            {
+                token,
+            },
+        );
         return (await this.findById(foodAndDrink.id)) as FoodAndDrink;
+    }
+
+    async confirmFoodAndDrinkEmail(token: string): Promise<void> {
+        const { foodAndDrinkId } = this.tokensService.verify(
+            token,
+            'activate',
+        ) as IJwtFoodAndDrinkActionPayload;
+        const foodAndDrink = (await this.foodAndDrinkRepository.findOneBy({
+            id: foodAndDrinkId,
+        })) as FoodAndDrink;
+        if (foodAndDrink.isEmailVerified) {
+            throw new ConflictException(
+                new ErrorResponse(
+                    'USER_ALREADY_ACTIVE',
+                    'Заклад вже підтверджений',
+                ),
+            );
+        }
+        foodAndDrink.isEmailVerified = true;
+        await this.foodAndDrinkRepository.save(foodAndDrink);
     }
 
     async update(
@@ -278,7 +316,12 @@ export class FoodAndDrinkService {
             tags: allTags,
         });
 
-        return await this.foodAndDrinkRepository.save(updatedEntity);
+        const savedFoodAndDrink =
+            await this.foodAndDrinkRepository.save(updatedEntity);
+        await this.foodAndDrinkRepository.update(id, {
+            status: FoodAndDrinkStatusEnum.PENDING,
+        });
+        return savedFoodAndDrink;
     }
 
     async delete(id: string): Promise<void> {
@@ -515,7 +558,15 @@ export class FoodAndDrinkService {
             : false;
         if (isExistsFoodAndDrink) {
             throw new ConflictException(
-                'Цей імейл вже прив`язаний до інакшого закладу. Виберіть інакший варіант.',
+                'Ця електронна пошта вже прив`язана до інакшого закладу. Виберіть інакший варіант.',
+            );
+        }
+        const isExistsUser = email
+            ? await this.userRepository.existsBy({ email })
+            : false;
+        if (isExistsUser) {
+            throw new ConflictException(
+                'Заклад не може мати електронну адресу користувача.',
             );
         }
         isExistsFoodAndDrink =

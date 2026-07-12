@@ -52,6 +52,9 @@ export class FoodAndDrink {
     @Column({ unique: true })
     email: string;
 
+    @Column({ default: false })
+    isEmailVerified: boolean;
+
     @Column()
     cityId: number;
 

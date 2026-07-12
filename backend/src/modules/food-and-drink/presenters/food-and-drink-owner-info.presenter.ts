@@ -5,6 +5,20 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class FoodAndDrinkOwnerInfoPresenter extends FoodAndDrinkInfoPresenter {
     @ApiProperty({
+        example: 'owner@gmail.com',
+        description: 'Електронна пошта',
+    })
+    @Expose()
+    email: string;
+
+    @ApiProperty({
+        example: 'true',
+        description: 'Чи підтверджена пошта',
+    })
+    @Expose()
+    isEmailVerified: boolean;
+
+    @ApiProperty({
         example: 'active',
         enum: ['active', 'pending', 'inactive'],
         description: 'Статус закладу (активний або неактивний)',

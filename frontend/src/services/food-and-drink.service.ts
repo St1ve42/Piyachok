@@ -108,6 +108,12 @@ export class FoodAndDrinkService {
         const baseRequestOptions: RequestInit = {method: 'POST', body: JSON.stringify(contactFoodAndDrinkDto)}
         return await fetchApi20<ICommentWithFoodAndDrinkListData>(endpoint, baseRequestOptions)
     }
+
+    async confirmEmail(token: string): Promise<IApiResponse>{
+        const endpoint = `/food-and-drinks/confirm/${token}`;
+        const baseRequestOptions: RequestInit = {method: 'POST'}
+        return await fetchApi20(endpoint, baseRequestOptions)
+    }
 }
 
 export const foodAndDrinkService = new FoodAndDrinkService()
