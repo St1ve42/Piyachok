@@ -28,7 +28,7 @@ const FoodAndDrinkCommentCardDropdown: FC<PropsType> = ({commentId, foodAndDrink
             </Button>
             <Dropdown.Popover>
                 <Dropdown.Menu>
-                    <Dropdown.Item onClick={handleDelete}><TrashBin/> Видалити</Dropdown.Item>
+                    <Dropdown.Item onClick={handleDelete} className="text-red-600"><TrashBin/> Видалити</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown.Popover>
         </Dropdown>

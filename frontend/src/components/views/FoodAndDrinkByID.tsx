@@ -46,8 +46,8 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
         }
     }
     return <section className="px-8 flex justify-center gap-5">
-    <div className="grid grid-cols-3 grid-rows-[25rem_auto] gap-3">
-        <div className="flex flex-col gap-3 col-span-2">
+    <div className="grid grid-cols-100 grid-rows-[25rem_auto] gap-3">
+        <div className="flex flex-col gap-3 col-span-64">
             <div>
                 <FoodAndDrinkImages images={images}/>
             </div>
@@ -60,7 +60,7 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
             </div>
             <FoodAndDrinkCommentsBlock photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
         </div>
-        <div className="flex flex-col gap-4 mb-2">
+        <div className="flex flex-col gap-4 mb-2 col-span-36">
             <div className="h-[25rem] w-full flex-shrink-0">
                 <MapWrapper foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region, city}}/>
             </div>
@@ -70,35 +70,7 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
             </div>
             <Reviews searchParams={searchParams} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
         </div>
-        {/*<FoodAndDrinkImages images={images}/>*/}
-        {/*<div className="h-[25rem] w-full flex-shrink-0 mt-2">*/}
-        {/*    <MapWrapper foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region, city}}/>*/}
-        {/*</div>*/}
-        {/*<FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>*/}
-        {/*<div className="flex flex-col gap-2">*/}
-        {/*    <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>*/}
-        {/*    <RatingStatistics foodAndDrinkId={id} rating={rating}/>*/}
-        {/*    <ReviewForm isLogged={isLogged} foodAndDrinkId={id} isOwner={isOwner}/>*/}
-        {/*</div>*/}
-        {/*<FoodAndDrinkCommentsBlock photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>*/}
-        {/*<Reviews searchParams={searchParams} foodAndDrinkId={id} user={user} isOwner={isOwner}/>*/}
     </div>
-    {/*<div className="flex flex-col w-[64%] gap-3">*/}
-    {/*    <FoodAndDrinkImages images={images}/>*/}
-    {/*    <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>*/}
-    {/*    <FoodAndDrinkCommentsBlock photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>*/}
-    {/*</div>*/}
-    {/*<div className="flex flex-col w-[36%] gap-4 mb-2">*/}
-    {/*    <div className="h-[25rem] w-full flex-shrink-0 mt-2">*/}
-    {/*        <MapWrapper foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region, city}}/>*/}
-    {/*    </div>*/}
-    {/*    <div className="flex flex-col gap-2">*/}
-    {/*        <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>*/}
-    {/*        <RatingStatistics foodAndDrinkId={id} rating={rating}/>*/}
-    {/*        <ReviewForm isLogged={isLogged} foodAndDrinkId={id} isOwner={isOwner}/>*/}
-    {/*    </div>*/}
-    {/*    <Reviews searchParams={searchParams} foodAndDrinkId={id} user={user} isOwner={isOwner}/>*/}
-    {/*</div>*/}
     </section>
 };
 

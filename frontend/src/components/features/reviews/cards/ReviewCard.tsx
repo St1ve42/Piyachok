@@ -60,7 +60,7 @@ const ReviewCard: FC<PropsType> = ({review, user, isOwner, foodAndDrinkId}) => {
                                 <Label className="flex gap-2 items-center"><Flag/> Поскаржитись</Label>
                             </Dropdown.Item>}
                             {user && (user.id === creatorId || user.role === GlobalUserRoleEnum.SUPERADMIN || isOwner) && <Dropdown.Item onClick={handleDeleteReview}>
-                                <Label className="flex gap-2 items-center"><TrashBin/> Видалити</Label>
+                                <Label className="flex gap-2 items-center text-red-600"><TrashBin/> Видалити</Label>
                             </Dropdown.Item>}
                         </Dropdown.Menu>
                     </Dropdown.Popover>
