@@ -27,19 +27,19 @@ export class FoodAndDrinkService {
 
     async findTypes():Promise<IApiResponse<Record<string, string>>> {
         const endpoint = '/food-and-drinks/types';
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3600}}
         return await fetchApi20<Record<string, string>>(endpoint, baseRequestOptions)
     }
 
     async findFeatures():Promise<IApiResponse<Record<string, string>>> {
         const endpoint = '/food-and-drinks/features';
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3600}}
         return await fetchApi20<Record<string, string>>(endpoint, baseRequestOptions)
     }
 
     async findById(id: string, accessCookie?: string):Promise<IApiResponse<IFoodAndDrinkById>> {
         const endpoint = `/food-and-drinks/${id}`;
-        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: ['food-and-drink-by-id']}}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: [`food-and-drink-by-id-${id}`]}}
         return await fetchApi20<IFoodAndDrinkById>(endpoint, baseRequestOptions, {accessCookie})
     }
 
@@ -75,7 +75,7 @@ export class FoodAndDrinkService {
 
     async findTotalStatistics(id: string): Promise<IApiResponse<IFoodAndDrinkTotalStatistics>> {
         const endpoint = `/food-and-drinks/${id}/statistics`;
-        const baseRequestOptions: RequestInit = {next: {tags: ['totalStatistics']}}
+        const baseRequestOptions: RequestInit = {next: {tags: [`total-statistics-${id}`], revalidate: 15}}
         return await fetchApi20<IFoodAndDrinkTotalStatistics>(endpoint, baseRequestOptions)
     }
 
@@ -87,19 +87,19 @@ export class FoodAndDrinkService {
 
     async findReviewStatistics(id: string): Promise<IApiResponse<IFoodAndDrinReviewStatisticsListData>> {
         const endpoint = `/food-and-drinks/${id}/reviews/statistics`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: [`food-and-drink-review-statistics-${id}`]}}
         return await fetchApi20<IFoodAndDrinReviewStatisticsListData>(endpoint, baseRequestOptions)
     }
 
     async findReviews(id: string, query?: IReviewQuery): Promise<IApiResponse<IReviewWithCreatorListData>> {
         const endpoint = `/food-and-drinks/${id}/reviews`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: [`food-and-drink-reviews-${id}`]}}
         return await fetchApi20<IReviewWithCreatorListData>(endpoint, baseRequestOptions, {query})
     }
 
     async findComments(id: string, query?: IFoodAndDrinkCommentQuery): Promise<IApiResponse<ICommentWithUserListData>> {
         const endpoint = `/food-and-drinks/${id}/comments`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: [`food-and-drink-comments-${id}`]}}
         return await fetchApi20<ICommentWithUserListData>(endpoint, baseRequestOptions, {query})
     }
 

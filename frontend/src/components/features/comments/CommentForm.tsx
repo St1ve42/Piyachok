@@ -8,6 +8,7 @@ import {CommentsValidator} from "@/src/validators/comments/comments.validator";
 import {IUserCommentInput} from "@/src/interfaces/comments/IUserCommentInput";
 import {commentsService} from "@/src/services/comments.service";
 import {useQueryClient} from "@tanstack/react-query";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     isLogged: boolean,
@@ -21,7 +22,9 @@ const CommentForm: FC<PropsType> = ({isLogged, foodAndDrinkId}) => {
         const {success} = await commentsService.create({ ...data, foodAndDrinkId });
         if(success){
             reset()
-            await queryClient.invalidateQueries({queryKey: ['food-and-drink-comments']})
+            await queryClient.invalidateQueries({queryKey: ['food-and-drink-comments', foodAndDrinkId]})
+            await updateTagAction('my-comments')
+            await updateTagAction('all-comments')
         }
     }
     return (

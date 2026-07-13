@@ -36,7 +36,7 @@ const FoodAndDrinkContact: FC<PropsType> = ({foodAndDrinkId, user}) => {
         }
     }
     return <Modal>
-        <Button className="w-full"><Envelope/>Зв`язатись з закладом</Button>
+        <Button><Envelope/>Зв`язатись з закладом</Button>
         <Modal.Backdrop>
             <Modal.Container>
                 <Modal.Dialog className="sm:max-w-[360px]">

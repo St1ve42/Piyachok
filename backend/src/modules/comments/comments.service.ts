@@ -69,6 +69,7 @@ export class CommentsService {
             foodAndDrink: {
                 id: true,
                 name: true,
+                status: true,
             },
             user: {
                 id: true,

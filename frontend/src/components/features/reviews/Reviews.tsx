@@ -41,7 +41,7 @@ const Reviews: FC<PropsType> = async ({foodAndDrinkId, user, isOwner, searchPara
                 <div className="flex flex-col gap-3">
                     {filterAndSortComponent}
                     <div className="max-h-[500px] flex flex-col gap-3 overflow-y-scroll">
-                        {reviews.data.data.map(review => <ReviewCard key={review.id} review={review} user={user} isOwner={isOwner}/>)}</div></div> : emptyDataComponent)
+                        {reviews.data.data.map(review => <ReviewCard key={review.id} review={review} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>)}</div></div> : emptyDataComponent)
             : <div>{reviews.data.message}</div>}
         {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
     </Surface>

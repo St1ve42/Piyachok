@@ -1,21 +1,25 @@
 'use client'
 import {Button, Dropdown} from "@heroui/react";
-import { EllipsisVertical, TrashBin, Eye } from "@gravity-ui/icons";
+import {EllipsisVertical, House, TrashBin} from "@gravity-ui/icons";
 import {FC} from "react";
 import {reviewService} from "@/src/services/review.service";
 import Link from "next/link";
 import {updateTagAction} from "@/src/actions/server.actions";
+import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 
 type PropsType = {
     reviewId: string,
     foodAndDrinkId: string,
+    status: FoodAndDrinkStatusEnum
 }
 
-const UserReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId}) => {
+const UserReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId, status}) => {
     const handleDelete = async () => {
         const response = await reviewService.delete(reviewId)
         if(response.success){
             await updateTagAction('my-reviews')
+            await updateTagAction(`food-and-drink-reviews-${foodAndDrinkId}`)
+            await updateTagAction(`all-reviews`)
         }
     }
     return (
@@ -25,12 +29,12 @@ const UserReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId}) => {
             </Button>
             <Dropdown.Popover>
                 <Dropdown.Menu>
-                    <Dropdown.Item onClick={handleDelete}><TrashBin/> Видалити</Dropdown.Item>
-                    <Dropdown.Item>
+                    {status === FoodAndDrinkStatusEnum.ACTIVE && <Dropdown.Item>
                         <Link href={`/food-and-drink/${foodAndDrinkId}`} className="flex items-center gap-2">
-                            <Eye/> Подивитись заклад
+                            <House/> Подивитись заклад
                         </Link>
-                    </Dropdown.Item>
+                    </Dropdown.Item>}
+                    <Dropdown.Item onClick={handleDelete} className="text-red-600"><TrashBin/> Видалити</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown.Popover>
         </Dropdown>

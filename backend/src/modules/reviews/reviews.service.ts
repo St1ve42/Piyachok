@@ -91,7 +91,7 @@ export class ReviewsService {
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
         const { limit, page, skip, sort, sortBy, ...search } = query;
         const filter: FindOptionsWhere<Review> = { foodAndDrinkId };
-        const order: FindOptionsOrder<Review> = {};
+        const order: FindOptionsOrder<Review> = { createdAt: 'desc' };
         const searchEntries = Object.entries(search);
         if (searchEntries.length > 0) {
             searchEntries.map(([key, value]) => {
@@ -218,8 +218,10 @@ export class ReviewsService {
         query: UserReviewQueryDto,
     ): Promise<{ data: Review[]; total: number; totalPages: number }> {
         const { skip, page, limit, sortBy, sort, ...search } = query;
-        const filter: FindOptionsWhere<Review> = { userId };
-        const order: FindOptionsOrder<Review> = {};
+        const filter: FindOptionsWhere<Review> = {
+            userId,
+        };
+        const order: FindOptionsOrder<Review> = { createdAt: 'desc' };
         const searchEntries = Object.entries(search);
         if (searchEntries.length > 0) {
             searchEntries.map(([key, value]) => {
@@ -257,6 +259,7 @@ export class ReviewsService {
                     name: true,
                     type: true,
                     mainImage: true,
+                    status: true,
                 },
             },
             relations: { foodAndDrink: true },

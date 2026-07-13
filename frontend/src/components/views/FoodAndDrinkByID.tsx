@@ -13,6 +13,7 @@ import FoodAndDrinkCommentsBlock from "@/src/components/features/comments/FoodAn
 import FoodAndDrinkContact from "@/src/components/features/food-and-drink/contact/FoodAndDrinkContact";
 import FoodAndDrinkImages from "@/src/components/features/FoodAndDrinkImages";
 import FoodAndDrinkInfo from "@/src/components/features/food-and-drink/FoodAndDrinkInfo";
+import TotalStatistics from "@/src/components/features/food-and-drink/TotalStatistics";
 
 type PropsType = {
     foodAndDrink: IFoodAndDrinkById,
@@ -27,9 +28,10 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
         rating,
         isOwner,
         images,
-      location: {
+        isFavourite,
+        location: {
         coordinates: { lat, lng },
-      },
+        },
     } = foodAndDrink;
     const centerPosition: [number, number] = [lat, lng]
     let isLogged: boolean = false
@@ -51,7 +53,8 @@ const FoodAndDrinkByID: FC<PropsType> = async ({foodAndDrink, searchParams}) => 
             </div>
             <div className="relative">
                 <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>
-                <div className="absolute top-[15px] right-[15px]">
+                <div className="absolute top-[15px] right-[15px] flex gap-4 items-center">
+                    <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
                     <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>
                 </div>
             </div>

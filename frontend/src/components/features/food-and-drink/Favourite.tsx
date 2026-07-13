@@ -21,7 +21,7 @@ const Favourite: FC<PropsType> = ({foodAndDrinkId, isFavourite}) => {
         if(!response.success){
             return
         }
-        await Promise.all([updateTagAction('food-and-drink-by-id'), queryClient.invalidateQueries({queryKey: ['total statistics']})])
+        await Promise.all([updateTagAction(`food-and-drink-by-id-${foodAndDrinkId}`), queryClient.invalidateQueries({queryKey: ['total statistics']})])
         await updateTagAction('my-favourite-food-and-drinks')
     }
     return <div onClick={handleToggleFavourite} className="cursor-pointer">{isFavourite ? <HeartFill/> : <Heart/>}</div>;

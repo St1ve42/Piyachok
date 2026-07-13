@@ -10,10 +10,11 @@ import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 type PropsType = {
     comment: ICommentWithUser,
     user: IUser | null,
-    isOwner: boolean | null
+    isOwner: boolean | null,
+    foodAndDrinkId: string
 }
 
-const CommentCard: FC<PropsType> = ({comment, user, isOwner}) => {
+const CommentCard: FC<PropsType> = ({comment, user, isOwner, foodAndDrinkId}) => {
     const {user: {name, surname, photo, id: creatorId}, text, createdAt, id} = comment
     const localCreatedAt = new Date(createdAt).toLocaleDateString('uk-UA')
     return (
@@ -28,7 +29,7 @@ const CommentCard: FC<PropsType> = ({comment, user, isOwner}) => {
                     <Card.Content>{text}</Card.Content>
                 </div>
             </div>
-            {user && (user.role === GlobalUserRoleEnum.SUPERADMIN || user.id === creatorId || isOwner) && <FoodAndDrinkCommentCardDropdown commentId={id}/>}
+            {user && (user.role === GlobalUserRoleEnum.SUPERADMIN || user.id === creatorId || isOwner) && <FoodAndDrinkCommentCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId}/>}
         </Card>
     )
 }

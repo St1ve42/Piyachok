@@ -10,24 +10,27 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {EllipsisVertical, TrashBin, Flag} from "@gravity-ui/icons";
 import {reviewService} from "@/src/services/review.service";
-import {redirect, useRouter} from "next/navigation";
+import {redirect} from "next/navigation";
 import ReviewComplaintModal from "@/src/components/features/reviews/ReviewComplaintModal";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     review: IReviewWithCreator
     user: IUser | null,
-    isOwner: boolean | null
+    isOwner: boolean | null,
+    foodAndDrinkId: string
 }
 
-const ReviewCard: FC<PropsType> = ({review, user, isOwner}) => {
+const ReviewCard: FC<PropsType> = ({review, user, isOwner, foodAndDrinkId}) => {
     const {rating, id, averageReceipt, text, createdAt, creator: {name, surname, id: creatorId, photo}} = review
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const localCreatedAt = new Date(createdAt).toLocaleDateString('uk-UA')
-    const router = useRouter()
     const handleDeleteReview = async () => {
         const response = await reviewService.delete(id)
         if(response.success){
-            router.refresh()
+            await updateTagAction(`food-and-drink-reviews-${foodAndDrinkId}`)
+            await updateTagAction('my-reviews')
+            await updateTagAction('all-reviews')
         }
     }
     return <Card className="flex flex-col gap-2 mb-1 shrink-0">

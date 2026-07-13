@@ -1,16 +1,16 @@
 import {ICommentWithUserAndFoodAndDrink} from "@/src/interfaces/comments/ICommentWithUserAndFoodAndDrink";
 import {FC} from "react";
 import {Card} from "@heroui/react";
-import CommentUserCardDropdown from "@/src/components/features/comments/CommentUserCardDropdown";
 import AvatarCustom from "@/src/components/shared/ui/AvatarCustom";
 import UserAvatar from "@/src/public/default_user_avatar.png";
+import CommentSuperadminCardDropdown from "@/src/components/features/comments/CommentSuperadminCardDropdown";
 
 type PropsType = {
     comment: ICommentWithUserAndFoodAndDrink
 }
 
 const CommentSuperadminCard: FC<PropsType> = ({comment}) => {
-    const {foodAndDrink: {id: foodAndDrinkId, name: foodAndDrinkName}, user: {surname, name: userName, photo}, createdAt, text, id} = comment
+    const {foodAndDrink: {id: foodAndDrinkId, name: foodAndDrinkName}, user: {surname, name: userName, photo, id: userId}, createdAt, text, id} = comment
     const localCreatedAt = new Date(createdAt).toLocaleDateString('uk-UA')
     return (
         <Card className="flex-row justify-between">
@@ -29,7 +29,7 @@ const CommentSuperadminCard: FC<PropsType> = ({comment}) => {
                     </div>
                 </div>
             </div>
-            <CommentUserCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId}/>
+            <CommentSuperadminCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} userId={userId}/>
         </Card>
     )
 }

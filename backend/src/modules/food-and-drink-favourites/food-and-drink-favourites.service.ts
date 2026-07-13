@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FoodAndDrink } from '../food-and-drink/entities/food-and-drink.entity';
 import { QueryBaseDto } from '../../shared/dto/query-base.dto';
 import { FoodAndDrinkStatistic } from '../food-and-drink-statistics/entities/food-and-drink-statistic.entity';
+import { FoodAndDrinkStatusEnum } from '../food-and-drink/enums/food-and-drink-status.enum';
 
 @Injectable()
 export class FoodAndDrinkFavouritesService {
@@ -58,7 +59,10 @@ export class FoodAndDrinkFavouritesService {
     ): Promise<{ data: FoodAndDrink[]; total: number; totalPages: number }> {
         const { skip, page, limit } = query;
         const favourites = await this.favouriteRepository.find({
-            where: { userId },
+            where: {
+                userId,
+                foodAndDrink: { status: FoodAndDrinkStatusEnum.ACTIVE },
+            },
             relations: { foodAndDrink: true },
             select: ['id', 'foodAndDrink'],
             take: limit,

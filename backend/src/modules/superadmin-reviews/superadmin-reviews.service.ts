@@ -66,6 +66,7 @@ export class SuperadminReviewsService {
             .take(limit)
             .skip((page - 1) * limit + skip)
             .where(filter)
+            .orderBy('review.createdAt', 'DESC')
             .getManyAndCount();
         const totalPages = Math.ceil((total - skip) / limit);
         return { data, total, totalPages, ...query };

@@ -1,24 +1,24 @@
 'use client'
-import {Button, Dropdown} from "@heroui/react";
-import { EllipsisVertical, TrashBin, House, Person} from "@gravity-ui/icons";
+import {commentsService} from "@/src/services/comments.service";
+import { Button, Dropdown } from "@heroui/react";
+import { EllipsisVertical, House, Person, TrashBin } from "@gravity-ui/icons";
 import {FC} from "react";
-import {reviewService} from "@/src/services/review.service";
 import Link from "next/link";
 import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
-    reviewId: string,
+    commentId: string,
     foodAndDrinkId: string,
     userId: string
 }
 
-const SuperadminReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId, userId}) => {
+const CommentSuperadminCardDropdown: FC<PropsType> = ({commentId, foodAndDrinkId, userId}) => {
     const handleDelete = async () => {
-        const response = await reviewService.delete(reviewId)
-        if(response.success){
-            await updateTagAction('my-reviews')
-            await updateTagAction(`food-and-drink-reviews-${foodAndDrinkId}`)
-            await updateTagAction(`all-reviews`)
+        const {success} = await commentsService.delete(commentId);
+        if(success){
+            await updateTagAction('my-comments')
+            await updateTagAction(`food-and-drink-comments-${foodAndDrinkId}`)
+            await updateTagAction('all-comments')
         }
     }
     return (
@@ -29,15 +29,19 @@ const SuperadminReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId, 
             <Dropdown.Popover>
                 <Dropdown.Menu>
                     <Dropdown.Item>
-                        <Link href={`/food-and-drink/${foodAndDrinkId}`} className="flex items-center gap-2">
+                        <Link href={`/food-and-drink/${foodAndDrinkId}`} className="flex gap-3">
                             <House/> Подивитись заклад
                         </Link>
                     </Dropdown.Item>
+                </Dropdown.Menu>
+                <Dropdown.Menu>
                     <Dropdown.Item>
-                        <Link href={`/account/superadmin/users/${userId}`} className="flex items-center gap-2">
+                        <Link href={`/food-and-drink/${userId}`} className="flex gap-3">
                             <Person/> Подивитись користувача
                         </Link>
                     </Dropdown.Item>
+                </Dropdown.Menu>
+                <Dropdown.Menu>
                     <Dropdown.Item onClick={handleDelete} className="text-red-600"><TrashBin/> Видалити</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown.Popover>
@@ -45,4 +49,4 @@ const SuperadminReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId, 
     )
 }
 
-export default SuperadminReviewCardDropdown
+export default CommentSuperadminCardDropdown

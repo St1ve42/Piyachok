@@ -9,8 +9,9 @@ import {createReviewValidator} from "@/src/validators/review/create-review.valid
 import {JoiOptions} from "@/src/constants/joi.options";
 import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 import {reviewService} from "@/src/services/review.service";
-import {redirect, useRouter} from "next/navigation";
+import {redirect} from "next/navigation";
 import {Xmark} from "@gravity-ui/icons"
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     isLogged: boolean
@@ -21,7 +22,6 @@ type PropsType = {
 const ReviewForm: FC<PropsType> = ({isLogged, foodAndDrinkId, isOwner}) => {
     const [reviewTextLength, setReviewTextLength] = useState<number>(0)
     const [rating, setRating] = useState<number>(0)
-    const router = useRouter()
     const {register, handleSubmit, reset, formState: {errors, isValid}} = useForm<ICreateUserInputReview>({mode: 'all', resolver: joiResolver(createReviewValidator, JoiOptions)})
     const handleReviewSubmit = async (formData: ICreateUserInputReview) => {
         const {success, data} = await reviewService.create({...formData, rating, foodAndDrinkId})
@@ -33,7 +33,9 @@ const ReviewForm: FC<PropsType> = ({isLogged, foodAndDrinkId, isOwner}) => {
         else{
             reset()
             setRating(0)
-            router.refresh()
+            await updateTagAction(`food-and-drink-reviews-${foodAndDrinkId}`)
+            await updateTagAction('my-reviews')
+            await updateTagAction('all-reviews')
             toast.success('Ваш відгук успішно надіслано!')
         }
     }
@@ -69,6 +71,7 @@ const ReviewForm: FC<PropsType> = ({isLogged, foodAndDrinkId, isOwner}) => {
                     </div>
                 </div>
             </div>
+            {isOwner && <div className="text-sm">Ви не можете надсилати відгук, оскільки Ви є власником цього закладу.</div>}
             {!isOwner && <div className="flex justify-between items-start gap-2">
                 <Button type={'submit'} isDisabled={!rating || !isValid}>Надіслати</Button>
             </div>}

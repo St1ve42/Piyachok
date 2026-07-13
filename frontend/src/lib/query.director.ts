@@ -17,8 +17,10 @@ export class QueryDirector {
             return this.queryBuilder.build();
         }
 
-        const {page, limit, skip, ...search } = this.query;
-
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const {page, skip, limit, sort, sortBy, ...search} = this.query
+        
         if (limit) {
             this.queryBuilder.addLimit(limit);
         }
@@ -31,12 +33,12 @@ export class QueryDirector {
             this.queryBuilder.addSearch(search);
         }
 
-        if('sort' in this.query && this.query.sort){
-            this.queryBuilder.addSort(this.query.sort);
+        if(sort){
+            this.queryBuilder.addSort(sort);
         }
 
-        if ('sortBy' in this.query && this.query.sortBy) {
-            this.queryBuilder.addSortBy(this.query.sortBy);
+        if (sortBy) {
+            this.queryBuilder.addSortBy(sortBy);
         }
 
 

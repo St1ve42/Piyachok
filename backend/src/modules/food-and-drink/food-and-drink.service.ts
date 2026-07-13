@@ -85,7 +85,7 @@ export class FoodAndDrinkService {
             ...search
         } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
-        const order: FindOptionsOrder<FoodAndDrink> = {};
+        const order: FindOptionsOrder<FoodAndDrink> = { rating: 'desc' };
         const enums = ['status', 'type'];
         if (features) {
             filter['features'] = Raw(
@@ -131,6 +131,7 @@ export class FoodAndDrinkService {
             lat &&
             sort === SortEnum.ASC
         ) {
+            delete order['rating'];
             const queryBuilder = this.foodAndDrinkRepository
                 .createQueryBuilder(`foodAndDrink`)
                 .addSelect(
@@ -163,6 +164,7 @@ export class FoodAndDrinkService {
             return [result, total, totalPages];
         }
         if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
+            delete order['rating'];
             order[sortBy] = sort;
         }
         const total = await this.foodAndDrinkRepository.countBy(filter);

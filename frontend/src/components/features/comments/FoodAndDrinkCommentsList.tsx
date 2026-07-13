@@ -34,7 +34,7 @@ const FoodAndDrinkCommentsList: FC<PropsType> = ({foodAndDrinkId, user, isOwner}
         comments && comments.length > 0 && <div className="flex flex-col gap-2 mb-5">
             {comments.map(comment => {
                 if(comment){
-                    return <CommentCard key={comment.id} comment={comment} user={user} isOwner={isOwner}/>
+                    return <CommentCard key={comment.id} comment={comment} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>
                 }
             })}
             <div ref={ref} style={{display: comments.length !== total ? 'block' : 'none'}}>Завантаження...</div>
