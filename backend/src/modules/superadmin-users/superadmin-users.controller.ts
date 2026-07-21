@@ -116,9 +116,13 @@ export class SuperadminUsersController {
     async findById(
         @Param('id', UserIdValidationPipe, UserBodyValidationPipe) id: string,
     ): Promise<User> {
-        return (await this.usersService.findById(id, {
-            ownerOf: true,
-        })) as User;
+        return (await this.usersService.findById(
+            id,
+            {
+                ownerOf: true,
+            },
+            { relations: ['ownerOf'] },
+        )) as User;
     }
 
     @ApiCookieAuth('accessToken')

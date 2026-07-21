@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {getAccessCookie} from "@/src/services/server.service";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
-import FoodAndDrinkModerate from "@/src/components/views/superadmin/FoodAndDrinkModerate";
+import FoodAndDrinksModerationView from "@/src/components/views/superadmin/FoodAndDrinksModerationView";
 import {FC} from "react";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {redirect} from "next/navigation";
@@ -26,7 +26,7 @@ const FoodAndDrinkModeratePage: FC<PropsType> = async ({searchParams}) => {
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <FoodAndDrinkModerate foodAndDrinkListData={response.data} page={page} accessCookie={accessCookie} limit={limit}/>
+    return <FoodAndDrinksModerationView foodAndDrinkListData={response.data} page={page} accessCookie={accessCookie} limit={limit}/>
 }
 
 export default FoodAndDrinkModeratePage;

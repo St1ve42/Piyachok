@@ -165,10 +165,14 @@ export class UsersService {
     async findById(
         id: string,
         relations?: FindOptionsRelations<User>,
+        loadRelationIds?: {
+            relations?: string[];
+        },
     ): Promise<User | null> {
         return await this.userRepository.findOne({
             where: { id },
             relations,
+            loadRelationIds,
         });
     }
 

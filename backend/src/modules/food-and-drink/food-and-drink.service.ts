@@ -13,6 +13,7 @@ import { FoodAndDrink } from './entities/food-and-drink.entity';
 import {
     Between,
     DeepPartial,
+    FindOperator,
     FindOptionsOrder,
     FindOptionsRelations,
     FindOptionsWhere,
@@ -49,6 +50,8 @@ import { EmailService } from '../email/email.service';
 import { EmailTypeEnum } from '../email/enums/email-type.enum';
 import { IJwtFoodAndDrinkActionPayload } from '../auth/interfaces/IJwtFoodAndDrinkActionPayload';
 import { ErrorResponse } from '../../shared/error/error-response';
+import { Tag } from '../tags/entity/tag.entity';
+import { City } from '../cities/entities/city.entity';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -86,6 +89,7 @@ export class FoodAndDrinkService {
         } = query;
         const filter: FindOptionsWhere<FoodAndDrink> = { ...filterOptions };
         const order: FindOptionsOrder<FoodAndDrink> = { rating: 'desc' };
+        const relations: FindOptionsRelations<FoodAndDrink> = {};
         const enums = ['status', 'type'];
         if (features) {
             filter['features'] = Raw(
@@ -93,36 +97,57 @@ export class FoodAndDrinkService {
                 { feat: JSON.stringify(features) },
             );
         }
-        if (search) {
-            Object.entries(search).forEach(([key, value]) => {
-                if (value) {
-                    switch (typeof value) {
-                        case 'string':
-                            if (key === 'tag') {
-                                filter['tags'] = { name: value };
-                            } else if (enums.includes(key)) {
-                                filter[key] = value;
-                            } else if (key === 'city') {
-                                filter['city'] = { name: Like(`%${value}%`) };
-                            } else {
-                                filter[key] = Like(`%${value}%`);
+        const searchEntries = Object.entries(search);
+        if (searchEntries.length > 0) {
+            searchEntries.forEach(([searchBy, search]) => {
+                if (typeof search !== 'undefined') {
+                    switch (typeof search) {
+                        case 'string': {
+                            let findOperator:
+                                | FindOptionsWhere<Tag>
+                                | FindOptionsWhere<City>
+                                | string
+                                | FindOperator<string> = Like(`%${search}%`);
+                            switch (searchBy) {
+                                case 'tag':
+                                    findOperator = {
+                                        name: search,
+                                    };
+                                    searchBy = 'tags';
+                                    break;
+                                case 'city':
+                                    findOperator = {
+                                        name: Like(`%${search}%`),
+                                    };
+                                    break;
                             }
+                            if (enums.includes(searchBy)) {
+                                findOperator = search;
+                            }
+                            filter[searchBy] = findOperator;
                             break;
+                        }
                         case 'object':
-                            if (value.lte && value.gte) {
-                                filter[key] = Between(value.gte, value.lte);
-                            } else if (value.lte) {
-                                filter[key] = LessThanOrEqual(value.lte);
-                            } else if (value.gte) {
-                                filter[key] = MoreThanOrEqual(value.gte);
+                            if (search.lte && search.gte) {
+                                filter[searchBy] = Between(
+                                    search.gte,
+                                    search.lte,
+                                );
+                            } else if (search.lte) {
+                                filter[searchBy] = LessThanOrEqual(search.lte);
+                            } else if (search.gte) {
+                                filter[searchBy] = MoreThanOrEqual(search.gte);
                             }
                             break;
                         default:
-                            filter[key] = value;
+                            filter[searchBy] = search;
                             break;
                     }
                 }
             });
+        }
+        if (search.isTop) {
+            relations['topCategories'] = true;
         }
         if (
             sortBy &&
@@ -175,6 +200,7 @@ export class FoodAndDrinkService {
                 skip: (page - 1) * limit + skip,
                 where: filter,
                 order,
+                relations,
             }),
             total,
             totalPages,

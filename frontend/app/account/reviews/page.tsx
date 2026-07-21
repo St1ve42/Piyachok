@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import MyReviews from "@/src/components/views/account/MyReviews";
+import MyReviewsView from "@/src/components/views/account/MyReviewsView";
 import { FC } from "react";
 import {redirect} from "next/navigation";
 
@@ -17,7 +17,7 @@ const ReviewsPage: FC<PropsType> = async ({ searchParams }) => {
     if (isNaN(page) || page < 1) {
     redirect("/account/reviews");
     }
-    return <MyReviews page={page} />;
+    return <MyReviewsView page={page} />;
 };
 
 export default ReviewsPage

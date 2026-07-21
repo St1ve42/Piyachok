@@ -30,8 +30,9 @@ import {
     ReviewWithOwnerFindPresenter,
     ReviewStatisticsFindPresenter,
     CommentFoodAndDrinkFindPresenter,
+    FoodAndDrinkNewsFindPresenter,
 } from '../../shared/presenters/find.presenter';
-import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from '../../shared/guards/can-manage-or-check-statistics-food-and-drink.guard';
+import { CanManageOrCheckStatisticsFoodAndDrinkGuard } from './guards/can-manage-or-check-statistics-food-and-drink.guard';
 import { FoodAndDrinkStatusEnum } from './enums/food-and-drink-status.enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { RemoveImagesFoodAndDrinkDto } from './dto/remove-images-food-and-drink.dto';
@@ -79,6 +80,9 @@ import { QueryCommentDto } from '../comments/dto/query-comment.dto';
 import { CommentsService } from '../comments/comments.service';
 import { Comment } from '../comments/entities/comment.entity';
 import { CommentFoodAndDrinkPresenter } from '../comments/presenters/comment-food-and-drink.presenter';
+import { NewsService } from '../news/news.service';
+import { News } from '../news/entities/news.entity';
+import { QueryNewsDto } from '../news/dto/query-news.dto';
 
 @ApiTags('Заклади харчування')
 @Controller('food-and-drinks')
@@ -90,6 +94,7 @@ export class FoodAndDrinkController {
         private readonly foodAndDrinkViewsService: FoodAndDrinkViewsService,
         private readonly reviewsService: ReviewsService,
         private readonly commentsService: CommentsService,
+        private readonly newsService: NewsService,
     ) {}
 
     @ApiCookieAuth('accessToken')
@@ -697,5 +702,44 @@ export class FoodAndDrinkController {
         @Query() query: QueryCommentDto,
     ): Promise<{ data: Comment[]; total: number; totalPages: number }> {
         return await this.commentsService.find(query, { foodAndDrinkId });
+    }
+
+    @ApiOperation({
+        summary: 'Новини закладу',
+        description:
+            'Отримує список всіх новин закладу з підтримкою фільтрації та сортування.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiOkResponse({
+        description: 'Успішно отримано список новин закладу',
+        type: CommentFoodAndDrinkPresenter,
+    })
+    @ApiBadRequestResponse({
+        description: 'Помилка валідації даних',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
+    @Get(':id/news')
+    @SerializeOptions({
+        type: FoodAndDrinkNewsFindPresenter,
+        excludeExtraneousValues: true,
+    })
+    async findNews(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        foodAndDrinkId: string,
+        @Query() query: QueryNewsDto,
+    ): Promise<{ data: News[]; total: number; totalPages: number }> {
+        return await this.newsService.find(query, { foodAndDrinkId });
     }
 }

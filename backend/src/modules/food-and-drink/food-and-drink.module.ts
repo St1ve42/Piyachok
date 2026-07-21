@@ -20,6 +20,11 @@ import { ReviewsModule } from '../reviews/reviews.module';
 import { CommentsModule } from '../comments/comments.module';
 import { TokensModule } from '../tokens/tokens.module';
 import { EmailModule } from '../email/email.module';
+import { News } from '../news/entities/news.entity';
+import { FoodAndDrinkTopCategory } from '../food-and-drink-top-category/entities/food-and-drink-top-category.entity';
+import { Piyachok } from '../piyachok/entities/piyachok.entity';
+import { PiyachokReply } from '../piyachok-replies/entities/piyachok-reply.entity';
+import { NewsModule } from '../news/news.module';
 
 @Module({
     imports: [
@@ -31,7 +36,12 @@ import { EmailModule } from '../email/email.module';
             User,
             Review,
             Comment,
+            News,
+            FoodAndDrinkTopCategory,
+            Piyachok,
+            PiyachokReply,
         ]),
+        NewsModule,
         forwardRef(() => UsersModule),
         forwardRef(() => TagsModule),
         StorageModule,

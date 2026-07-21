@@ -5,6 +5,7 @@ import { LocationPresenter } from './location.presenter';
 import { CityPresenter } from '../../cities/presenters/city.presenter';
 import { City } from '../../cities/entities/city.entity';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
+import { FoodAndDrinkTopCategory } from '../../food-and-drink-top-category/entities/food-and-drink-top-category.entity';
 
 export class FoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -87,4 +88,19 @@ export class FoodAndDrinkFindOnePresenter {
     })
     @Expose()
     features: FoodAndDrinkFeaturesEnum[];
+
+    @ApiProperty({
+        example: ['День народження', 'Корпоратив'],
+        description: 'Топ категорії, до яких належить заклад',
+    })
+    @Expose()
+    @Transform(
+        ({ value }: { value?: FoodAndDrinkTopCategory[] }) => {
+            if (value) {
+                return value.length > 0 ? value : null;
+            }
+        },
+        { toClassOnly: true },
+    )
+    topCategories: FoodAndDrinkTopCategory[];
 }

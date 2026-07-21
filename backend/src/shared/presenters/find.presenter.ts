@@ -12,6 +12,8 @@ import { ReviewWithFoodAndDrinkPresenter } from '../../modules/reviews/presenter
 import { CommentSuperadminPresenter } from '../../modules/comments/presenters/comment-superadmin.presenter';
 import { CommentUserPresenter } from '../../modules/comments/presenters/comment-user.presenter';
 import { CommentFoodAndDrinkPresenter } from '../../modules/comments/presenters/comment-food-and-drink.presenter';
+import { FoodAndDrinkNewsPresenter } from '../../modules/news/presenter/FoodAndDrinkNewsPresenter';
+import { GeneralNewsPresenter } from '../../modules/news/presenter/GeneralNewsPresenter';
 
 function createFindPresenter<T>(DataCls: ClassConstructor<T>) {
     class FindPresenter extends BaseQueryPresenter {
@@ -78,3 +80,9 @@ export const CommentFoodAndDrinkFindPresenter =
 
 export const UserCommentFindPresenter =
     createFindPresenter<CommentUserPresenter>(CommentUserPresenter);
+
+export const FoodAndDrinkNewsFindPresenter =
+    createFindPresenter<FoodAndDrinkNewsPresenter>(FoodAndDrinkNewsPresenter);
+
+export const GeneralNewsFindPresenter =
+    createFindPresenter<GeneralNewsPresenter>(GeneralNewsPresenter);

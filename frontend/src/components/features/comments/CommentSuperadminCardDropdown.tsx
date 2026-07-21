@@ -29,14 +29,14 @@ const CommentSuperadminCardDropdown: FC<PropsType> = ({commentId, foodAndDrinkId
             <Dropdown.Popover>
                 <Dropdown.Menu>
                     <Dropdown.Item>
-                        <Link href={`/food-and-drink/${foodAndDrinkId}`} className="flex gap-3">
+                        <Link href={`/account/superadmin/food-and-drinks/${foodAndDrinkId}`} className="flex gap-3">
                             <House/> Подивитись заклад
                         </Link>
                     </Dropdown.Item>
                 </Dropdown.Menu>
                 <Dropdown.Menu>
                     <Dropdown.Item>
-                        <Link href={`/food-and-drink/${userId}`} className="flex gap-3">
+                        <Link href={`/account/superadmin/users/${userId}`} className="flex gap-3">
                             <Person/> Подивитись користувача
                         </Link>
                     </Dropdown.Item>

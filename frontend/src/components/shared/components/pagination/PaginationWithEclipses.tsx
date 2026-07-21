@@ -6,10 +6,10 @@ import { Input, Pagination} from "@heroui/react";
 
 type PropsType = {
     totalPages: number,
-    currentPage: number
+    currentPage?: number
 }
 
-function PaginationWithEclipses({totalPages, currentPage}: PropsType) {
+function PaginationWithEclipses({totalPages, currentPage = 1}: PropsType) {
     const [page, setPage] = useState(1);
     const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
     const router = useRouter();

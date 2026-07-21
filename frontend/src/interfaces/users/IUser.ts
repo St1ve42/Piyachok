@@ -5,15 +5,15 @@ export interface IUser {
   age: number;
   email: string;
   photo: string | null;
-  phone?: string;
-  gender?: string;
+  phone?: string | null;
+  gender?: string | null;
   role: string;
   city: string;
   region: string;
   isVerified: boolean;
   isActive: boolean;
   isDeleted: boolean;
-  ownerOf?: {
-    id: string
-  }
+  ownerOf: {
+      id: string
+  } | null
 }

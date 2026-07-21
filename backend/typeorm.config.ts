@@ -16,4 +16,5 @@ export default new DataSource({
     migrations: [__dirname + '/src/typeorm/migrations/*.{js,ts}'],
     entities: [__dirname + '/**/*.entity.{js,ts}'],
     synchronize: false,
+    migrationsTransactionMode: 'each',
 });

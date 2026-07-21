@@ -13,7 +13,7 @@ import {
 import {EllipsisVertical, Pencil, Route, TrashBin} from "@gravity-ui/icons";
 import UsersSearch from "@/src/components/features/users/search/UsersSearch";
 import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
-import {utils} from "@/src/services/utils.service";
+import {utilsService} from "@/src/services/utils.service";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import Link from "next/link";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
@@ -125,7 +125,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-4">
                                                 <Avatar className={'size-14'}>
-                                                    <Avatar.Image alt="фото" src={user.photo ? utils.buildStorageURL(user.photo ) : UserAvatar.src} width={100} height={100}/>
+                                                    <Avatar.Image alt="фото" src={user.photo ? utilsService.buildStorageURL(user.photo ) : UserAvatar.src} width={100} height={100}/>
                                                 </Avatar>
                                                 <div>
                                                     <div>{user.name} {user.surname}</div>

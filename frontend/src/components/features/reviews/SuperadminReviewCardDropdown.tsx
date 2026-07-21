@@ -29,7 +29,7 @@ const SuperadminReviewCardDropdown: FC<PropsType> = ({reviewId, foodAndDrinkId, 
             <Dropdown.Popover>
                 <Dropdown.Menu>
                     <Dropdown.Item>
-                        <Link href={`/food-and-drink/${foodAndDrinkId}`} className="flex items-center gap-2">
+                        <Link href={`/account/superadmin/food-and-drinks/${foodAndDrinkId}`} className="flex items-center gap-2">
                             <House/> Подивитись заклад
                         </Link>
                     </Dropdown.Item>

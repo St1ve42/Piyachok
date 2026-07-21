@@ -1,10 +1,10 @@
 import type {Metadata} from "next";
-import SignIn from "@/src/components/views/auth/sign-in/SignIn";
+import SignInView from "@/src/components/views/auth/sign-in/SignInView";
 
 export const metadata: Metadata = {
     title: 'Логін'
 };
 
 export default function SignInPage() {
-    return <SignIn/>
+    return <SignInView/>
 }

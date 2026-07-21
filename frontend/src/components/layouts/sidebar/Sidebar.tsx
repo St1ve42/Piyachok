@@ -5,6 +5,7 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {authService} from "@/src/services/auth.service";
 import {useRouter} from "next/navigation";
+import {Bars} from "@gravity-ui/icons"
 import {Comment, Comments, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ type PropsType = {
 }
 
 const Sidebar: FC<PropsType> = ({user}) => {
-    const {role} = user
+    const {role, ownerOf} = user
     const router = useRouter()
     const handleExit = async() => {
         const response = await authService.logOut()
@@ -22,7 +23,7 @@ const Sidebar: FC<PropsType> = ({user}) => {
         }
     }
     return (
-        <section className="w-[20%] h-[80%] border-2 rounded-2xl">
+        <section className="w-[20%] h-[80%] border-2 rounded-2xl mt-2">
             <Header className="text-xl text-black border-b-[1px] rounded-t-2xl pl-3">Особистий кабінет</Header>
             <ListBox className="gap-0 overflow-y-scroll max-h-[73vh]" aria-label={'бокова панель'} onAction = {async (key: Key | null) => {
                 if(key === 'exit'){
@@ -56,24 +57,36 @@ const Sidebar: FC<PropsType> = ({user}) => {
                 </ListBox.Section>
                 <ListBox.Section>
                     <Header>Мій заклад</Header>
-                    {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item textValue={'Заклад'}>
+                    {ownerOf && <ListBox.Item textValue={'Заклад'}>
                         <Link href={'/account/food-and-drink'} className="flex w-full items-center gap-3">
                             <House/>
                             Заклад
                         </Link>
                     </ListBox.Item>}
-                    {(role === GlobalUserRoleEnum.ADMIN || role === GlobalUserRoleEnum.SUPERADMIN) && <ListBox.Item textValue={'Статистика'}>
+                    {ownerOf && <ListBox.Item textValue={'Статистика'}>
                         <Link href={'/account/statistics'} className="flex w-full items-center gap-3">
                             <ChartColumn/>
                             Статистика
                         </Link>
                     </ListBox.Item>}
-                    <ListBox.Item textValue={'Створити заклад'}>
+                    {!ownerOf && <ListBox.Item textValue={'Створити заклад'}>
                         <Link href={'/account/food-and-drink/create'} className="flex w-full items-center gap-3">
                             <Plus/>
                             Створити заклад
                         </Link>
-                    </ListBox.Item>
+                    </ListBox.Item>}
+                    {ownerOf && <ListBox.Item textValue={'Створити новину'}>
+                        <Link href={'/account/news/create'} className="flex w-full items-center gap-3">
+                            <Plus/>
+                            Створити новину
+                        </Link>
+                    </ListBox.Item>}
+                    {ownerOf && <ListBox.Item textValue={'Новини закладу'}>
+                        <Link href={'/account/news'} className="flex w-full items-center gap-3">
+                            <Bars/>
+                            Новини
+                        </Link>
+                    </ListBox.Item>}
                 </ListBox.Section>
                 {role === GlobalUserRoleEnum.SUPERADMIN && <ListBox.Section>
                     <Header>Модерація</Header>

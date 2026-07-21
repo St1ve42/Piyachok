@@ -1,4 +1,4 @@
-import Home from "@/src/components/views/Home";
+import HomeView from "@/src/components/views/HomeView";
 import { queryFoodAndDrinkValidator } from "@/src/validators/food-and-drink/query-food-and-drink.validator";
 import { redirect } from "next/navigation";
 
@@ -14,5 +14,5 @@ export default async function HomePage({searchParams}: PropsType) {
     if(error){
       redirect('/')
     }
-    return <Home searchParams={value}/>;
+    return <HomeView searchParams={value}/>;
 }

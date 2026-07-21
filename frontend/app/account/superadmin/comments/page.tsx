@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AllComments from "@/src/components/views/superadmin/AllComments";
+import AllCommentsView from "@/src/components/views/superadmin/AllCommentsView";
 import {
   IQueryComments,
   queryCommentsValidator,
@@ -21,7 +21,7 @@ const AllCommentsPage = async ({ searchParams }: Props) => {
     if(error){
         redirect('/account/superadmin/comments')
     }
-    return <AllComments searchParams={value}/>
+    return <AllCommentsView searchParams={value}/>
 };
 
 export default AllCommentsPage;

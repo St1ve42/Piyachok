@@ -25,6 +25,9 @@ import { FoodAndDrinkDaysEnum } from '../enums/food-and-drink-days.enum';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 import { Review } from '../../reviews/entities/review.entity';
 import { Comment } from '../../comments/entities/comment.entity';
+import { News } from '../../news/entities/news.entity';
+import { FoodAndDrinkTopCategory } from '../../food-and-drink-top-category/entities/food-and-drink-top-category.entity';
+import { Piyachok } from '../../piyachok/entities/piyachok.entity';
 
 @Index(['name'])
 @Index(['averageReceipt'])
@@ -88,7 +91,7 @@ export class FoodAndDrink {
     status: FoodAndDrinkStatusEnum;
 
     @Column({ default: false })
-    isDeleted: boolean;
+    isTop: boolean;
 
     @Column('varchar', { nullable: true })
     site?: string | null;
@@ -116,12 +119,12 @@ export class FoodAndDrink {
     @Column()
     ownerId: string;
 
-    @ManyToOne(() => User, (user) => user.ownerOf)
+    @OneToOne(() => User, (user) => user.ownerOf)
     @JoinColumn({ name: 'ownerId' })
     owner: User;
 
     @OneToMany(() => User, (user) => user.managerOf, { nullable: true })
-    managers?: User | null;
+    managers?: User[] | null;
 
     @ManyToMany(() => Tag, (tag) => tag.foodAndDrinks, {
         cascade: ['insert', 'update'],
@@ -164,6 +167,24 @@ export class FoodAndDrink {
         nullable: true,
     })
     comments: Comment[] | null;
+
+    @OneToMany(() => News, (news) => news.foodAndDrink, {
+        nullable: true,
+    })
+    news: News[] | null;
+
+    @ManyToMany(
+        () => FoodAndDrinkTopCategory,
+        (foodAndDrinkTopCategories) => foodAndDrinkTopCategories.foodAndDrinks,
+        { nullable: true, cascade: ['insert', 'update'] },
+    )
+    @JoinTable()
+    topCategories: FoodAndDrinkTopCategory[] | null;
+
+    @OneToMany(() => Piyachok, (piyachok) => piyachok.foodAndDrink, {
+        nullable: true,
+    })
+    piyachoks: Piyachok[] | null;
 
     distance?: string;
 }

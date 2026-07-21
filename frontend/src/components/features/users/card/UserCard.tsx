@@ -7,7 +7,7 @@ import UserAvatar from "@/src/public/default_user_avatar.png";
 import Image from "next/image";
 import Verified from "@/src/public/verified.png";
 import Link from "next/link";
-import { utils } from "@/src/services/utils.service";
+import { utilsService } from "@/src/services/utils.service";
 
 type PropsType = {
     user: IFullUser
@@ -27,7 +27,7 @@ const UserCard: FC<PropsType> = ({user}) => {
             <div className="flex justify-between items-center">
                 <div className="flex gap-2">
                     <Avatar className={'size-14'}>
-                        <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : UserAvatar.src} width={100} height={100}/>
+                        <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo) : UserAvatar.src} width={100} height={100}/>
                     </Avatar>
                     <div className="flex gap-2 items-center">
                         {isActive && <Image src={ActiveUser} alt={'Активований'} width={30} height={30} priority={true}/>}
@@ -43,7 +43,7 @@ const UserCard: FC<PropsType> = ({user}) => {
             </div>
             <CardContent>
                 <div>
-                  <Chip color="warning" variant="primary" className="font-bold">{utils.capitalizeFirstLetter(role)}</Chip>
+                  <Chip color="warning" variant="primary" className="font-bold">{utilsService.capitalizeFirstLetter(role)}</Chip>
                 </div>
                 <div>{name} {surname}</div>
                 <p>{email}</p>

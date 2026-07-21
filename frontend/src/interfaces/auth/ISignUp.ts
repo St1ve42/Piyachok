@@ -6,8 +6,8 @@ export type ISignUp = {
     cityId: number,
     email: string,
     password: string,
-    phone?: string,
-    gender?: string
+    phone: string | null,
+    gender: string | null
 }
 
 export type IBaseSignUp = Omit<ISignUp, "email" | "password">

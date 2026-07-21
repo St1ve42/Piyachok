@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import SuperadminFoodAndDrinks from "@/src/components/views/superadmin/SuperadminFoodAndDrinks";
+import AllFoodAndDrinksView from "@/src/components/views/superadmin/AllFoodAndDrinksView";
 import {redirect} from "next/navigation";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import { getAccessCookie } from "@/src/services/server.service";
@@ -28,7 +28,7 @@ const SuperadminFoodAndDrinksPage = async ({searchParams}: PropsType) => {
     if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    return <SuperadminFoodAndDrinks foodAndDrinkListData={foodAndDrinkResponse.data} page={validatedQuery.page ?? 1} accessCookie={accessCookie} limit={validatedQuery.limit}/>
+    return <AllFoodAndDrinksView foodAndDrinkListData={foodAndDrinkResponse.data} page={validatedQuery.page ?? 1} accessCookie={accessCookie} limit={validatedQuery.limit}/>
 }
 
 export default SuperadminFoodAndDrinksPage;

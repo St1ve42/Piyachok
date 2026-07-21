@@ -1,5 +1,6 @@
 import {FoodAndDrinkTypeEnum} from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
+import {NewsCategoryEnum} from "@/src/enums/news/news-category.enum";
 
 export interface IBaseQuery{
     page?: number,
@@ -50,5 +51,12 @@ export interface IUserCommentQuery extends IBaseQuery{
     [key: string]: unknown,
     text?: string
 }
+
+export interface INewsQuery extends IBaseQuery{
+    [key: string]: unknown,
+    title?: string,
+    category?: NewsCategoryEnum
+}
+
 
 

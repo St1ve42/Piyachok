@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AllReviews from "@/src/components/views/superadmin/AllReviews";
+import AllReviewsView from "@/src/components/views/superadmin/AllReviewsView";
 import {ValidationError} from "joi";
 import {queryReviewType} from "@/src/validators/review/query-review.validator";
 import {userQueryReviewValidator} from "@/src/validators/review/user-query-review.validator";
@@ -21,7 +21,7 @@ const AllReviewsPage: FC<PropsType> = async ({ searchParams }) => {
     if(error){
         redirect('/account/superadmin/reviews')
     }
-    return <AllReviews searchParams={value}/>;
+    return <AllReviewsView searchParams={value}/>;
 };
 
 export default AllReviewsPage;

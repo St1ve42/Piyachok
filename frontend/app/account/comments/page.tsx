@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import MyComments from "@/src/components/views/account/MyComments";
+import MyCommentsView from "@/src/components/views/account/MyCommentsView";
 import {FC} from "react";
 import {redirect} from "next/navigation";
 
@@ -17,7 +17,7 @@ const CommentsPage: FC<PropsType> = async ({searchParams}) => {
     if(isNaN(page) || page < 1){
         redirect('/account/comments')
     }
-    return <MyComments page={page}/>
+    return <MyCommentsView page={page}/>
 }
 
 export default CommentsPage

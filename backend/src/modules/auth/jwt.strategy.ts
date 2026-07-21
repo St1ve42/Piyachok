@@ -59,7 +59,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         return {
             jti,
             role,
-            data: (await this.usersService.findById(userId)) as User,
+            data: (await this.usersService.findById(
+                userId,
+                {
+                    ownerOf: true,
+                },
+                { relations: ['ownerOf'] },
+            )) as User,
         };
     }
 }

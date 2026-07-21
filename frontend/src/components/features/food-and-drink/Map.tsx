@@ -10,7 +10,7 @@ import {
 import {Route} from "@gravity-ui/icons"
 import { FC, useEffect, useState } from "react";
 import Control from 'react-leaflet-custom-control'
-import { GetCoordinatesDto, utils } from "@/src/services/utils.service";
+import { GetCoordinatesDto, utilsService } from "@/src/services/utils.service";
 import L from "leaflet";
 
 type coordinatesType = [number, number]
@@ -82,7 +82,7 @@ const Map: FC<PropsType> = ({foodAndDrinkPosition, foodAndDrinkLocationInfo}) =>
   }
 
   const handleRejectLocation: PositionErrorCallback = async () => {
-      const response = await utils.getCoordinates(foodAndDrinkLocationInfo)
+      const response = await utilsService.getCoordinates(foodAndDrinkLocationInfo)
       if(response.success){
         const {data: {lng, lat}} = response
         const userPos: [number, number] = [lat, lng]

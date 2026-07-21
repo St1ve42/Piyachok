@@ -10,7 +10,7 @@ export const updateMeValidator = Joi.object({
         .label('Телефон')
         .messages({
             'string.pattern.base': 'Телефон повинен бути вигляду +380501234567',
-        }),
+        }).allow(null, ''),
     gender: Joi.string()
         .valid('male', 'female', 'reset')
         .optional()

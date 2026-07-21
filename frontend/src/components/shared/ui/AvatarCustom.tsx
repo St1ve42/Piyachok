@@ -1,4 +1,4 @@
-import {utils} from "@/src/services/utils.service";
+import {utilsService} from "@/src/services/utils.service";
 import {FC} from "react";
 import {Avatar} from "@heroui/react"
 
@@ -12,7 +12,7 @@ type PropsType = {
 const AvatarCustom: FC<PropsType> = ({photo, defaultPhoto, height, width}) => {
     return (
         <Avatar style={{width, height}}>
-            <Avatar.Image alt="фото" src={photo ? utils.buildStorageURL(photo) : defaultPhoto} width={100} height={100}/>
+            <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo) : defaultPhoto} width={100} height={100}/>
         </Avatar>
     )
 }

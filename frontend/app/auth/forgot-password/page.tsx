@@ -1,5 +1,5 @@
-import ForgotPassword from "@/src/components/views/auth/forgot-password/ForgotPassword";
-import RecoveryPassword from "@/src/components/views/auth/recovery/RecoveryPassword";
+import ForgotPasswordView from "@/src/components/views/auth/forgot-password/ForgotPasswordView";
+import RecoveryPasswordView from "@/src/components/views/auth/recovery/RecoveryPasswordView";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
@@ -12,10 +12,10 @@ type PropsType = {
 const ForgotPasswordPage = async ({searchParams}: PropsType) => {
     const {token} = await searchParams
     if(token){
-        return <RecoveryPassword token={token}/>
+        return <RecoveryPasswordView token={token}/>
     }
     return (
-        <ForgotPassword/>
+        <ForgotPasswordView/>
     )
 }
 

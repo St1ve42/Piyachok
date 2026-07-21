@@ -1,4 +1,4 @@
-import SignUp from "@/src/components/views/auth/sign-up/SignUp";
+import SignUpView from "@/src/components/views/auth/sign-up/SignUpView";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignUpPage() {
-  return <SignUp/>
+  return <SignUpView/>
 }

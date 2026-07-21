@@ -27,7 +27,6 @@ const FoodAndDrinkContact: FC<PropsType> = ({foodAndDrinkId, user}) => {
     const {register, handleSubmit, formState: {errors, isValid}} = useForm<IContactFoodAndDrink>({mode: 'all', resolver: joiResolver(contactFoodAndDrinkValidator, JoiOptions)})
     const [messageLength, setMessageLength] = useState<number>(0)
     const handleContactFoodAndDrink = async (formData: IContactFoodAndDrink) => {
-        console.log(formData)
         const response = await foodAndDrinkService.contact(formData, foodAndDrinkId)
         if(response.success){
             toast.success('Ви успішно надіслали повідомлення!', {

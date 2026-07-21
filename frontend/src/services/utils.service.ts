@@ -36,6 +36,33 @@ class UtilsService{
     capitalizeFirstLetter(text: string): string{
       return text[0].toUpperCase() + text.slice(1, text.length)
     }
+
+    getLocalDate(ISOString: string): string {
+        const date = new Date(ISOString)
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        }
+        return date.toLocaleDateString('uk-UA', dateOptions).replace(' р.', '')
+    }
+
+    getLocalTime(ISOString: string): string {
+        const date = new Date(ISOString)
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+        }
+        return date.toLocaleTimeString('uk-UA', timeOptions)
+    }
+
+    outputArray(arr: string[]): string {
+        return arr.reduce((accum, currentValue, index) => {
+            const endSign = index === arr.length - 1 ? '' : ', '
+            accum += `${currentValue}${endSign}`
+            return accum
+        }, '')
+    }
 }
 
-export const utils = new UtilsService()
+export const utilsService = new UtilsService()

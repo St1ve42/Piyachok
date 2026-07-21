@@ -1,6 +1,7 @@
 import {
   IFoodAndDrinkCommentQuery,
   IFoodAndDrinkQuery,
+  INewsQuery,
   IReviewQuery,
 } from "@/src/interfaces/shared/IBaseQuery";
 import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
@@ -14,9 +15,10 @@ import {IFoodAndDrinkViewStatisticsQuery} from "@/src/interfaces/food-and-drink/
 import {IFoodAndDrinReviewStatisticsListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinReviewStatistics";
 import {IReviewWithCreatorListData} from "@/src/interfaces/reviews/IReviewWithCreatorListData";
 import {ICommentWithUserListData} from "@/src/interfaces/comments/ICommentWithUserListData";
-import {ICommentWithFoodAndDrinkListData} from "@/src/interfaces/comments/ICommentWithFoodAndDrinkListData";
 import {fetchApi20} from "@/src/lib/fetch.api.2.0";
 import {IContactFoodAndDrink} from "@/src/interfaces/food-and-drink/IContactFoodAndDrink";
+import {IFullData} from "@/src/interfaces/shared/IFullData";
+import {INews} from "@/src/interfaces/news/INews";
 
 export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkListData>> {
@@ -103,10 +105,16 @@ export class FoodAndDrinkService {
         return await fetchApi20<ICommentWithUserListData>(endpoint, baseRequestOptions, {query})
     }
 
-    async contact(contactFoodAndDrinkDto: IContactFoodAndDrink, foodAndDrinkId: string): Promise<IApiResponse<ICommentWithFoodAndDrinkListData>>{
+    async findNews(id: string, query?: INewsQuery): Promise<IApiResponse<IFullData<INews>>> {
+        const endpoint = `/food-and-drinks/${id}/news`;
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: [`food-and-drink-news-${id}`]}}
+        return await fetchApi20<IFullData<INews>>(endpoint, baseRequestOptions, {query})
+    }
+
+    async contact(contactFoodAndDrinkDto: IContactFoodAndDrink, foodAndDrinkId: string): Promise<IApiResponse>{
         const endpoint = `/food-and-drinks/${foodAndDrinkId}/contact`;
         const baseRequestOptions: RequestInit = {method: 'POST', body: JSON.stringify(contactFoodAndDrinkDto)}
-        return await fetchApi20<ICommentWithFoodAndDrinkListData>(endpoint, baseRequestOptions)
+        return await fetchApi20(endpoint, baseRequestOptions)
     }
 
     async confirmEmail(token: string): Promise<IApiResponse>{

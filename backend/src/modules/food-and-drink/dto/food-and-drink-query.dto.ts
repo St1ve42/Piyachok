@@ -16,6 +16,8 @@ import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum'
 import { FoodAndDrinkTypeEnum } from '../enums/food-and-drink-type.enum';
 import { FoodAndDrinkSortByEnum } from '../enums/food-and-drink-sort-by.enum';
 import { SortEnum } from '../../../shared/enums/sort.enum';
+import { Transform } from 'class-transformer';
+import { BadRequestException } from '@nestjs/common';
 
 export class FoodAndDrinkQueryDto extends QueryBaseDto {
     @ApiProperty({
@@ -123,4 +125,17 @@ export class FoodAndDrinkQueryDto extends QueryBaseDto {
     @IsOptional()
     @IsString()
     city?: string;
+
+    @ApiProperty({
+        example: 'true',
+        description: 'Чи є топом заклад',
+        required: false,
+    })
+    @Transform(({ value }) => {
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        throw new BadRequestException('isTop має бути булевим значенням');
+    })
+    @IsOptional()
+    isTop?: string | boolean;
 }

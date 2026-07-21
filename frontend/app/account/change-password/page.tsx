@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import ChangePassword from "@/src/components/views/account/ChangePassword";
+import ChangePasswordView from "@/src/components/views/account/ChangePasswordView";
 
 export const metadata: Metadata = {
   title: "Зміна паролю",
 };
 
 const ChangePasswordPage = () => {
-    return <ChangePassword/>;
+    return <ChangePasswordView/>;
 };
 
 export default ChangePasswordPage;

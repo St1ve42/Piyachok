@@ -1,7 +1,8 @@
 import {Metadata} from "next";
-import Statistics from "@/src/components/views/account/Statistics";
-import {userService} from "@/src/services/users.service";
-import {getAccessCookie} from "@/src/services/server.service";
+import StatisticsView from "@/src/components/views/account/food-and-drink/StatisticsView";
+import {
+  getUserFromHeaders,
+} from "@/src/services/server.service";
 
 export const metadata: Metadata = {
     title: 'Статистика мого закладу'
@@ -9,13 +10,11 @@ export const metadata: Metadata = {
 
 
 const StatisticsPage = async () => {
-    const accessCookie = await getAccessCookie()
-    const requestInit: RequestInit = {headers: {'Cookie': accessCookie}}
-    const foodAndDrinkResponse = await userService.findMyFoodAndDrink(requestInit)
-    if(!foodAndDrinkResponse.success){
-        return <div>{foodAndDrinkResponse.data.message}</div>
+    const { ownerOf } = await getUserFromHeaders();
+    if(!ownerOf){
+        return <div>Статистика доступна лише для власників закладів.</div>
     }
-    return <Statistics id={foodAndDrinkResponse.data.id}/>
+    return <StatisticsView id={ownerOf.id}/>
 }
 
 export default StatisticsPage

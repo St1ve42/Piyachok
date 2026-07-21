@@ -1,8 +1,8 @@
 import type {Metadata} from "next";
 import {FC} from "react";
-import { getAccessCookie } from "@/src/services/server.service";
+import { getAccessCookie, getUserFromHeaders} from "@/src/services/server.service";
 import { userService } from "@/src/services/users.service";
-import CreateOrUpdateFoodAndDrink from "@/src/components/views/account/create-or-update/CreateOrUpdateFoodAndDrink";
+import FoodAndDrinkCreatingOrUpdatingView from "@/src/components/views/account/food-and-drink/create-or-update/FoodAndDrinkCreatingOrUpdatingView";
 
 export const metadata: Metadata = {
     title: 'Оновлення закладу'
@@ -14,10 +14,14 @@ type Props = {
 }
 
 const UpdateFoodAndDrinkPage: FC<Props> = async () => {
+    const { ownerOf } = await getUserFromHeaders();
+    if(!ownerOf){
+        return <div>Ви не володієте жодним закладом, який можна оновити.</div>
+    }
     const accessToken = await getAccessCookie()
     const foodAndDrink = await userService.findMyFoodAndDrink({headers: {'cookie': accessToken}})
     if(!foodAndDrink.success) return <div>{foodAndDrink.data.message}</div>
-    return <CreateOrUpdateFoodAndDrink mode={'update'} foodAndDrink={foodAndDrink.data} urlToRedirect={'/account/food-and-drink'}/>
+    return <FoodAndDrinkCreatingOrUpdatingView mode={'update'} foodAndDrink={foodAndDrink.data} urlToRedirect={'/account/food-and-drink'}/>
 }
 
 export default UpdateFoodAndDrinkPage;

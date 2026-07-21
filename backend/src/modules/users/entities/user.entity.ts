@@ -21,6 +21,8 @@ import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entit
 import { UserView } from '../../food-and-drinks-views/entity/user-views.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Comment } from '../../comments/entities/comment.entity';
+import { Piyachok } from '../../piyachok/entities/piyachok.entity';
+import { PiyachokReply } from '../../piyachok-replies/entities/piyachok-reply.entity';
 
 @Entity()
 export class User {
@@ -110,6 +112,16 @@ export class User {
         nullable: true,
     })
     comments?: Comment[] | null;
+
+    @OneToMany(() => Piyachok, (piyachok) => piyachok.creator, {
+        nullable: true,
+    })
+    piyachoks: Piyachok[] | null;
+
+    @OneToMany(() => PiyachokReply, (piyachok) => piyachok.responder, {
+        nullable: true,
+    })
+    piyachokReplies: PiyachokReply[] | null;
 
     @Column({ default: false })
     isVerified: boolean;

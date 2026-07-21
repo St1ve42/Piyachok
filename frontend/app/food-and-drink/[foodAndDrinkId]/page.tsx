@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import { notFound, redirect } from "next/navigation";
-import FoodAndDrinkByID from "@/src/components/views/FoodAndDrinkByID";
+import FoodAndDrinkDetailsView from "@/src/components/views/FoodAndDrinkDetailsView";
 import {cookies} from "next/headers";
 import {IFoodAndDrinkById} from "@/src/interfaces/food-and-drink/IFoodAndDrinkById";
 import {ReviewSortByEnum} from "@/src/enums/ReviewSortByEnum";
@@ -43,7 +43,7 @@ const FoodAndDrinkByIdPage = async (props: Props) => {
     if(error){
         redirect(`/food-and-drink/${id}`)
     }
-    return <FoodAndDrinkByID foodAndDrink={foodAndDrink} searchParams={value}/>
+    return <FoodAndDrinkDetailsView foodAndDrink={foodAndDrink} searchParams={value}/>
 
 }
 

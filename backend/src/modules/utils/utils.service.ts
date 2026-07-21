@@ -41,6 +41,22 @@ export class UtilsService {
         return date1.diff(date2, unit);
     }
 
+    static calculateSkipRecords(
+        page: number,
+        limit: number,
+        skip: number,
+    ): number {
+        return (page - 1) * limit + skip;
+    }
+
+    static calculateTotalPages(
+        total: number,
+        skip: number,
+        limit: number,
+    ): number {
+        return Math.ceil((total - skip) / limit);
+    }
+
     static async getCoordinates(dto: GetCoordinatesDto): Promise<ICoordinates> {
         const { region, city, street } = dto;
         let baseUrl = `https://nominatim.openstreetmap.org/search?city=${city.split(' ')[1]}&state=${region}&country=Україна&format=jsonv2`;

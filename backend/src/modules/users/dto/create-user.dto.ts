@@ -14,6 +14,7 @@ import {
     MaxLength,
     Min,
     MinLength,
+    ValidateIf,
 } from 'class-validator';
 import { GlobalUserRoleEnum } from '../enums/global.user.role.enum';
 import { Role } from '../../roles/entities/role.entity';
@@ -100,6 +101,7 @@ export class CreateUserDto {
     })
     @IsOptional()
     @IsEnum(GenderEnum)
+    @ValidateIf((_, value) => value !== null)
     gender?: GenderEnum;
 
     @ApiProperty({

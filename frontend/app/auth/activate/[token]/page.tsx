@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Activation from "@/src/components/views/auth/activation/Activation";
+import ActivationView from "@/src/components/views/auth/activation/ActivationView";
 export const metadata: Metadata = {
     title: 'Активація'
 }
@@ -11,7 +11,7 @@ type PropsType = {
 const ActivationPage = async ({params}: PropsType) => {
     const {token} = await params
     return (
-        <Activation token={token}/>
+        <ActivationView token={token}/>
     )
 }
 

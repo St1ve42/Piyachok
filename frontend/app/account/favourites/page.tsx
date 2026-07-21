@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import MyFavourites from "@/src/components/views/account/MyFavourites";
+import MyFavouritesView from "@/src/components/views/account/MyFavouritesView";
 import {FC} from "react";
 import {redirect} from "next/navigation";
 
@@ -17,7 +17,7 @@ const FavouritesPage: FC<PropsType> = async ({searchParams}) => {
     if(isNaN(page) || page < 1){
         redirect('/account/favourites')
     }
-    return <MyFavourites page={page}/>
+    return <MyFavouritesView page={page}/>
 }
 
 export default FavouritesPage

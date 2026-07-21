@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ConfirmFoodAndDrinkEmail from "@/src/components/views/account/ConfirmFoodAndDrinkEmail";
+import ConfirmFoodAndDrinkEmailView from "@/src/components/views/account/food-and-drink/ConfirmFoodAndDrinkEmailView";
 
 export const metadata: Metadata = {
   title: "Підтвердження електронної пошти закладу",
@@ -11,7 +11,7 @@ type Props = {
 
 const ConfirmFoodAndDrinkEmailPage = async ({ params }: Props) => {
     const {token} = await params
-    return <ConfirmFoodAndDrinkEmail token={token}/>
+    return <ConfirmFoodAndDrinkEmailView token={token}/>
 };
 
 export default ConfirmFoodAndDrinkEmailPage;

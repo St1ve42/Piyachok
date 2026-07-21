@@ -2,7 +2,7 @@
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import Image from "next/image";
-import {utils} from "@/src/services/utils.service";
+import {utilsService} from "@/src/services/utils.service";
 import noImage from "@/src/public/no-image-icon.jpg";
 import {FC} from "react";
 
@@ -21,7 +21,7 @@ const FoodAndDrinkImages: FC<PropsType> = ({images}) => {
                     loop={true}
                     slidesPerView={1}
             >
-                {images.map((image => <SwiperSlide key={image}><Image src={utils.buildStorageURL(image)} alt={image} fill className="object-cover"/></SwiperSlide>))}
+                {images.map((image => <SwiperSlide key={image}><Image src={utilsService.buildStorageURL(image)} alt={image} fill className="object-cover"/></SwiperSlide>))}
             </Swiper>
         </div> : <Image src={noImage} alt={'Зображення відсутнє'} width={150} height={150} priority={true} className="w-full h-[25rem] rounded-sm border-black border-solid border-2"/>
     )

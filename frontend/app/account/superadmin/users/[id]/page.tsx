@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {notFound} from "next/navigation";
-import Profile from "@/src/components/views/account/profile/Profile";
+import ProfileView from "@/src/components/views/account/profile/ProfileView";
 import {getAccessCookie} from "@/src/services/server.service";
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
@@ -33,7 +33,7 @@ const UserByIdPage = async ({params}: Props) => {
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <Profile user={response.data} type={'superadmin'} id={id}/>
+    return <ProfileView user={response.data} type={'superadmin'} id={id}/>
 }
 
 export default UserByIdPage;

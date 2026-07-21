@@ -16,7 +16,6 @@ const Limit: FC<PropsType> = ({currentLimit = 5}) => {
         return () => clearTimeout(timer)
       }
   }, [inputLimitValue]);
-    console.log(currentLimit)
   return <div className="flex items-center gap-3">
     <p className="text-sm">К-сть: </p>
     <Input value={inputLimitValue ?? currentLimit} type='text' className="w-[40px] h-[30px]" onChange={(e) => setInputLimitValue(e.target.value)}/>

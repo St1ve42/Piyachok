@@ -1,0 +1,61 @@
+import {useForm} from "react-hook-form";
+import {IRecoveryRequest} from "@/src/interfaces/auth/IRecoveryRequest";
+import {joiResolver} from "@hookform/resolvers/joi";
+import {forgotPasswordValidator} from "@/src/validators/auth/forgot-password.validator";
+import {JoiOptions} from "@/src/constants/joi.options";
+import {useActionState, useEffect, useState} from "react";
+import {IResponseMessage} from "@/src/interfaces/shared/IResponseMessage";
+import {IError} from "@/src/interfaces/shared/IError";
+import {recoveryRequest} from "@/src/actions/server.actions";
+
+const useForgotPasswordView = () => {
+    const {register, watch, reset, formState: {errors, isValid}} = useForm<IRecoveryRequest>({mode: 'all', resolver: joiResolver(forgotPasswordValidator, JoiOptions)})
+    // eslint-disable-next-line react-hooks/incompatible-library
+    const allFields = watch()
+    const [isLoading, setIsLoading] = useState(false)
+    const [formState, formAction] = useActionState<{success: boolean, status: number, data: IResponseMessage | IError | null}, FormData>(recoveryRequest, {data: null, success: false, status: 0})
+    const [message, setMessage] = useState<string | null>(null)
+
+    useEffect(() => {
+        const formData = localStorage.getItem('forgotPasswordFormData')
+        if(formData){
+            try{
+                const parsedData = JSON.parse(formData);
+                reset(parsedData)
+            }
+            catch(e){
+                console.log("Помилка парсингу даних: ", e)
+            }
+        }
+    }, [reset, formState]);
+
+    useEffect(() => {
+
+        return () => {
+            localStorage.removeItem('forgotPasswordFormData');
+        };
+    }, []);
+
+    useEffect(() => {
+        if(isLoading){
+            setIsLoading(false)
+        }
+        if(formState.data){
+            setMessage(formState.data.message)
+        }
+    }, [formState]);
+
+    useEffect(() => {
+        localStorage.setItem('forgotPasswordFormData', JSON.stringify(allFields))
+    }, [allFields]);
+
+    const onFocus = () => {
+        if(message){
+            setMessage(null)
+        }
+    }
+
+    return {register, errors, isValid, formAction, isLoading, setIsLoading, onFocus, message}
+}
+
+export default useForgotPasswordView

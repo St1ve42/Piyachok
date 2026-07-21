@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import ConfirmRequestFoodAndDrinkEmail from "@/src/components/views/account/ConfirmRequestFoodAndDrinkEmail";
+import ConfirmRequestFoodAndDrinkEmailView from "@/src/components/views/account/food-and-drink/ConfirmRequestFoodAndDrinkEmailView";
+import {getUserFromHeaders} from "@/src/services/server.service";
+import {notFound} from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Підтвердження електронної пошти закладу",
 };
 
 const ConfirmRequestFoodAndDrinkEmailPage = async () => {
-    return <ConfirmRequestFoodAndDrinkEmail/>;
+    const { ownerOf } = await getUserFromHeaders();
+    if(!ownerOf){
+        notFound()
+    }
+    return <ConfirmRequestFoodAndDrinkEmailView/>;
 };
 
 export default ConfirmRequestFoodAndDrinkEmailPage;

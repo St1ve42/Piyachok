@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import Users from "@/src/components/views/superadmin/Users";
+import AllUsersView from "@/src/components/views/superadmin/AllUsersView";
 import {superadminUsersService} from "@/src/services/superadmin-users.service";
 import {redirect} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";
@@ -30,7 +30,7 @@ const UsersPage = async ({searchParams}: Props) => {
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <Users users={response.data} page={restAwaitedParams.page} limit={restAwaitedParams.limit} searchBy={searchBy}/>
+    return <AllUsersView users={response.data} page={restAwaitedParams.page} limit={restAwaitedParams.limit} searchBy={searchBy}/>
 }
 
 export default UsersPage;

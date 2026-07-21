@@ -29,6 +29,10 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { SuperadminReviewsModule } from './modules/superadmin-reviews/superadmin-reviews.module';
 import { SuperadminCommentsModule } from './modules/superadmin-comments/superadmin-comments.module';
+import { NewsModule } from './modules/news/news.module';
+import { FoodAndDrinkCategoryModule } from './modules/food-and-drink-top-category/food-and-drink-category.module';
+import { PiyachokModule } from './modules/piyachok/piyachok.module';
+import { PiyachokRepliesModule } from './modules/piyachok-replies/piyachok-replies.module';
 
 @Module({
     imports: [
@@ -115,6 +119,10 @@ import { SuperadminCommentsModule } from './modules/superadmin-comments/superadm
                         path: '/comments',
                         module: SuperadminCommentsModule,
                     },
+                    {
+                        path: '/top-categories',
+                        module: FoodAndDrinkCategoryModule,
+                    },
                 ],
             },
         ]),
@@ -127,6 +135,10 @@ import { SuperadminCommentsModule } from './modules/superadmin-comments/superadm
         CommentsModule,
         SuperadminReviewsModule,
         SuperadminCommentsModule,
+        NewsModule,
+        FoodAndDrinkCategoryModule,
+        PiyachokModule,
+        PiyachokRepliesModule,
     ],
     controllers: [],
     providers: [

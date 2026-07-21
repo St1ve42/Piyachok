@@ -11,7 +11,7 @@ import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drin
 import Link from "next/link";
 import {UrlObject} from "node:url";
 import Decision from "@/src/components/features/food-and-drink/decision/Decision";
-import { utils } from "@/src/services/utils.service";
+import { utilsService } from "@/src/services/utils.service";
 import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 import Favourite from "@/src/components/features/food-and-drink/Favourite";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
@@ -35,14 +35,14 @@ export const FoodAndDrinkCard = async ({foodAndDrinkOneFromList, id, href, mode}
     const response = await foodAndDrinkService.findTypes()
     return (<Card className="text-[14px]">
         <Link href={href + '/' + id} className="flex flex-col h-full">
-            {mainImage ? <Image src={utils.buildStorageURL(mainImage)} alt={'Фото закладу'} width={300} height={150} className="w-auto h-[25vh] rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
+            {mainImage ? <Image src={utilsService.buildStorageURL(mainImage)} alt={'Фото закладу'} width={300} height={150} className="w-auto h-[25vh] rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
             <CardHeader className="flex flex-row items-center justify-between mt-1">
                 <CardTitle className="font-bold">
                     {name}
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {response.success && <p>{utils.capitalizeFirstLetter(response.data[type])}</p>}
+                {response.success && <p>{utilsService.capitalizeFirstLetter(response.data[type])}</p>}
                 <p>{street}, {city}{distance ? `, ${distance}` : ''}</p>
                 <p>Середній чек: {averageReceipt} грн</p>
                 <p>{rating ?? 0} <ReadOnlyStarRating initialValue={rating ?? 0}/></p>

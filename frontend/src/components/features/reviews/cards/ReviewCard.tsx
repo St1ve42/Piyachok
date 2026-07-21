@@ -3,7 +3,7 @@ import {Avatar, Button, Card, Dropdown, Label} from "@heroui/react";
 import {useDisclosure} from "@heroui/use-disclosure"
 import {IReviewWithCreator} from "@/src/interfaces/reviews/IReviewWithCreator";
 import {FC} from "react";
-import {utils} from "@/src/services/utils.service";
+import {utilsService} from "@/src/services/utils.service";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 import {IUser} from "@/src/interfaces/users/IUser";
@@ -38,7 +38,7 @@ const ReviewCard: FC<PropsType> = ({review, user, isOwner, foodAndDrinkId}) => {
             <Card.Title className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <Avatar>
-                        <Avatar.Image src={photo ? utils.buildStorageURL(photo) : UserAvatar.src} alt={'Фотографія користувача'}/>
+                        <Avatar.Image src={photo ? utilsService.buildStorageURL(photo) : UserAvatar.src} alt={'Фотографія користувача'}/>
                     </Avatar>
                     <div>
                         <p>{name} {surname}</p>
