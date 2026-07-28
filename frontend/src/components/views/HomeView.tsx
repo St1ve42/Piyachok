@@ -7,6 +7,7 @@ import FoodAndDrinkFiltration from "@/src/components/features/food-and-drink/fil
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
 import FoodAndDrinkList from "@/src/components/features/food-and-drink/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
+import {Heading} from "@heroui/react";
 
 export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}
 
@@ -41,7 +42,7 @@ const HomeView = async ({searchParams}: PropsType) => {
                 </div>
                 <div className="w-[77%] flex flex-col gap-3">
                     <div className="flex items-center justify-between">
-                        <h1>Знайдено: {total}</h1>
+                        <Heading level={5}>Знайдено: {total}</Heading>
                         <div className="flex gap-3">
                             <FoodAndDrinkSort initialSortValue={sort} initialSortByValue={sortBy}/>
                             <FoodAndDrinkSearch type={'public'} initialValue={name}/>

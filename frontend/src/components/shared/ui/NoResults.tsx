@@ -10,10 +10,10 @@ type PropsType = {
 }
 
 const NoResults: FC<PropsType> = ({image, text}) => {
-  return <div className="h-[60%] flex justify-center items-center">
-      <div className="w-[60%] flex flex-col items-center gap-2">
+  return <div className="h-[50vh] flex justify-center items-center">
+      <div className="w-full flex flex-col items-center gap-2">
           <Image src={image ?? PageNotFound} width={100} height={100} alt={'Не знайдено'}/>
-          <Heading level={3}>Схоже, ми поки нічого не знайшли...</Heading>
+          <Heading level={3} className="text-center">Схоже, ми поки нічого не знайшли...</Heading>
           <div className="text-center">
               {text ?? 'За Вашим запитом збігів немає. Спробуйте знайти щось інакше — це має допомогти!'}
           </div>

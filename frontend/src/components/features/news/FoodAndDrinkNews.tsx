@@ -26,7 +26,7 @@ const FoodAndDrinkNews: FC<PropsType> = ({newsResponse, hasRightToManageNews = f
                     spaceBetween={10}
                     navigation={true}
                     pagination={true}
-                    slidesPerView={total > 5 ? 3 : total}
+                    slidesPerView={total > 3 ? 3 : total}
             >
                 {news.map((oneNews => <SwiperSlide key={oneNews.id} className="m-1 w-full"><FoodAndDrinkNewsCard news={oneNews} hasRightToManageNews={hasRightToManageNews} mode={'default'}/></SwiperSlide>))}
             </Swiper>

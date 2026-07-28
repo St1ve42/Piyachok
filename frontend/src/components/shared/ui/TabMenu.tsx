@@ -9,11 +9,11 @@ const TabMenu = () => {
     return <div className="w-[80vw]">
         <TabsRoot selectedKey={selectedKey} className="mb-2">
             <TabListContainer>
-                <TabList aria-label="Options">
+                <TabList aria-label="Options" className="bg-white *:h-7 *:px-3 *:text-sm *:font-normal [&_a]:tex-black">
                     <Tab id="food-and-drink" key="food-and-drink">
                         <Link href={'/'}>
                             Заклади
-                            <TabIndicator />
+                            <TabIndicator/>
                         </Link>
                     </Tab>
                     <Tab id="news" key="news">

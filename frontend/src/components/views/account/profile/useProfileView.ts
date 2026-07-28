@@ -22,7 +22,7 @@ const useProfileView = ({user, type, id}: {user: IUser, type: 'user' | 'superadm
     const [errorResponseMessage, setErrorResponseMessage] = useState<string | null>(null)
     const [uploadPhotoResponseMessage, setUploadPhotoResponseMessage] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
-
+    const router = useRouter()
 
     const {register, handleSubmit, control, formState: {errors, isValid, isDirty}, reset} = useForm<IUpdateMe>({
         resolver: joiResolver(updateMeValidator, JoiOptions),
@@ -31,9 +31,6 @@ const useProfileView = ({user, type, id}: {user: IUser, type: 'user' | 'superadm
             name, surname, age, phone, gender
         }
     })
-
-
-    const router = useRouter()
 
     const onSubmit = async (formData: Omit<IUpdateMe, 'regionId' | 'cityId'>) => {
         const updatedData: Partial<IUpdateMe> = {}
@@ -246,7 +243,7 @@ const useProfileView = ({user, type, id}: {user: IUser, type: 'user' | 'superadm
        setIsCorrectInput(false)
     }
 
-  return {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, handleEdit, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, errorResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control, regionId, handleRegionIdMatch, handleActivation, handleVerification, handleDelete, isCorrectInput, handleConfirmInputChange, handleRestore, handleOnPressDeleteButton, isDirty}
+  return {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, handleEdit, handleRegionInputChange, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, errorResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control, regionId, handleRegionIdMatch, handleActivation, handleVerification, handleDelete, isCorrectInput, handleConfirmInputChange, handleRestore, handleOnPressDeleteButton, isDirty, router}
 }
 
 export default useProfileView

@@ -1,14 +1,15 @@
 'use client'
 
 import {FC} from "react";
-import {Button, Form, Input, Label, TextArea, Avatar} from "@heroui/react";
+import {Button, Form, Input, Label, TextArea} from "@heroui/react";
 import useNewsCreatingOrUpdatingView from "./useNewsCreatingOrUpdatingView";
 import {IGeneralNewsById} from "@/src/interfaces/news/IGeneralNewsById";
+import MyImage from "@/src/components/shared/components/image/MyImage";
 
-type Props = { mode?: 'create' | 'update', news?: IGeneralNewsById, urlToRedirect?: string }
+type Props = { mode?: 'create' | 'update', news?: IGeneralNewsById, foodAndDrinkId?: string}
 
-const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, urlToRedirect}) => {
-    const {register, handleSubmit, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect, isDirty} = useNewsCreatingOrUpdatingView({mode, news, urlToRedirect})
+const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, foodAndDrinkId}) => {
+    const {register, handleSubmit, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect, isDirty} = useNewsCreatingOrUpdatingView({mode, news, foodAndDrinkId})
 
     const submitLabel = mode === 'create' ? 'Створити' : 'Оновити'
 
@@ -21,9 +22,7 @@ const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, urlToRedi
                         <div className="w-full h-48 border-2 border-dashed rounded-[40px] flex items-center justify-center overflow-hidden relative">
                             {photoPreview ? (
                                 <>
-                                    <Avatar style={{width: '100%', height: '100%'}}>
-                                        <Avatar.Image alt="preview" src={URL.createObjectURL(photoPreview)} width={192} height={192} />
-                                    </Avatar>
+                                    <MyImage photoPreview={photoPreview}/>
                                     <div className="absolute top-2 right-2">
                                         <Button type="button" onClick={() => handlePhotoClear()} className="!px-2 !py-1">Видалити</Button>
                                     </div>

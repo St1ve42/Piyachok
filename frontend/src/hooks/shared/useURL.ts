@@ -29,5 +29,5 @@ export function useURL(){
         }
         return query.toString()
     }, [searchParams])
-    return {pathname, router, createQueryString}
+    return {pathname, router, createQueryString, searchParams}
 }

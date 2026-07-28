@@ -2,8 +2,6 @@ import type {Metadata} from "next";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {notFound} from "next/navigation";
 import {getAccessCookie} from "@/src/services/server.service";
-import {superadminUsersService} from "@/src/services/superadmin-users.service";
-import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import SuperadminFoodAndDrinkDetailsView from "@/src/components/views/superadmin/SuperadminFoodAndDrinkDetailsView";
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
@@ -32,19 +30,19 @@ const SuperadminFoodAndDrinkByIdPage = async ({params, searchParams}: Props) => 
     if(!id){
         notFound()
     }
-    const accessToken = await getAccessCookie()
-    const foodAndDrinkResponse = await superadminFoodAndDrinkService.findById(id, {headers: {'Cookie': accessToken}})
-    if(!foodAndDrinkResponse.success && (foodAndDrinkResponse.status === 404 || foodAndDrinkResponse.status === 400)){
-        notFound()
-    }
-    else if(!foodAndDrinkResponse.success){
-        return <div>{foodAndDrinkResponse.data.message}</div>
-    }
-    const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER, email: search}, {headers: {'Cookie': accessToken}})
-    if(!usersResponse.success){
-        return <div>{usersResponse.data.message}</div>
-    }
-    return <SuperadminFoodAndDrinkDetailsView foodAndDrink={foodAndDrinkResponse.data} users={usersResponse.data.data}/>
+    // const accessToken = await getAccessCookie()
+    // const foodAndDrinkResponse = await superadminFoodAndDrinkService.findById(id, {headers: {'Cookie': accessToken}})
+    // if(!foodAndDrinkResponse.success && (foodAndDrinkResponse.status === 404 || foodAndDrinkResponse.status === 400)){
+    //     notFound()
+    // }
+    // else if(!foodAndDrinkResponse.success){
+    //     return <div>{foodAndDrinkResponse.data.message}</div>
+    // }
+    // const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER, email: search}, {headers: {'Cookie': accessToken}})
+    // if(!usersResponse.success){
+    //     return <div>{usersResponse.data.message}</div>
+    // }
+    return <SuperadminFoodAndDrinkDetailsView id={id} search={search}/>
 }
 
 export default SuperadminFoodAndDrinkByIdPage;

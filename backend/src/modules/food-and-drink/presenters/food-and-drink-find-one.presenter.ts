@@ -6,6 +6,7 @@ import { CityPresenter } from '../../cities/presenters/city.presenter';
 import { City } from '../../cities/entities/city.entity';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 import { FoodAndDrinkTopCategory } from '../../food-and-drink-top-category/entities/food-and-drink-top-category.entity';
+import { FoodAndDrinkTopCategoryPresenter } from '../../food-and-drink-top-category/presenters/FoodAndDrinkTopCategoryPresenter';
 
 export class FoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -97,10 +98,13 @@ export class FoodAndDrinkFindOnePresenter {
     @Transform(
         ({ value }: { value?: FoodAndDrinkTopCategory[] }) => {
             if (value) {
-                return value.length > 0 ? value : null;
+                return value.length > 0
+                    ? value.map((value) => value.name)
+                    : null;
             }
         },
         { toClassOnly: true },
     )
-    topCategories: FoodAndDrinkTopCategory[];
+    @Type(() => FoodAndDrinkTopCategoryPresenter)
+    topCategories: FoodAndDrinkTopCategoryPresenter[];
 }

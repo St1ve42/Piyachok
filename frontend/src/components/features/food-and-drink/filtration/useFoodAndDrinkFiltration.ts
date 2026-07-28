@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import {Key} from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 
@@ -7,25 +7,28 @@ export const useFoodAndDrinkFiltration = () => {
     const {pathname, router, createQueryString} = useURL()
     const handleTypeSelect = (key: Key | null) => {
         if(key){
+            const query = createQueryString('page', '1')
             if(key !== 'reset'){
-                router.push(pathname + '?' + createQueryString('type', `${key}`), {scroll: false})
+                router.push(pathname + '?' + createQueryString('type', `${key}`, 'set', query), {scroll: false})
             }
             else{
-                router.push(pathname + '?' + createQueryString('type', null, "delete"), {scroll: false})
+                router.push(pathname + '?' + createQueryString('type', null, "delete", query), {scroll: false})
             }
         }
     }
     const handleFeatureCheck = (feature: string) => {
         return (isSelected: boolean) => {
+            const query = createQueryString('page', '1')
             if(isSelected){
-                router.push(pathname + '?' + createQueryString('features[]', feature, "append"), {scroll: false})
+                router.push(pathname + '?' + createQueryString('features[]', feature, "append", query), {scroll: false})
             }
             else{
-                router.push(pathname + '?' + createQueryString('features[]', feature, "delete"), {scroll: false})
+                router.push(pathname + '?' + createQueryString('features[]', feature, "delete", query), {scroll: false})
             }
         }
     }
     const handleRatingSelect = (value: number | number[]) => {
+        const query = createQueryString('page', '1')
         let rating;
         if(Array.isArray(value)) {
             rating = value[0]
@@ -34,9 +37,9 @@ export const useFoodAndDrinkFiltration = () => {
             rating = value
         }
         if (rating !== 0) {
-            router.push(pathname + '?' + createQueryString('rating', value.toString()), {scroll: false})
+            router.push(pathname + '?' + createQueryString('rating', value.toString(), "set", query), {scroll: false})
         } else {
-            router.push(pathname + '?' + createQueryString('rating', null, "delete"), {scroll: false})
+            router.push(pathname + '?' + createQueryString('rating', null, "delete", query), {scroll: false})
         }
     }
 
@@ -47,7 +50,8 @@ export const useFoodAndDrinkFiltration = () => {
 
     const handleAverageReceiptSelect = (value: number | number[]) => {
         if(Array.isArray(value) && value.length == 2){
-            const query = createQueryString(`averageReceipt[gte]`, value[0].toString())
+            let query = createQueryString(`averageReceipt[gte]`, value[0].toString())
+            query = createQueryString('page', '1', 'set', query)
             router.push(pathname + '?' + createQueryString(`averageReceipt[lte]`, value[1].toString(), "set", query), {scroll: false})
         }
     }

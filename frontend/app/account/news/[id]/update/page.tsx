@@ -29,7 +29,7 @@ const NewsUpdatePage = async ({params}: PropsType) => {
             return <div>У Вас немає права переглядати цю новину</div>
         }
     }
-    return <NewsCreatingOrUpdatingView news={news} mode={'update'} urlToRedirect={`/account/news/${news.id}`}/>
+    return <NewsCreatingOrUpdatingView news={news} mode={'update'}/>
 };
 
 export default NewsUpdatePage;

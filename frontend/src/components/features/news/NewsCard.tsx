@@ -16,20 +16,20 @@ const NewsCard: FC<PropsType> = ({news}) => {
     const createdAtLocalTimeString = utilsService.getLocalTime(createdAt)
     return (
         <Link href={`/news/${id}`}>
-            <Card className="text-sm h-[45vh] relative">
-                <div className="relative h-[22vh]">
+            <Card className="text-sm h-[48vh] relative">
+                <div className="relative h-[24vh] shrink-0">
                     <Image src={photo ? utilsService.buildStorageURL(photo) : NoImage} fill={true} alt={photo ?? 'Відсутнє зображення'}/>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <p>📅 {createdAtLocalDateString}, {createdAtLocalTimeString}</p>
-                    <Card.Title className="w-full text-[14px] font-bold">
+                <p>📅 {createdAtLocalDateString}, {createdAtLocalTimeString}</p>
+                <div className="flex flex-col gap-2 justify-between">
+                    <Card.Title className="w-full text-[14px]">
                         {title}
                     </Card.Title>
+                    <Card.Footer className="justify-between">
+                        <span>Заклад: <span className="font-bold">{name}</span></span>
+                        {isPromoted && <Chip variant={'primary'} color={'accent'} className="absolute top-3 right-3">Топ</Chip>}
+                    </Card.Footer>
                 </div>
-                <Card.Footer className="justify-between">
-                    <span><span className="font-bold">Заклад:</span> {name}</span>
-                    {isPromoted && <Chip variant={'primary'} color={'accent'} className="absolute top-3 right-3">Топ</Chip>}
-                </Card.Footer>
             </Card>
         </Link>
     )

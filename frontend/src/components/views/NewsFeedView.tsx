@@ -26,7 +26,7 @@ const NewsFeedView: FC<PropsType> = async ({query}) => {
         <TabMenu/>
         <NewsTab/>
         <div className="flex flex-col gap-3">
-            <Heading level={3}>Знайдено: {total}</Heading>
+            <Heading level={5}>Знайдено: {total}</Heading>
             {newsList.length > 0 ?
                 <div className="grid grid-cols-4 gap-3">{newsList.map((news) => <NewsCard key={news.id} news={news}/>)}</div>
                 : <div className="mt-20"><NoResults/></div>

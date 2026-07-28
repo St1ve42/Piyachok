@@ -10,7 +10,7 @@ export const JoiOptions: ValidationOptions = {
         'number.empty': 'Значення не має бути порожнім.',
         'number.base': 'Значення має бути числом.',
         'number.integer': 'Значення має бути цілим числом.',
-        'number.min': `Значення має бути більше, ніж {{#limit}}.`,
+        'number.min': `Значення має бути більше, ніж {{#limit}}, або бути рівним.`,
         'number.max': `Значення не має перевищувати {{#limit}}.`,
         'string.email': `Значення має бути формату example@domain.com`
     },

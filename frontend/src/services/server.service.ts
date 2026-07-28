@@ -24,6 +24,15 @@ export const getAccessCookie = async (): Promise<string> => {
     return `${accessTokenCookie.name}=${accessTokenCookie.value}`
 }
 
+export const getOptionalAccessCookie = async (): Promise<string | null> => {
+    const cookieStore = await cookies()
+    const accessTokenCookie = cookieStore.get('accessToken')
+    if(!accessTokenCookie){
+        return null
+    }
+    return `${accessTokenCookie.name}=${accessTokenCookie.value}`
+}
+
 export const getNews = async(params: Promise<{id?: string}>): Promise<IGeneralNewsById> => {
     const {id} = await params
     if(!id){

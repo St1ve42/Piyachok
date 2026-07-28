@@ -11,6 +11,7 @@ import { UsersService } from '../../modules/users/users.service';
 import { ReviewsService } from '../../modules/reviews/reviews.service';
 import { NewsService } from '../../modules/news/news.service';
 import { FoodAndDrinkCategoryService } from '../../modules/food-and-drink-top-category/food-and-drink-category.service';
+import { PiyachokService } from '../../modules/piyachok/piyachok.service';
 
 interface CanCheckExistence {
     isExistsById(id: number | string): Promise<boolean>;
@@ -60,4 +61,9 @@ export class NewsBodyValidationPipe extends BodyValidationPipe(NewsService) {}
 @Injectable()
 export class CategoryBodyValidationPipe extends BodyValidationPipe(
     FoodAndDrinkCategoryService,
+) {}
+
+@Injectable()
+export class PiyachokBodyValidationPipe extends BodyValidationPipe(
+    PiyachokService,
 ) {}

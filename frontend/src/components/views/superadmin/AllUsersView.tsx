@@ -9,7 +9,7 @@ import Limit from "@/src/components/shared/components/limitation/Limit";
 import UserSort from "@/src/components/features/users/sort/UserSort";
 import NoResults from "@/src/components/shared/ui/NoResults";
 import UserFilter from "@/src/components/features/users/filter/UserFilter";
-import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 
 type PropsType = {
     users: IUserListData

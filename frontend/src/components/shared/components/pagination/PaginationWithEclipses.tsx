@@ -1,15 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import { Input, Pagination} from "@heroui/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Input, Pagination } from "@heroui/react";
 
 type PropsType = {
     totalPages: number,
-    currentPage?: number
+    currentPage?: number,
+    isPageInput?: boolean
 }
 
-function PaginationWithEclipses({totalPages, currentPage = 1}: PropsType) {
+function PaginationWithEclipses({totalPages, currentPage = 1, isPageInput = true}: PropsType) {
     const [page, setPage] = useState(1);
     const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
     const router = useRouter();
@@ -62,13 +63,13 @@ function PaginationWithEclipses({totalPages, currentPage = 1}: PropsType) {
 
     return (
         <div className="w-full max-w-2xs sm:max-w-full mb-5">
-            <Pagination className="justify-center">
-                <div className="flex items-center gap-3">
+            <Pagination className="justify-center flex">
+                {isPageInput && <div className="flex items-center gap-3">
                   <p>Сторінка: </p>
                   <Input value={inputPageValue} type='text' className="w-[40px] h-[30px]" onChange={(e) => setInputPageValue(e.target.value)}/>
                   <p>з</p>
                   <p>{totalPages}</p>
-                </div>
+                </div>}
                 <Pagination.Content>
                     <Pagination.Item>
                         <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page-1}`), {scroll: false})

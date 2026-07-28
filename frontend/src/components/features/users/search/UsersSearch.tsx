@@ -2,7 +2,7 @@
 import { Button, Header, ListBox, SearchField, Label } from "@heroui/react";
 import useUsersSearch from "@/src/components/features/users/search/useUsersSearch";
 import {FC} from "react";
-import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 
 type PropsType = {
     searchBy: UserSearchByEnum

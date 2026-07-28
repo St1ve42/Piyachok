@@ -14,6 +14,10 @@ import { CommentUserPresenter } from '../../modules/comments/presenters/comment-
 import { CommentFoodAndDrinkPresenter } from '../../modules/comments/presenters/comment-food-and-drink.presenter';
 import { FoodAndDrinkNewsPresenter } from '../../modules/news/presenter/FoodAndDrinkNewsPresenter';
 import { GeneralNewsPresenter } from '../../modules/news/presenter/GeneralNewsPresenter';
+import { TopCategoryWithFoodAndDrinkPresenter } from '../../modules/food-and-drink-top-category/presenters/TopCategoryWithFoodAndDrinkPresenter';
+import { PiyachokListPresenter } from '../../modules/piyachok/presenters';
+import { FoodAndDrinkTopCategoryPresenter } from '../../modules/food-and-drink-top-category/presenters/FoodAndDrinkTopCategoryPresenter';
+import { PiyachokReplyListPresenter } from '../../modules/piyachok-replies/presenters/piyachok-reply-list.presenter';
 
 function createFindPresenter<T>(DataCls: ClassConstructor<T>) {
     class FindPresenter extends BaseQueryPresenter {
@@ -86,3 +90,19 @@ export const FoodAndDrinkNewsFindPresenter =
 
 export const GeneralNewsFindPresenter =
     createFindPresenter<GeneralNewsPresenter>(GeneralNewsPresenter);
+
+export class FoodAndDrinkTopCategoriesFindPresenter extends createFindPresenter<FoodAndDrinkTopCategoryPresenter>(
+    FoodAndDrinkTopCategoryPresenter,
+) {}
+
+export class FoodAndDrinkByCategoryFindPresenter extends createFindPresenter<TopCategoryWithFoodAndDrinkPresenter>(
+    TopCategoryWithFoodAndDrinkPresenter,
+) {}
+
+export class PiyachokFindPresenter extends createFindPresenter<PiyachokListPresenter>(
+    PiyachokListPresenter,
+) {}
+
+export class PiyachokRepliesFindPresenter extends createFindPresenter<PiyachokReplyListPresenter>(
+    PiyachokReplyListPresenter,
+) {}

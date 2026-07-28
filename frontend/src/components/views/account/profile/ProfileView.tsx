@@ -31,7 +31,7 @@ type PropsType = {user: IUser, type: 'user', id?: string} | {user: IUser, type: 
 
 const ProfileView: FC<PropsType> = ({user, type, id}) => {
     const {name, surname, photo, email, role, isVerified, region, city, isActive, isDeleted, ownerOf} = user
-    const {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, handleEdit, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, errorResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control, handleRegionInputChange, regionId, handleRegionIdMatch, handleActivation, handleVerification, handleDelete, handleConfirmInputChange, isCorrectInput, handleRestore, handleOnPressDeleteButton, isDirty} = useProfileView({user, type, id})
+    const {handleUploadFile, handleTriggerFileInput, handleDeletePhoto, onSubmit, handleEdit, handleRegionSelectionChange, handleCityInputChange, handleCitySelectionChange, register, handleSubmit, errors, isValid, errorResponseMessage, uploadPhotoResponseMessage, isOpenEdit, cityInputValue, regionInputValue, fileInputRef, control, handleRegionInputChange, regionId, handleRegionIdMatch, handleActivation, handleVerification, handleDelete, handleConfirmInputChange, isCorrectInput, handleRestore, handleOnPressDeleteButton, isDirty, router} = useProfileView({user, type, id})
     return (
         <section className="flex flex-col gap-3">
             <div className="flex justify-between items-center">
@@ -119,9 +119,7 @@ const ProfileView: FC<PropsType> = ({user, type, id}) => {
                   </Modal> :
                     <Button className="bg-green-500" onClick={handleRestore}>Відновити акаунт</Button>
                   )}
-                    <Link href={'/account/change-password'}>
-                        <Button className="bg-orange-500"><Key/> Змінити пароль</Button>
-                    </Link>
+                    <Button className="bg-orange-500" onPress={() => router.push('/account/change-password')}><Key/> Змінити пароль</Button>
                     <Button onClick={handleEdit}>{isOpenEdit ? 'Скасувати' : <div className="flex items-center gap-2"><Pencil/> Редагувати</div>}</Button>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import {Button, Label, Slider, SliderFill, SliderOutput, SliderThumb, SliderTrac
 import useFoodAndDrinkFiltration from "@/src/components/features/food-and-drink/filtration/useFoodAndDrinkFiltration";
 import FoodAndDrinkTypeSelection from "@/src/components/features/food-and-drink/type-selection/FoodAndDrinkTypeSelection";
 import FeatureSelection from "@/src/components/features/food-and-drink/feature-selection/FeatureSelection";
-import {FC} from "react";
+import { FC } from "react";
 
 export type PropsType = {
     initialTypeValue?: string,
@@ -16,7 +16,7 @@ export type PropsType = {
 const FoodAndDrinkFiltration: FC<PropsType> = ({initialTypeValue, initialFeatures, initialAverageReceipt, initialRating}) => {
     const {formKey, handleTypeSelect, handleFeatureCheck, handleRatingSelect, handleAverageReceiptSelect, clearFilters} = useFoodAndDrinkFiltration()
     return (
-        <div className="flex p-4 flex-col gap-8 fixed z-10" key={formKey}>
+        <div className={`flex py-2 pl-2 flex-col gap-8 fixed z-10`} key={formKey}>
             <h1 className="self-center">Фільтрувати</h1>
             <FoodAndDrinkTypeSelection initialValue={initialTypeValue} handleTypeSelect={handleTypeSelect}/>
             <FeatureSelection handleFeatureCheck={handleFeatureCheck} initialFeatures={typeof initialFeatures === 'string' ? [initialFeatures] : initialFeatures}/>

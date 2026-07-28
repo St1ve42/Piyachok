@@ -4,7 +4,7 @@ import {
   INewsQuery,
   IReviewQuery,
 } from "@/src/interfaces/shared/IBaseQuery";
-import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import {IFoodAndDrinkFullData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkFullData";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {ICreateFoodAndDrinkDto} from "@/src/interfaces/food-and-drink/ICreateFoodAndDrink";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
@@ -21,10 +21,10 @@ import {IFullData} from "@/src/interfaces/shared/IFullData";
 import {INews} from "@/src/interfaces/news/INews";
 
 export class FoodAndDrinkService {
-    async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkListData>> {
+    async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkFullData>> {
         const endpoint = '/food-and-drinks';
         const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: ['food-and-drink-list']}}
-        return await fetchApi20<IFoodAndDrinkListData>(endpoint, baseRequestOptions, {query})
+        return await fetchApi20<IFoodAndDrinkFullData>(endpoint, baseRequestOptions, {query})
     }
 
     async findTypes():Promise<IApiResponse<Record<string, string>>> {

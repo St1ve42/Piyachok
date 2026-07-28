@@ -6,11 +6,11 @@ import {
   PressEvent,
 } from "@heroui/react";
 import {Pencil, TrashBin} from "@gravity-ui/icons";
-import Link from "next/link";
 import { ChangeEventHandler, FC, useState } from "react";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {updateTagAction} from "@/src/actions/server.actions";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
+import {useRouter} from "next/navigation";
 
 type PropsType = {
     foodAndDrink: IFoodAndDrinkOwnerInfo
@@ -20,6 +20,7 @@ const FoodAndDrinkOwnerManageButtons: FC<PropsType> = ({foodAndDrink}) => {
     const {id, name} = foodAndDrink
     const [isCorrectInput, setIsCorrectInput] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<null | string>(null)
+    const router = useRouter()
 
     const handleConfirm = async () => {
         const response = await foodAndDrinkService.delete(id)
@@ -49,9 +50,7 @@ const FoodAndDrinkOwnerManageButtons: FC<PropsType> = ({foodAndDrink}) => {
 
     return (
         <div className="flex items-center gap-4">
-            <Link href={`/account/food-and-drink/update`}>
-                <Button className="self-end"><Pencil/>Редагувати</Button>
-            </Link>
+            <Button className="self-end" onPress={() => router.push('/account/food-and-drink/update')}><Pencil/>Редагувати</Button>
             <Modal>
                 <Button variant="danger" onPress={handleOnPressDeleteButton}><TrashBin/>Видалити</Button>
                 <Modal.Backdrop>

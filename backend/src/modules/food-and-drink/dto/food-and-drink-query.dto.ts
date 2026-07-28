@@ -127,9 +127,10 @@ export class FoodAndDrinkQueryDto extends QueryBaseDto {
     city?: string;
 
     @ApiProperty({
-        example: 'true',
+        example: '1true',
         description: 'Чи є топом заклад',
         required: false,
+        type: 'boolean',
     })
     @Transform(({ value }) => {
         if (value === 'true') return true;

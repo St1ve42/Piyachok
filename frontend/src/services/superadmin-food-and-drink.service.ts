@@ -1,6 +1,6 @@
 import {IFoodAndDrinkQuery} from "@/src/interfaces/shared/IBaseQuery";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
-import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import {IFoodAndDrinkFullData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkFullData";
 import {QueryDirector} from "@/src/lib/query.director";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {getErrorResponse} from "@/src/errors/get.error.response";
@@ -9,12 +9,12 @@ import { IFoodAndDrinkBindOwnership } from "@/src/interfaces/food-and-drink/IFoo
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 
 export class SuperadminFoodAndDrinkService {
-    async find(query?: IFoodAndDrinkQuery, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkListData>> {
+    async find(query?: IFoodAndDrinkQuery, requestInit?: RequestInit):Promise<IApiResponse<IFoodAndDrinkFullData>> {
         try{
             const endpoint = '/superadmin/food-and-drinks';
             const queryDirector = new QueryDirector(endpoint, query);
             const fullEndpoint = queryDirector.build();
-            const foodAndDrinkList = await fetchApi<IFoodAndDrinkListData>(fullEndpoint, {cache: 'no-store', ...requestInit})
+            const foodAndDrinkList = await fetchApi<IFoodAndDrinkFullData>(fullEndpoint, {cache: 'no-store', ...requestInit})
             return {success: true, ...foodAndDrinkList}
         }
         catch (e){

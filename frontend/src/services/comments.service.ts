@@ -3,6 +3,7 @@ import {fetchApi} from "@/src/lib/fetch.api";
 import {getErrorResponse} from "@/src/errors/get.error.response";
 import {IComment} from "@/src/interfaces/comments/IComment";
 import {ICreateComment} from "@/src/interfaces/comments/ICreateComment";
+import {IUserCommentInput} from "@/src/interfaces/comments/IUserCommentInput";
 
 export class CommentsService{
     async create(createCommentDto: ICreateComment, requestInit?: RequestInit): Promise<IApiResponse<IComment>> {
@@ -20,6 +21,17 @@ export class CommentsService{
         try{
             const endpoint = `/comments/${id}`;
             const response = await fetchApi(endpoint, {method: 'DELETE', ...requestInit})
+            return {success: true, ...response}
+        }
+        catch (e){
+            return getErrorResponse(e)
+        }
+    }
+
+    async update(id: string, body: Partial<IUserCommentInput>): Promise<IApiResponse> {
+        try{
+            const endpoint = `/comments/${id}`;
+            const response = await fetchApi(endpoint, {method: 'PATCH', body: JSON.stringify(body)})
             return {success: true, ...response}
         }
         catch (e){

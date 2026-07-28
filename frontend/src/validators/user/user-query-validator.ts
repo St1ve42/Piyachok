@@ -1,5 +1,5 @@
 import Joi from "joi";
-import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 
 export const userQueryValidator = Joi.object({
     page: Joi.number().min(1).default(1),

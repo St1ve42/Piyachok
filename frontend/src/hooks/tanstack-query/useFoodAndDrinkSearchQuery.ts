@@ -3,9 +3,9 @@ import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
-import {IFoodAndDrinkListData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import {IFoodAndDrinkFullData} from "@/src/interfaces/food-and-drink/IFoodAndDrinkFullData";
 
-export function useFoodAndDrinkSearchQuery(name: string, type: 'public' | 'moderate' | 'all', accessCookie?: string): UseQueryResult<IApiResponse<IFoodAndDrinkListData>, Error>;
+export function useFoodAndDrinkSearchQuery(name: string, type: 'public' | 'moderate' | 'all', accessCookie?: string): UseQueryResult<IApiResponse<IFoodAndDrinkFullData>, Error>;
 
 export function useFoodAndDrinkSearchQuery<T extends 'public' | 'moderate' | 'all'>(name: string, type: T, accessCookie?: string){
     if ((type === 'moderate' || type === 'all') && !accessCookie) {

@@ -29,6 +29,7 @@ const FoodAndDrinkTypeSelection: FC<PropsType> = ({initialValue, controlledValue
             </Select.Trigger>
             <Select.Popover className="h-[200px]">
                 <ListBox>
+                    <ListBox.Item id={'reset'} textValue={'Не вказано'}>Виберіть тип:</ListBox.Item>
                     {typesQuery.data && typesQuery.data.success && Object.entries(typesQuery.data.data).map(([typeInEnglish, typeInUkrainian]) =>
                         <ListBox.Item key={typeInEnglish} id={typeInEnglish} textValue={typeInEnglish}>
                             {typeInUkrainian}

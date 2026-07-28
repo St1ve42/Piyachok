@@ -40,3 +40,4 @@ export class UserIdValidationPipe extends idValidationPipe('uuid') {}
 export class ReviewIdValidationPipe extends idValidationPipe('uuid') {}
 export class NewsIdValidationPipe extends idValidationPipe('uuid') {}
 export class CategoryIdValidationPipe extends idValidationPipe('uuid') {}
+export class PiyachokIdValidationPipe extends idValidationPipe('uuid') {}

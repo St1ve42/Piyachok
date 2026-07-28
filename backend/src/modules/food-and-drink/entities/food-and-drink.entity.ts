@@ -176,7 +176,7 @@ export class FoodAndDrink {
     @ManyToMany(
         () => FoodAndDrinkTopCategory,
         (foodAndDrinkTopCategories) => foodAndDrinkTopCategories.foodAndDrinks,
-        { nullable: true, cascade: ['insert', 'update'] },
+        { nullable: true, cascade: ['insert', 'update', 'remove'] },
     )
     @JoinTable()
     topCategories: FoodAndDrinkTopCategory[] | null;

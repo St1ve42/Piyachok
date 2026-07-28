@@ -4,6 +4,7 @@ import {IGeneralNewsListData} from "@/src/interfaces/news/IGeneralNewsListData";
 import {IApiResponse} from "@/src/interfaces/shared/IApiResponse";
 import {IGeneralNewsById} from "@/src/interfaces/news/IGeneralNewsById";
 import {INewsCreate} from "@/src/interfaces/news/INewsCreate";
+import {INews} from "@/src/interfaces/news/INews";
 
 export class NewsService {
     async find(query?: INewsQuery): Promise<IApiResponse<IGeneralNewsListData>> {
@@ -18,10 +19,10 @@ export class NewsService {
         return await fetchApi20<IGeneralNewsById>(endpoint, baseRequestOptions)
     }
 
-    async create(body: INewsCreate): Promise<IApiResponse<IGeneralNewsById>> {
+    async create(body: INewsCreate): Promise<IApiResponse<INews>> {
         const endpoint = `/news`;
         const baseRequestOptions: RequestInit = {method: 'POST', body: JSON.stringify(body)}
-        return await fetchApi20<IGeneralNewsById>(endpoint, baseRequestOptions)
+        return await fetchApi20< INews>(endpoint, baseRequestOptions)
     }
 
     async uploadPhoto(id: string, formData: FormData): Promise<IApiResponse> {

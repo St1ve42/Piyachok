@@ -5,7 +5,7 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {GlobalUserRoleEnum} from "@/src/enums/user/global.user.role.enum";
 import {authService} from "@/src/services/auth.service";
 import {useRouter} from "next/navigation";
-import {Bars} from "@gravity-ui/icons"
+import {Bars, CircleNumber1} from "@gravity-ui/icons"
 import {Comment, Comments, Star, Person, Persons, ChartColumn, ArrowRightFromSquare, House, ListUl, Heart, Plus, Shield} from "@gravity-ui/icons";
 import Link from "next/link";
 
@@ -124,6 +124,12 @@ const Sidebar: FC<PropsType> = ({user}) => {
                         <Link href={'/account/superadmin/reviews'} className="flex w-full items-center gap-3">
                             <Star/>
                             Усі відгуки
+                        </Link>
+                    </ListBox.Item>
+                    <ListBox.Item textValue={'Усі топ категорії'}>
+                        <Link href={'/account/superadmin/top-categories'} className="flex w-full items-center gap-3">
+                            <CircleNumber1/>
+                            Усі топ категорії
                         </Link>
                     </ListBox.Item>
                 </ListBox.Section>}

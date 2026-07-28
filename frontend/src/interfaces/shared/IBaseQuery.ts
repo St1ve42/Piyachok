@@ -19,6 +19,7 @@ export interface IFoodAndDrinkQuery extends IBaseQuery{
     type?: FoodAndDrinkTypeEnum
     rating?: number
     tag?: string
+    isTop?: boolean
     averageReceipt?: {gte: number, lte: number}
     sort?: 'asc' | 'desc'
     sortBy?: string

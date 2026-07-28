@@ -4,7 +4,7 @@ import NoImage from "@/src/public/no-image-icon.jpg"
 import Image from "next/image";
 import {utilsService} from "@/src/services/utils.service";
 import Link from "next/link";
-import {NewsCategoryTranslation} from "@/src/constants/news-category-translation";
+import {NewsCategoryTranslation} from "@/src/constants/news-category.translation";
 import {INews} from "@/src/interfaces/news/INews";
 import {newsIcons} from "@/src/constants/news-icons";
 import NewsFoodAndDrinkDropdown from "@/src/components/features/news/NewsFoodAndDrinkDropdown";
@@ -22,7 +22,7 @@ const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToMan
     const createdAtLocalTimeString = utilsService.getLocalTime(createdAt)
     return (
         <Link href={`/${href}/${id}`} className="w-full">
-            <Card className="text-sm h-[45vh] relative w-full">
+            <Card className="text-sm h-[45vh] relative">
                 <div className="relative h-[22vh]">
                     <Image src={photo ? utilsService.buildStorageURL(photo) : NoImage} fill={true} alt={photo ?? 'Відсутнє зображення'}/>
                 </div>

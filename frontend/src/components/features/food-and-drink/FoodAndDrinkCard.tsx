@@ -1,13 +1,7 @@
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
-import Image, {StaticImageData} from "next/image";
+import Image from "next/image";
 import noImage from "@/src/public/no-image-icon.jpg"
-import wifi from "@/src/public/wifi-signalpng.png"
-import livemusic from "@/src/public/live-music.png"
-import parking from "@/src/public/parking.png"
-import hours24_7 from "@/src/public/24_7.png"
-import Feature from "@/src/components/features/food-and-drink/Feature";
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@heroui/react";
-import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drink-features.enum";
+import {Card, CardContent, CardHeader, CardTitle, Chip} from "@heroui/react";
 import Link from "next/link";
 import {UrlObject} from "node:url";
 import Decision from "@/src/components/features/food-and-drink/decision/Decision";
@@ -15,25 +9,20 @@ import { utilsService } from "@/src/services/utils.service";
 import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 import Favourite from "@/src/components/features/food-and-drink/Favourite";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
-
-const icons: Record<FoodAndDrinkFeaturesEnum, StaticImageData> = {
-    [FoodAndDrinkFeaturesEnum.WI_FI]: wifi,
-    [FoodAndDrinkFeaturesEnum.LIVE_MUSIC]: livemusic,
-    [FoodAndDrinkFeaturesEnum.PARKING]: parking,
-    [FoodAndDrinkFeaturesEnum.IS_24_HOURS]: hours24_7,
-}
+import FoodAndDrinksByCategoryDropdown from "@/src/components/features/food-and-drink/FoodAndDrinksByCategoryDropdown";
 
 type PropsType = {
     foodAndDrinkOneFromList: IFoodAndDrinkOneFromList
     id: string
     href: string | UrlObject
-    mode: 'default' | 'moderate' | 'favourite'
+    mode?: 'default' | 'moderate' | 'favourite' | 'top' | 'superadmin-top',
+    categoryId?: string
 }
 
-export const FoodAndDrinkCard = async ({foodAndDrinkOneFromList, id, href, mode}: PropsType) => {
-    const {name, type, location: {street}, city, features, mainImage, distance, rating, averageReceipt} = foodAndDrinkOneFromList
+export const FoodAndDrinkCard = async ({foodAndDrinkOneFromList, id, href, mode = 'default', categoryId}: PropsType) => {
+    const {name, type, location: {street}, city, mainImage, distance, rating, averageReceipt, topCategories} = foodAndDrinkOneFromList
     const response = await foodAndDrinkService.findTypes()
-    return (<Card className="text-[14px]">
+    return (<Card className="text-[14px] relative">
         <Link href={href + '/' + id} className="flex flex-col h-full">
             {mainImage ? <Image src={utilsService.buildStorageURL(mainImage)} alt={'Фото закладу'} width={300} height={150} className="w-auto h-[25vh] rounded-sm" priority={true}/> : <Image src={noImage} alt={'Зображення відсутнє'} width={200} height={20} priority={true} className="w-full h-auto rounded-sm border-black border-solid border-2"/>}
             <CardHeader className="flex flex-row items-center justify-between mt-1">
@@ -42,17 +31,18 @@ export const FoodAndDrinkCard = async ({foodAndDrinkOneFromList, id, href, mode}
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {response.success && <p>{utilsService.capitalizeFirstLetter(response.data[type])}</p>}
+                <p>{response.success && <span>{utilsService.capitalizeFirstLetter(response.data[type])}</span>}</p>
                 <p>{street}, {city}{distance ? `, ${distance}` : ''}</p>
-                <p>Середній чек: {averageReceipt} грн</p>
-                <p>{rating ?? 0} <ReadOnlyStarRating initialValue={rating ?? 0}/></p>
+                <div className="flex justify-between">
+                    <p>{rating ?? 0} <ReadOnlyStarRating initialValue={rating ?? 0}/></p>
+                    <p>{averageReceipt} грн / чек</p>
+                </div>
+                {mode === 'top' && (topCategories ? <div className="flex gap-1 flex-wrap items-center">🏆 Найкращі для: {topCategories.map(topCategory => <Chip key={topCategory}>{topCategory}</Chip>)}</div> : <div>🏆 Найкращі для: <Chip>Інформація відсутня</Chip></div>)}
             </CardContent>
-            {features && <CardFooter className="gap-3 text-[12px]">
-                {features.map((feature) => <Feature key={feature} image={icons[feature as FoodAndDrinkFeaturesEnum]} alt={feature} featureName={feature}/>)}
-            </CardFooter>}
         </Link>
         {mode === 'favourite' && <div className="self-end cursor-pointer"><Favourite foodAndDrinkId={id} isFavourite={true}/></div>}
         {mode === 'moderate' && <Decision id={id}/>}
+        {mode === 'superadmin-top' && categoryId && <div className="absolute top-2 right-2"><FoodAndDrinksByCategoryDropdown categoryId={categoryId} foodAndDrinkId={id}/></div>}
     </Card>)
 }
 

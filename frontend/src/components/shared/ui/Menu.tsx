@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 
 const Menu = () => {
@@ -7,7 +8,7 @@ const Menu = () => {
                 <Link href="/">Головна</Link>
             </li>
             <li>
-                <Link href="/top-food-and-drink">Топ закладів</Link>
+                <Link href="/top-food-and-drinks">Топ закладів</Link>
             </li>
             <li>
                 <Link href="/piyachok">Пиячок</Link>

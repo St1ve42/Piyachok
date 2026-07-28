@@ -4,7 +4,7 @@ import {getErrorResponse} from "@/src/errors/get.error.response";
 import {fetchApi} from "@/src/lib/fetch.api";
 import {IUpdateMe} from "@/src/interfaces/users/IUpdateMe";
 import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOwnerInfo";
-import { IFoodAndDrinkListData } from "@/src/interfaces/food-and-drink/IFoodAndDrinkListData";
+import { IFoodAndDrinkFullData } from "@/src/interfaces/food-and-drink/IFoodAndDrinkFullData";
 import {
   IBaseQuery,
 } from "@/src/interfaces/shared/IBaseQuery";
@@ -73,10 +73,10 @@ export class UsersService{
         }
     }
 
-    async findMyFavouriteFoodAndDrinks(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<IFoodAndDrinkListData>>{
+    async findMyFavouriteFoodAndDrinks(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<IFoodAndDrinkFullData>>{
         const endpoint = '/users/me/favourites';
         const baseHeaders: RequestInit = {next: {revalidate: 15, tags: ['my-favourite-food-and-drinks']}}
-        return await fetchApi20<IFoodAndDrinkListData>(endpoint, baseHeaders, {query, accessCookie})
+        return await fetchApi20<IFoodAndDrinkFullData>(endpoint, baseHeaders, {query, accessCookie})
     }
 
     async findMyReviews(query?: IBaseQuery, accessCookie?: string): Promise<IApiResponse<IReviewWithFoodAndDrinkListData>>{

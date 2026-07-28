@@ -61,6 +61,9 @@ export class SuperadminFoodAndDrinkFindOnePresenter {
     @Expose()
     rating: number | null;
 
+    @Expose()
+    averageReceipt: number;
+
     @ApiProperty({
         description: 'Особливості закладу (вай-фай, парковка, музика, 24/7)',
     })

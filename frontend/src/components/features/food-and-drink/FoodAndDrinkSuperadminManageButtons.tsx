@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import {EllipsisVertical, Pencil, Route, TrashBin} from "@gravity-ui/icons";
 import UsersSearch from "@/src/components/features/users/search/UsersSearch";
-import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 import {utilsService} from "@/src/services/utils.service";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import Link from "next/link";
@@ -24,13 +24,17 @@ import { FoodAndDrinkStatusEnum } from "@/src/enums/food-and-drink/food-and-drin
 import { useRouter } from "next/navigation";
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 import {IUser} from "@/src/interfaces/users/IUser";
+import {ITopCategory} from "@/src/interfaces/top-category/ITopCategory";
+import TopCategoryCard from "@/src/components/features/top-category/TopCategoryCard";
+import NoResults from "@/src/components/shared/ui/NoResults";
 
 type PropsType = {
     foodAndDrink: IFoodAndDrinkSuperadminInfo,
-    users: IUser[]
+    users: IUser[],
+    topCategories: ITopCategory[]
 }
 
-const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users}) => {
+const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users, topCategories}) => {
     const {id, name, status} = foodAndDrink
     const [isCorrectInput, setIsCorrectInput] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<null | string>(null)
@@ -107,6 +111,22 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                     </Dropdown.Menu>
                 </Dropdown.Popover>
             </Dropdown>
+            <Modal>
+                <Button className="bg-orange-400"><Route/>Додати до топ категорії</Button>
+                <Modal.Backdrop>
+                    <Modal.Container>
+                        <Modal.Dialog className="sm:max-w-[450px] h-[60vh]">
+                            <Modal.CloseTrigger ref={closeTriggerButtonRef}/>
+                            <Modal.Header>
+                                <Modal.Heading>Виберіть топ категорію, до якого хочете прив&#39;язати вибраний заклад</Modal.Heading>
+                            </Modal.Header>
+                            <Modal.Body className="flex gap-3 flex-col">
+                                {topCategories.length > 0 ? topCategories.map(topCategory => <TopCategoryCard key={topCategory.id} topCategory={topCategory} mode={'add-food-and-drink'} foodAndDrinkId={id} closeTriggerButton={closeTriggerButtonRef}/>) : <NoResults/>}
+                            </Modal.Body>
+                        </Modal.Dialog>
+                    </Modal.Container>
+                </Modal.Backdrop>
+            </Modal>
             <Modal>
                 <Button className="bg-orange-400"><Route/>Прив`язка</Button>
                 <Modal.Backdrop>

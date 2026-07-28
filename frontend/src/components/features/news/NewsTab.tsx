@@ -17,7 +17,7 @@ const NewsTab: FC<PropsType> = ({href = '/news'}) => {
     return <div className="w-full mb-2">
         <TabsRoot>
             <TabListContainer>
-                <TabList aria-label="Options">
+                <TabList aria-label="Options" className="bg-white [&_a]:text-black">
                     <Tab id="general" key="general">
                         <Link href={href} className="w-full">
                             Загальні

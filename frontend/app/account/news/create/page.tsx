@@ -11,7 +11,8 @@ const NewsCreate = async () => {
     if(!ownerOf){
         return <div>Створювати новини може лише власник закладу.</div>
     }
-    return <NewsCreatingOrUpdatingView/>;
+    const {id} = ownerOf
+    return <NewsCreatingOrUpdatingView foodAndDrinkId={id}/>;
 };
 
 export default NewsCreate;

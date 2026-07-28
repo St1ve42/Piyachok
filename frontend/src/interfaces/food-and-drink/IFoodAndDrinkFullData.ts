@@ -1,4 +1,4 @@
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
 import {IFullData} from "@/src/interfaces/shared/IFullData";
 
-export type IFoodAndDrinkListData = IFullData<IFoodAndDrinkOneFromList>
+export type IFoodAndDrinkFullData = IFullData<IFoodAndDrinkOneFromList>

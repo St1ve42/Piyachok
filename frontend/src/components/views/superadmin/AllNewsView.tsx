@@ -17,8 +17,6 @@ type PropsType = {
 const AllNewsView: FC<PropsType> = async ({query}) => {
     const {search, ...restSearch} = query
     const {page, category} = query
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     const { success, data } = await newsService.find({...restSearch, title: search});
     if(!success){
         notFound()
@@ -33,7 +31,7 @@ const AllNewsView: FC<PropsType> = async ({query}) => {
             </div>
             {newsList.length > 0 ?
                 <div className="grid grid-cols-3 gap-3">{newsList.map((news) => <FoodAndDrinkNewsCard key={news.id} news={news} href={'account/news/'}/>)}</div>
-                : <div className="mt-20"><NoResults/></div>
+                : <NoResults/>
             }
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </div>

@@ -7,7 +7,7 @@ import {
   userQueryValidator,
   userQueryValidatorType,
 } from "@/src/validators/user/user-query-validator";
-import {UserSearchByEnum} from "@/src/enums/user/user.search.by";
+import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 
 export const metadata: Metadata = {
     title: 'Усі користувачі'

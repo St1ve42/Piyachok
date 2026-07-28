@@ -48,7 +48,7 @@ const ReviewForm: FC<PropsType> = ({isLogged, foodAndDrinkId, isOwner}) => {
         }
     }
     return (
-        <Form onSubmit={handleSubmit(handleReviewSubmit)} className="flex h-[43vh] flex-col rounded-3xl px-6 py-2 border-1">
+        <Form onSubmit={handleSubmit(handleReviewSubmit)} className="flex h-full flex-col rounded-3xl px-6 py-2 border-1">
             <div className="flex justify-between">
                 <Heading level={6}>Залишити відгук</Heading>
                 {(isLogged && !isOwner) ? <InteractiveStartRating handleStarClick={handleStarClick} value={rating}/> : <ReadOnlyStarRating initialValue={0}/>}
@@ -64,7 +64,7 @@ const ReviewForm: FC<PropsType> = ({isLogged, foodAndDrinkId, isOwner}) => {
                 <div className="w-full">
                     <Label>Текст відгуку</Label>
                     <div className="relative">
-                        <TextArea onFocus={onFocusInput} maxLength={500} disabled={!!isOwner} className="w-full h-[13vh] resize-none" placeholder={'Введіть текст відгуку...'} {...register('text', {onChange: (e) => setReviewTextLength(e.target.value.length)
+                        <TextArea onFocus={onFocusInput} maxLength={500} disabled={!!isOwner} className="w-full h-[14vh] resize-none" placeholder={'Введіть текст відгуку...'} {...register('text', {onChange: (e) => setReviewTextLength(e.target.value.length)
                         })}/>
                         {errors.text && <div className=" text-red-600 text-[9.5px] bottom-0 leading-none">{errors.text.message}</div>}
                         <div className="text-[9.5px] text-right">{reviewTextLength}/500</div>

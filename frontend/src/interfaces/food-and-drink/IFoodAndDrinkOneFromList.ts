@@ -21,4 +21,5 @@ export interface IFoodAndDrinkOneFromList {
   averageReceipt: number;
   distance: string | null;
   features?: string[];
+  topCategories?: string[] | null
 }
