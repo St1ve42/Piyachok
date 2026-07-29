@@ -13,7 +13,7 @@ type PropsType = {
 }
 
 const FoodAndDrinkCommentsList: FC<PropsType> = ({foodAndDrinkId, user, isOwner}) => {
-    const {data, hasNextPage, fetchNextPage} = useCommentInfinityQuery({foodAndDrinkId, query: {limit: 2}})
+    const {data, hasNextPage, fetchNextPage} = useCommentInfinityQuery({foodAndDrinkId, query: {limit: 10}})
     let total: number = 0;
     const comments = data?.pages.flatMap(page => {
         const {success, data} = page
@@ -32,12 +32,11 @@ const FoodAndDrinkCommentsList: FC<PropsType> = ({foodAndDrinkId, user, isOwner}
     }, [inView, hasNextPage, fetchNextPage])
     return (
         comments && comments.length > 0 && <div className="flex flex-col gap-2 mb-5">
-            {comments.map(comment => {
+            {comments.map((comment, index) => {
                 if(comment){
-                    return <CommentCard key={comment.id} comment={comment} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>
+                    return <CommentCard key={comment.id} ref={index === comments.length - 2 ? ref : undefined} comment={comment} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>
                 }
             })}
-            <div ref={ref} style={{display: comments.length !== total ? 'block' : 'none'}}>Завантаження...</div>
         </div>
     )
 }

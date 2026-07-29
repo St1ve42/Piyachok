@@ -17,10 +17,11 @@ type PropsType = {
     comment: ICommentWithUser,
     user: IUser | null,
     isOwner: boolean | null,
-    foodAndDrinkId: string
+    foodAndDrinkId: string,
+    ref?: (node?: (Element | null)) => void
 }
 
-const CommentCard: FC<PropsType> = ({comment, user, isOwner, foodAndDrinkId}) => {
+const CommentCard: FC<PropsType> = ({comment, user, isOwner, foodAndDrinkId, ref}) => {
     const [isEdited, setIsEdited] = useState(false)
     const queryClient = useQueryClient()
     const {register, handleSubmit} = useForm<IUserCommentInput>({mode: 'all'})
@@ -38,7 +39,7 @@ const CommentCard: FC<PropsType> = ({comment, user, isOwner, foodAndDrinkId}) =>
     }
     const localCreatedAt = new Date(createdAt).toLocaleDateString('uk-UA')
     return (
-        <Card className="flex-row justify-between">
+        <Card ref={ref} className="flex-row justify-between">
             <div className="flex gap-3 w-full">
                 <AvatarCustom photo={photo} defaultPhoto={UserAvatar.src} width={50} height={50}/>
                 <div className="w-full flex flex-col">

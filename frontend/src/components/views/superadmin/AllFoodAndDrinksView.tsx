@@ -8,6 +8,7 @@ import PaginationWithEclipses from "@/src/components/shared/components/paginatio
 import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAndDrinkOneFromList";
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
 import Limit from "@/src/components/shared/components/limitation/Limit";
+import FoodAndDrinkSuperadminFilter from "@/src/components/features/food-and-drink/superadmin/FoodAndDrinkSuperadminFilter";
 
 type PropType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
@@ -27,8 +28,9 @@ const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessC
             <Heading level={5}>Знайдено: {total}</Heading>
             <div className="flex items-center justify-between">
                       <Limit currentLimit={limit}/>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 items-center">
                         <FoodAndDrinkSort/>
+                        <FoodAndDrinkSuperadminFilter/>
                         <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie}/>
                       </div>
             </div>

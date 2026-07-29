@@ -9,7 +9,7 @@ import {userService} from "@/src/services/users.service";
 import {IUser} from "@/src/interfaces/users/IUser";
 import {ReviewSortByEnum} from "@/src/enums/ReviewSortByEnum";
 import {SortEnum} from "@/src/enums/shared/SortEnum";
-import FoodAndDrinkCommentsBlock from "@/src/components/features/comments/FoodAndDrinkCommentsBlock";
+import FoodAndDrinkCommentsSection from "@/src/components/features/comments/FoodAndDrinkCommentsSection";
 import FoodAndDrinkContact from "@/src/components/features/food-and-drink/contact/FoodAndDrinkContact";
 import FoodAndDrinkImages from "@/src/components/features/FoodAndDrinkImages";
 import FoodAndDrinkInfo from "@/src/components/features/food-and-drink/FoodAndDrinkInfo";
@@ -60,13 +60,15 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
                 <div className="relative">
                     <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>
                     <div className="absolute top-[15px] right-[15px] flex gap-3 items-center">
-                        <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
                         <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>
                         <PiyachokForm foodAndDrinkId={id}/>
                     </div>
+                    <div className="absolute bottom-[15px] right-[15px]">
+                        <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
+                    </div>
                 </div>
                 <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource}/>
-                <FoodAndDrinkCommentsBlock photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
+                <FoodAndDrinkCommentsSection photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
             </div>
             <div className="flex flex-col gap-4 mb-2 col-span-36">
                 <div className="h-[25rem] w-full flex-shrink-0">

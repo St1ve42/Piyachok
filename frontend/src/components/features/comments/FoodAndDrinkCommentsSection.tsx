@@ -14,7 +14,7 @@ type PropsType = {
     isOwner: boolean | null
 }
 
-const FoodAndDrinkCommentsBlock: FC<PropsType> = ({photo, isLogged, foodAndDrinkId, user, isOwner}) => {
+const FoodAndDrinkCommentsSection: FC<PropsType> = ({photo, isLogged, foodAndDrinkId, user, isOwner}) => {
     return (
         <section className="flex flex-col gap-3">
             <Heading level={3}>Коментарі</Heading>
@@ -27,4 +27,4 @@ const FoodAndDrinkCommentsBlock: FC<PropsType> = ({photo, isLogged, foodAndDrink
     )
 }
 
-export default FoodAndDrinkCommentsBlock
+export default FoodAndDrinkCommentsSection

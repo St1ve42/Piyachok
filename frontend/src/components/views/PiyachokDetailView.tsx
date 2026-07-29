@@ -151,7 +151,7 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
                                 </div>
                                 {replies.data.totalPages > 0 && <div><PaginationWithEclipses totalPages={replies.data.totalPages} currentPage={page} isPageInput={false}/></div>}
                             </div>
-                            : <div><NoResults text={'Будьте першим, хто залишить відповідь на цей пиячок!'}/></div>
+                            : <NoResults text={'Будьте першим, хто залишить відповідь на цей пиячок!'}/>
                     ) : <div>Сталась помилка: {replies.data.message}</div>}
                 </div>
             </div>

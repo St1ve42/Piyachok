@@ -15,7 +15,6 @@ import UsersSearch from "@/src/components/features/users/search/UsersSearch";
 import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 import {utilsService} from "@/src/services/utils.service";
 import UserAvatar from "@/src/public/default_user_avatar.png";
-import Link from "next/link";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import {updateTagAction} from "@/src/actions/server.actions";
 import { ChangeEventHandler, FC, useRef, useState } from "react";
@@ -161,9 +160,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                     </Modal.Container>
                 </Modal.Backdrop>
             </Modal>
-            <Link href={`/account/superadmin/food-and-drinks/${id}/update`}>
-                <Button className="self-end"><Pencil/>Редагувати</Button>
-            </Link>
+            <Button onPress={() => router.push(`/account/superadmin/food-and-drinks/${id}/update`)}><Pencil/>Редагувати</Button>
             <Modal>
                 <Button variant="danger" onPress={handleOnPressDeleteButton}><TrashBin/>Видалити</Button>
                 <Modal.Backdrop>

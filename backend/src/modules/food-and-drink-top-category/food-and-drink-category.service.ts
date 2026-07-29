@@ -133,7 +133,7 @@ export class FoodAndDrinkCategoryService {
             });
         if (existsFoodAndDrink) {
             throw new ConflictException(
-                `Заклад з id ${foodAndDrinkId} вже є в категорії з id ${categoryId}`,
+                `Вказаний заклад вже є в поточній категорії`,
             );
         }
         const category = (await this.foodAndDrinkTopCategoryRepository.findOne({

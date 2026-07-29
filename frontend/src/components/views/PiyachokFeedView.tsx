@@ -3,9 +3,14 @@ import {Heading} from "@heroui/react";
 import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 import PiyachokCard from "@/src/components/features/piyachok/PiyachokCard";
 import NoResults from "@/src/components/shared/ui/NoResults";
+import {FC} from "react";
 
-const PiyachokFeedView = async () => {
-    const piyachokFindResponse = await piyachokService.find()
+type PropsType = {
+    page: number
+}
+
+const PiyachokFeedView: FC<PropsType> = async ({page}) => {
+    const piyachokFindResponse = await piyachokService.find({page})
     if(!piyachokFindResponse.success){
         return <div>Сталась помилка: {piyachokFindResponse.data.message}</div>
     }
@@ -14,7 +19,7 @@ const PiyachokFeedView = async () => {
         <section className="flex flex-col gap-3">
             <Heading level={5}>Знайдено: {total}</Heading>
             {piyachoks.length > 0 ? <div className="grid grid-cols-4 gap-3">{piyachoks.map(piyachok => <PiyachokCard key={piyachok.id} piyachok={piyachok}/>)}</div> : <NoResults/>}
-            {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages}/>}
+            {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )
 }

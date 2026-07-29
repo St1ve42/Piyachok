@@ -13,7 +13,7 @@ type PropsType = {
 const ShortOwnerInfo: FC<PropsType> = ({owner}) => {
     const {photo, id, name, surname, email} = owner
     return (
-        <Card className="text-[14px] h-fit w-[20vw] self-end flex-row items-center">
+        <Card className="text-[14px] h-fit w-[17vw] self-end flex-row items-center shrink-0">
             <Avatar className={'size-14'}>
                 <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo ) : UserAvatar.src} width={100} height={100}/>
             </Avatar>

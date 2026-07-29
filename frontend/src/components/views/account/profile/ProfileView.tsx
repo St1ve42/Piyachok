@@ -119,7 +119,7 @@ const ProfileView: FC<PropsType> = ({user, type, id}) => {
                   </Modal> :
                     <Button className="bg-green-500" onClick={handleRestore}>Відновити акаунт</Button>
                   )}
-                    <Button className="bg-orange-500" onPress={() => router.push('/account/change-password')}><Key/> Змінити пароль</Button>
+                    {type === 'user' && <Button className="bg-orange-500" onPress={() => router.push('/account/change-password')}><Key/> Змінити пароль</Button>}
                     <Button onClick={handleEdit}>{isOpenEdit ? 'Скасувати' : <div className="flex items-center gap-2"><Pencil/> Редагувати</div>}</Button>
                 </div>
             </div>

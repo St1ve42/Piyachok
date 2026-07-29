@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 import {FoodAndDrinkFeaturesEnum} from "@/src/enums/food-and-drink/food-and-drink-features.enum";
 import {FoodAndDrinkSortByEnum} from "@/src/enums/food-and-drink/food-and-drink-sort-by.enum";
+import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 
 export const queryFoodAndDrinkValidator = Joi.object({
     page: Joi.number().min(1).default(1),
@@ -16,5 +17,6 @@ export const queryFoodAndDrinkValidator = Joi.object({
     lng: Joi.string(),
     "features[]": Joi.alternatives().try(Joi.string().valid(...Object.values(FoodAndDrinkFeaturesEnum)), Joi.array<string[]>().items(Joi.string().valid(...Object.values(FoodAndDrinkFeaturesEnum)))),
     "averageReceipt[gte]": Joi.number().min(0),
-    "averageReceipt[lte]": Joi.number().min(0)
+    "averageReceipt[lte]": Joi.number().min(0),
+    status: Joi.string().valid(...Object.values(FoodAndDrinkStatusEnum))
 })

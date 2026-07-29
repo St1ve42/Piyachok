@@ -21,7 +21,7 @@ type PropsType = {
 const AllUsersView: FC<PropsType> = ({users, page, limit, searchBy}) => {
     const {data, total, totalPages} = users
     if((page > totalPages && totalPages !== 0) || limit > 20){
-      redirect('')
+      redirect('/account/superadmin/users')
     }
     return (
         <section className="flex flex-col gap-4 h-full">
