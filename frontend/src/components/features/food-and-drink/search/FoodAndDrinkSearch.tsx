@@ -18,7 +18,7 @@ const FoodAndDrinkSearch: FC<PropsType> = (props) => {
                     <Label/>
                     <SearchField.Group>
                         <SearchField.SearchIcon />
-                        <SearchField.Input autoComplete="off" spellCheck="false" autoCorrect="off" placeholder="Пошук" value={inputValue} onChange={handleChangeInput} onKeyDown={handleOnKeyDownInput} onFocus={() => setIsOpen(true)}/>
+                        <SearchField.Input autoComplete="off" spellCheck="false" autoCorrect="off" placeholder="Пошук" value={inputValue} onChange={handleChangeInput} onKeyDown={handleOnKeyDownInput} onFocus={() => setIsOpen(true)} onBlur={() => setIsOpen(false)}/>
                         <SearchField.ClearButton onClick={handleClickClearButton}/>
                     </SearchField.Group>
                 </SearchField>
@@ -38,11 +38,12 @@ const FoodAndDrinkSearch: FC<PropsType> = (props) => {
                 )}
             </div>
             <Button onClick={() => {
+                const query = createQueryString('page', '1', 'set')
                 if(!inputValue){
-                    router.push(pathname + '?' + createQueryString('name', null, "delete"))
+                    router.push(pathname + '?' + createQueryString('name', null, "delete", query))
                 }
                 else{
-                    router.push(pathname + '?' + createQueryString('name', inputValue))
+                    router.push(pathname + '?' + createQueryString('name', inputValue, "set", query))
                 }
             }}>Знайти</Button>
         </div>

@@ -14,7 +14,7 @@ type PropsType = {
 }
 
 const NewsFeedView: FC<PropsType> = async ({query}) => {
-    const {page} = query
+    const {page, category} = query
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const { success, data } = await newsService.find(query);
@@ -24,7 +24,7 @@ const NewsFeedView: FC<PropsType> = async ({query}) => {
     const {total, totalPages, data: newsList} = data
     return <div className="flex justify-between flex-col gap-1">
         <TabMenu/>
-        <NewsTab/>
+        <NewsTab activeCategory={category}/>
         <div className="flex flex-col gap-3">
             <Heading level={5}>Знайдено: {total}</Heading>
             {newsList.length > 0 ?

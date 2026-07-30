@@ -80,6 +80,7 @@ const useNewsCreatingOrUpdatingView = ({mode = 'create', news, foodAndDrinkId}: 
         setIsLoading(false)
         toast.success('Новину успішно створено!')
         await updateTagAction(`food-and-drink-news-${foodAndDrinkId}`)
+        await updateTagAction('public-news')
         redirect('/account/news')
     }
 
@@ -103,6 +104,8 @@ const useNewsCreatingOrUpdatingView = ({mode = 'create', news, foodAndDrinkId}: 
         }
         setIsLoading(false)
         toast.success('Новину успішно оновлено')
+        await updateTagAction('public-news')
+        await updateTagAction(`detail-news-${id}`)
         await updateTagAction(`food-and-drink-news-${foodAndDrinkId}`)
         redirect(`/account/news/${id}`)
     }

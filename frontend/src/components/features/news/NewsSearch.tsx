@@ -9,7 +9,7 @@ import {ReactNode} from "react";
 import {ListBox} from "@heroui/react";
 import {NewsCategoryEnum} from "@/src/enums/news/news-category.enum";
 
-const NewsSearch = ({category}: {category: NewsCategoryEnum}) => {
+const NewsSearch = ({category, initialSearchValue}: {category: NewsCategoryEnum, initialSearchValue?: string}) => {
     const queryFn = async (query: INewsQuery): Promise<IApiResponse<IGeneralNewsListData>> => {
         return newsService.find({...query, category});
     }
@@ -21,7 +21,7 @@ const NewsSearch = ({category}: {category: NewsCategoryEnum}) => {
         </ListBox.Item>
     }
 
-    return <Search searchBy={'title'} queryKey={'news'} queryFn={queryFn} mapCallback={searchMapCallback} notFoundMessage={'Новин не знайдено'}/>
+    return <Search searchBy={'title'} queryKey={'news'} queryFn={queryFn} mapCallback={searchMapCallback} notFoundMessage={'Новин не знайдено'} initialValue={initialSearchValue}/>
 }
 
 export default NewsSearch

@@ -12,7 +12,7 @@ import {Heading} from "@heroui/react";
 export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}
 
 export type PropsType = {
-  searchParams: FoodAndDrinkSearchParamsType
+    searchParams: FoodAndDrinkSearchParamsType
 }
 
 const HomeView = async ({searchParams}: PropsType) => {

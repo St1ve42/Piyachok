@@ -16,7 +16,7 @@ const StatisticsView: FC<PropsType> = ({id}) => {
         return <div>{data.data.message}.</div>
     }
     return <section className="flex flex-col gap-3">
-      <DateRangePickerStatistics/>
+      <DateRangePickerStatistics start={start} end={end}/>
       {!isLoading ? (data && <ChartStatistics start={start} end={end} foodAndDrinkViews={data.data}/>) : <div>Завантаження...</div>}
     </section>;
 };

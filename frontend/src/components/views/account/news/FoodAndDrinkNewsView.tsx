@@ -19,7 +19,7 @@ const FoodAndDrinkNewsView: FC<PropsType> = async ({query}) => {
         return <div>Тільки власники закладу можуть переглядати свої новини</div>
     }
     const {id} = ownerOf
-    const {page} = query
+    const {page, category} = query
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const { success, data } = await foodAndDrinkService.findNews(id, query);
@@ -29,7 +29,7 @@ const FoodAndDrinkNewsView: FC<PropsType> = async ({query}) => {
     const {total, totalPages, data: newsList} = data
     return (
         <div className="flex justify-between flex-col gap-3">
-            <NewsTab href={'/account/news'}/>
+            <NewsTab href={'/account/news'} activeCategory={category}/>
             <Heading level={3}>Знайдено: {total}</Heading>
             {newsList.length > 0 ?
                 <div className="grid grid-cols-3 gap-3 mb-2">{newsList.map((news) => <FoodAndDrinkNewsCard href={`account/news`} key={news.id} news={news}/>)}</div>

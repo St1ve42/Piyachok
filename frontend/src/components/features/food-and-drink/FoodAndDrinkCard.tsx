@@ -15,7 +15,7 @@ type PropsType = {
     foodAndDrinkOneFromList: IFoodAndDrinkOneFromList
     id: string
     href: string | UrlObject
-    mode?: 'default' | 'moderate' | 'favourite' | 'top' | 'superadmin-top',
+    mode?: 'default' | 'moderate' | 'favourite' | 'top' | 'superadmin-top' | 'all',
     categoryId?: string
 }
 

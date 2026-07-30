@@ -67,7 +67,7 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
                         <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
                     </div>
                 </div>
-                <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource}/>
+                <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource} foodAndDrinkId={id}/>
                 <FoodAndDrinkCommentsSection photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
             </div>
             <div className="flex flex-col gap-4 mb-2 col-span-36">

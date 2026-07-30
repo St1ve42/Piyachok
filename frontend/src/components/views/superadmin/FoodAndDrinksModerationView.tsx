@@ -11,12 +11,15 @@ import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/Food
 
 type PropsType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
-    page: number
+    page: number,
+    initialSortValue?: string,
+    initialSortByValue?: string,
+    initialSearchValue?: string
     limit?: number
     accessCookie: string
 }
 
-const FoodAndDrinksModerationView: FC<PropsType> = ({foodAndDrinkListData, page, accessCookie, limit}) => {
+const FoodAndDrinksModerationView: FC<PropsType> = ({foodAndDrinkListData, page, accessCookie, limit, initialSortValue, initialSortByValue, initialSearchValue}) => {
     const {data, total, totalPages} = foodAndDrinkListData
     if((page > totalPages && totalPages !== 0) || (limit && limit > 20)){
         redirect('/account/superadmin/food-and-drinks/moderate')
@@ -28,8 +31,8 @@ const FoodAndDrinksModerationView: FC<PropsType> = ({foodAndDrinkListData, page,
             <div className="flex items-center justify-between">
                 <Limit currentLimit={limit}/>
                 <div className="flex gap-3 items-center">
-                  <FoodAndDrinkSort/>
-                  <FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie}/>
+                  <FoodAndDrinkSort initialSortValue={initialSortValue} initialSortByValue={initialSortByValue}/>
+                  <FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie} initialValue={initialSearchValue}/>
                 </div>
             </div>
             <FoodAndDrinkList mode={'moderate'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>

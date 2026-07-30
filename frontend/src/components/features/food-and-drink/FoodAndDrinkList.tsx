@@ -7,7 +7,7 @@ import NoResults from "@/src/components/shared/ui/NoResults";
 type PropsType = {
     foodAndDrinkList: IFoodAndDrinkOneFromList[]
     href: string | UrlObject
-    mode: 'default' | 'moderate' | 'favourite'
+    mode: 'default' | 'moderate' | 'favourite' | 'all'
 }
 
 const FoodAndDrinkList: FC<PropsType> = ({foodAndDrinkList, href, mode}) => {
@@ -18,8 +18,8 @@ const FoodAndDrinkList: FC<PropsType> = ({foodAndDrinkList, href, mode}) => {
         </div>)
         :
         (mode === 'favourite' ? <div className="mt-10">
-            <NoResults text={'Почніть додавати заклади в улюблені!'}/>
-        </div> : <NoResults/>))
+            <NoResults text={'Почніть додавати заклади в улюблені!'} isButtonClearFilters={false}/>
+        </div> : <NoResults isButtonClearFilters={mode === 'all'} queryNamesToRemove={mode === 'all' ? ['status'] : undefined}/>))
 }
 
 export default FoodAndDrinkList

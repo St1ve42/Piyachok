@@ -49,7 +49,7 @@ export class PiyachokService {
         });
         if (existsPiyachok) {
             throw new ConflictException(
-                `Ви не можете створити більше, ніж один пиячок. Скасуйте або завершіть попередній пиячок`,
+                `Ви не можете створити більше, ніж один пиячок.`,
             );
         }
         const piyachok = this.piyachokRepository.create({

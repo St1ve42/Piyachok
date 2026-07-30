@@ -5,10 +5,11 @@ import useFilter from "./useFilter";
 
 type PropsType<T extends Record<string, string>> = {
     searchByEnum: T,
-    searchByTranslation: Record<T[keyof T], string>
+    searchByTranslation: Record<T[keyof T], string>,
+    initialSearchByValue?: string
 }
 
-const Filter = <T extends Record<string, string>,>({searchByEnum, searchByTranslation}: PropsType<T>) => {
+const Filter = <T extends Record<string, string>,>({searchByEnum, searchByTranslation, initialSearchByValue}: PropsType<T>) => {
     const {handleFilterChange, searchByValues} = useFilter({searchByEnum})
     return (
         <Dropdown>
@@ -16,9 +17,10 @@ const Filter = <T extends Record<string, string>,>({searchByEnum, searchByTransl
                 <Funnel/>
             </Button>
             <Dropdown.Popover>
-                <Dropdown.Menu onAction={handleFilterChange}>
+                <Dropdown.Menu onAction={handleFilterChange} selectionMode={'single'} selectedKeys={initialSearchByValue ? new Set([initialSearchByValue]) : new Set()}>
                     <Header>Пошук за: </Header>
                     {searchByValues.map(searchByValue => <Dropdown.Item key={searchByValue} id={searchByValue} textValue={searchByTranslation[searchByValue]}>
+                        <Dropdown.ItemIndicator/>
                         {searchByTranslation[searchByValue]}
                     </Dropdown.Item>)}
                 </Dropdown.Menu>

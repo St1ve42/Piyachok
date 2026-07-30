@@ -10,7 +10,7 @@ import {IPiyachokCreate} from "@/src/interfaces/piyachok/IPiyachokCreate";
 export class PiyachokService {
     async find(query?: IBaseQuery): Promise<IApiResponse<IFullData<IPiyachokList>>> {
         const endpoint = `/piyachok`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3*60, tags: ['piyachoks']}}
         return await fetchApi20<IFullData<IPiyachokList>>(endpoint, baseRequestOptions, {query})
     }
 

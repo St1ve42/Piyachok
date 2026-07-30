@@ -15,6 +15,7 @@ import { IFoodAndDrinkOwnerInfo } from "@/src/interfaces/food-and-drink/IFoodAnd
 import { redirect } from "next/navigation";
 import { utilsService } from "@/src/services/utils.service";
 import {useEmailStore} from "@/src/hooks/shared/useSharedStore";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = { mode: 'create' | 'update', foodAndDrink?: IFoodAndDrinkOwnerInfo, urlToRedirect?: string}
 
@@ -356,6 +357,7 @@ const useFoodAndDrinkCreatingOrUpdatingView = ({mode, foodAndDrink, urlToRedirec
                 return
             }
         }
+        await updateTagAction('food-and-drink-list')
         if(urlToRedirect){
             redirect(urlToRedirect)
         }

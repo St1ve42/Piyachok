@@ -15,7 +15,6 @@ const MyReviewsView: FC<PropsType> = async ({page}) => {
     const {success, data} = await userService.findMyReviews({page}, accessCookie)
     const total = success ? data.total : 0
     const totalPages = success ? data.totalPages : 0
-    const emptyDataComponent = <div className="mt-5"><NoResults text={'Почніть писати відгуки!'}/></div>
     return (
         <section className="flex flex-col gap-3 pr-15">
             <Heading level={3}>Мої відгуки</Heading>
@@ -24,7 +23,7 @@ const MyReviewsView: FC<PropsType> = async ({page}) => {
                         <div className="flex flex-col gap-3 mb-3">
                             {data.data.map(review => <MyReviewCard key={review.id} review={review}/>)}
                         </div>
-                : emptyDataComponent) : <div>{data.message}</div>}
+                : <NoResults text={'Почніть писати відгуки!'} isButtonClearFilters={false}/>) : <div>{data.message}</div>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

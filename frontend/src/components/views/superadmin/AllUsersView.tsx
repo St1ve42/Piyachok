@@ -10,15 +10,19 @@ import UserSort from "@/src/components/features/users/sort/UserSort";
 import NoResults from "@/src/components/shared/ui/NoResults";
 import UserFilter from "@/src/components/features/users/filter/UserFilter";
 import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
+import {SortEnum} from "@/src/enums/shared/SortEnum";
 
 type PropsType = {
     users: IUserListData
     page: number
     limit: number
-    searchBy: UserSearchByEnum
+    searchBy: UserSearchByEnum,
+    initialSearch?: string,
+    sortBy?: string,
+    sort?: SortEnum
 }
 
-const AllUsersView: FC<PropsType> = ({users, page, limit, searchBy}) => {
+const AllUsersView: FC<PropsType> = ({users, page, limit, searchBy, sort, sortBy, initialSearch}) => {
     const {data, total, totalPages} = users
     if((page > totalPages && totalPages !== 0) || limit > 20){
       redirect('/account/superadmin/users')
@@ -30,14 +34,14 @@ const AllUsersView: FC<PropsType> = ({users, page, limit, searchBy}) => {
             <div className="flex justify-between">
               <Limit currentLimit={limit}/>
               <div className="flex gap-3 items-center">
-                <UserSort/>
-                <UserFilter/>
-                <UsersSearch searchBy={searchBy}/>
+                <UserSort initialSort={sort} initialSortBy={sortBy}/>
+                <UserFilter searchBy={searchBy}/>
+                <UsersSearch searchBy={searchBy} initialSearch={initialSearch}/>
               </div>
             </div>
             {data.length !== 0 ? <div className="grid grid-cols-3 gap-4 mb-3">
                 {data.map(user => <UserCard key={user.id} user={user}/>)}
-            </div> : <NoResults/>}
+            </div> : <NoResults isButtonClearFilters={false}/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

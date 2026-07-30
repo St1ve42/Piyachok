@@ -3,7 +3,7 @@ import {Key} from "@heroui/react";
 import { useMemo } from "react";
 
 type PropsType<T extends Record<string, string>> = {
-    searchByEnum: T
+    searchByEnum: T,
 }
 
 const useFilter = <T extends Record<string, string>,>({searchByEnum}: PropsType<T>) => {

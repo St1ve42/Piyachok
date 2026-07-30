@@ -26,8 +26,9 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
     };
     useEffect(() => {
         if(sortBy){
+            let query = createQueryString('page', '1', 'set')
             if(sortBy === 'reset'){
-                router.push(pathname + '?' + createQueryString(`sortBy`, null, "delete"))
+                router.push(pathname + '?' + createQueryString(`sortBy`, null, "delete", query))
             }
             else if(sortBy === 'distance'){
                 if (!navigator.geolocation) {
@@ -38,7 +39,7 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
                 navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
             }
             else{
-                let query = createQueryString(`lat`, null, "delete")
+                query = createQueryString(`lat`, null, "delete", query)
                 query = createQueryString(`lng`, null, "delete", query)
                 router.push(pathname + '?' + createQueryString(`sortBy`, sortBy, "set", query))
             }
@@ -47,11 +48,12 @@ const useFoodAndDrinkSort = ({initialSortValue, initialSortByValue}: PropsType) 
 
     useEffect(() => {
         if(sort){
+            const query = createQueryString('page', '1', 'set')
             if(sort === 'reset'){
-                router.push(pathname + '?' + createQueryString(`sort`, null, "delete"))
+                router.push(pathname + '?' + createQueryString(`sort`, null, "delete", query))
             }
             else{
-                router.push(pathname + '?' + createQueryString(`sort`, sort))
+                router.push(pathname + '?' + createQueryString(`sort`, sort, 'set', query))
             }
         }
     }, [sort]);

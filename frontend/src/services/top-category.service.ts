@@ -12,7 +12,7 @@ class TopCategoryService {
 
     async find(accessCookie: string, query?: IBaseQuery): Promise<IApiResponse<ITopCategoryFullData>> {
         const endpoint = this.prefix
-        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: ['all-top-categories']}}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 30*60, tags: ['all-top-categories']}}
         return await fetchApi20(endpoint, baseRequestOptions, {query, accessCookie})
     }
 

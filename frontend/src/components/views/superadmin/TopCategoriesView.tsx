@@ -5,10 +5,15 @@ import NoResults from "@/src/components/shared/ui/NoResults";
 import TopCategoryCard from "@/src/components/features/top-category/TopCategoryCard";
 import {getAccessCookie} from "@/src/services/server.service";
 import CreateOrUpdateTopCategory from "@/src/components/features/top-category/CreateOrUpdateTopCategory";
+import {FC} from "react";
 
-const TopCategoriesView = async () => {
+type PropsType = {
+    page: number
+}
+
+const TopCategoriesView: FC<PropsType> = async ({page}) => {
     const accessCookie = await getAccessCookie()
-    const topCategories = await topCategoryService.find(accessCookie)
+    const topCategories = await topCategoryService.find(accessCookie, {page})
     if(!topCategories.success){
         return <div>Сталась помилка: {topCategories.data.message}</div>
     }
@@ -23,7 +28,7 @@ const TopCategoriesView = async () => {
             {topCategoriesList.length > 0 ? <div className="flex flex-col gap-3">
                 {topCategoriesList.map(topCategory => <TopCategoryCard key={topCategory.id} topCategory={topCategory}/>)}
             </div> : <NoResults/>}
-            {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages}/>}
+            {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )
 }

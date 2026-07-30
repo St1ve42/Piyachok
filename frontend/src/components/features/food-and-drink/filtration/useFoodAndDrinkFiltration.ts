@@ -44,7 +44,12 @@ export const useFoodAndDrinkFiltration = () => {
     }
 
     const clearFilters = () => {
-        router.push(pathname, { scroll: false });
+        let query = createQueryString('type', undefined, "delete")
+        query = createQueryString('rating', undefined, "delete", query)
+        query = createQueryString('features[]', undefined, "delete", query)
+        query = createQueryString('averageReceipt[gte]', undefined, "delete", query)
+        query = createQueryString('averageReceipt[lte]', undefined, "delete", query)
+        router.push(pathname + '?' + query, { scroll: false });
         setTimeout(() => setFormKey(prev => prev + 1), 200);
     };
 

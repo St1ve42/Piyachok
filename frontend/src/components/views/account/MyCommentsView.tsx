@@ -22,7 +22,7 @@ const MyCommentsView: FC<PropsType> = async ({page}) => {
         const comments = data.data
         listMarkup = comments.length > 0 ? <div className="flex flex-col gap-3 mb-3">
             {comments.map(comment => <CommentUserCard comment={comment} key={comment.id}/>)}
-        </div> : <div className="mt-5"><NoResults text={'Почніть писати коментарі!'}/></div>
+        </div> : <NoResults text={'Почніть писати коментарі!'} isButtonClearFilters={false}/>
     }
     else{
         listMarkup = <div>data.message</div>

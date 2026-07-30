@@ -23,7 +23,7 @@ import {INews} from "@/src/interfaces/news/INews";
 export class FoodAndDrinkService {
     async find(query?: IFoodAndDrinkQuery):Promise<IApiResponse<IFoodAndDrinkFullData>> {
         const endpoint = '/food-and-drinks';
-        const baseRequestOptions: RequestInit = {next: {revalidate: 15, tags: ['food-and-drink-list']}}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 15*60, tags: ['food-and-drink-list']}}
         return await fetchApi20<IFoodAndDrinkFullData>(endpoint, baseRequestOptions, {query})
     }
 

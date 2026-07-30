@@ -8,11 +8,11 @@ type PropsType = {
 }
 
 const FoodAndDrinkNewsDetailsView: FC<PropsType> = ({news}) => {
-    const {id} = news
+    const {id, foodAndDrink: {id: foodAndDrinkId}} = news
     return (
         <section className="w-full flex flex-col gap-3">
             <div className="self-end">
-                <NewsOwnerManageButtons newsId={id}/>
+                <NewsOwnerManageButtons newsId={id} foodAndDrinkId={foodAndDrinkId}/>
             </div>
             <NewsDetailsView news={news}/>
         </section>

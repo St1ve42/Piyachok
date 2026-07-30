@@ -28,7 +28,7 @@ const SuperadminFoodAndDrinksPage = async ({searchParams}: PropsType) => {
     if(!foodAndDrinkResponse.success){
         return <div>{foodAndDrinkResponse.data.message}</div>
     }
-    return <AllFoodAndDrinksView foodAndDrinkListData={foodAndDrinkResponse.data} page={validatedQuery.page ?? 1} accessCookie={accessCookie} limit={validatedQuery.limit}/>
+    return <AllFoodAndDrinksView foodAndDrinkListData={foodAndDrinkResponse.data} page={validatedQuery.page ?? 1} accessCookie={accessCookie} limit={validatedQuery.limit} searchParams={validatedQuery}/>
 }
 
 export default SuperadminFoodAndDrinksPage;

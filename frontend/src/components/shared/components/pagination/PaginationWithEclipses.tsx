@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Input, Pagination } from "@heroui/react";
+import {useURL} from "@/src/hooks/shared/useURL";
 
 type PropsType = {
     totalPages: number,
@@ -13,18 +13,7 @@ type PropsType = {
 function PaginationWithEclipses({totalPages, currentPage = 1, isPageInput = true}: PropsType) {
     const [page, setPage] = useState(1);
     const [inputPageValue, setInputPageValue] = useState<string>(`${currentPage}`)
-    const router = useRouter();
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams.toString())
-            params.set(name, value)
-
-            return params.toString()
-        },
-        [searchParams]
-    )
+    const {router, createQueryString, pathname} = useURL()
 
     useEffect(() => {
         setInputPageValue(currentPage.toString())

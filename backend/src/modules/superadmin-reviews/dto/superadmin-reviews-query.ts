@@ -1,8 +1,8 @@
-import { QueryBaseDto } from '../../../shared/dto/query-base.dto';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ReviewQueryDto } from '../../reviews/dto/review-query-dto';
 
-export class SuperadminReviewsQuery extends QueryBaseDto {
+export class SuperadminReviewsQuery extends ReviewQueryDto {
     @ApiPropertyOptional({
         example: 'Чудовий заклад',
         description: 'Фільтр за текстом відгуку',
@@ -11,14 +11,6 @@ export class SuperadminReviewsQuery extends QueryBaseDto {
     @IsString()
     @IsOptional()
     text?: string;
-
-    @ApiPropertyOptional({
-        example: 5,
-        description: 'Фільтр за рейтингом',
-    })
-    @IsOptional()
-    @IsNumber()
-    rating?: number;
 
     @ApiPropertyOptional({
         example: 'Ресторан Україна',

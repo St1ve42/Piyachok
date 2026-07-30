@@ -1,21 +1,17 @@
 'use client'
-import {
-    Tab,
-  TabIndicator,
-  TabList,
-  TabListContainer,
-  TabsRoot,
-} from "@heroui/react";
+import {Tab, TabIndicator, TabList, TabListContainer, Tabs,} from "@heroui/react";
 import Link from "next/link";
 import {FC} from "react";
+import {NewsCategoryEnum} from "@/src/enums/news/news-category.enum";
 
 type PropsType = {
-    href?: string
+    href?: string,
+    activeCategory?: NewsCategoryEnum
 }
 
-const NewsTab: FC<PropsType> = ({href = '/news'}) => {
+const NewsTab: FC<PropsType> = ({href = '/news', activeCategory}) => {
     return <div className="w-full mb-2">
-        <TabsRoot>
+        <Tabs selectedKey={activeCategory ?? NewsCategoryEnum.GENERAL}>
             <TabListContainer>
                 <TabList aria-label="Options" className="bg-white [&_a]:text-black">
                     <Tab id="general" key="general">
@@ -38,7 +34,7 @@ const NewsTab: FC<PropsType> = ({href = '/news'}) => {
                     </Tab>
                 </TabList>
             </TabListContainer>
-        </TabsRoot>
+        </Tabs>
     </div>
 }
 

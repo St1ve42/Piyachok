@@ -9,15 +9,19 @@ import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAnd
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
 import Limit from "@/src/components/shared/components/limitation/Limit";
 import FoodAndDrinkSuperadminFilter from "@/src/components/features/food-and-drink/superadmin/FoodAndDrinkSuperadminFilter";
+import {FoodAndDrinkSearchParamsType} from "@/src/components/views/HomeView";
+import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 
 type PropType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
-    page: number
+    page: number,
+    searchParams: FoodAndDrinkSearchParamsType & {status?: FoodAndDrinkStatusEnum}
     accessCookie: string
     limit?: number
 }
 
-const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessCookie, limit}) => {
+const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessCookie, limit, searchParams}) => {
+    const {sort, sortBy, name, status} = searchParams
     const {data, total, totalPages} = foodAndDrinkListData
     if((page > totalPages && totalPages !== 0)){
         redirect('/account/superadmin/food-and-drinks')
@@ -29,12 +33,12 @@ const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessC
             <div className="flex items-center justify-between">
                       <Limit currentLimit={limit}/>
                       <div className="flex gap-3 items-center">
-                        <FoodAndDrinkSort/>
-                        <FoodAndDrinkSuperadminFilter/>
-                        <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie}/>
+                        <FoodAndDrinkSort initialSortByValue={sortBy} initialSortValue={sort}/>
+                        <FoodAndDrinkSuperadminFilter status={status}/>
+                        <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie} initialValue={name}/>
                       </div>
             </div>
-            <FoodAndDrinkList mode={'default'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
+            <FoodAndDrinkList mode={'all'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

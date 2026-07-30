@@ -13,10 +13,11 @@ type PropsType = {
     news: INews,
     href?: string,
     hasRightToManageNews?: boolean,
-    mode?: 'default'
+    mode?: 'default',
+    foodAndDrinkId?: string
 }
 
-const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToManageNews = false, mode}) => {
+const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToManageNews = false, mode, foodAndDrinkId}) => {
     const {id, title, createdAt, photo, category} = news
     const createdAtLocalDateString = utilsService.getLocalDate(createdAt)
     const createdAtLocalTimeString = utilsService.getLocalTime(createdAt)
@@ -36,7 +37,7 @@ const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToMan
                         {title}
                     </Card.Title>
                 </div>
-                {mode === 'default' && hasRightToManageNews  && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id}/></div>}
+                {mode === 'default' && hasRightToManageNews && foodAndDrinkId && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id} foodAndDrinkId={foodAndDrinkId}/></div>}
             </Card>
         </Link>
     )

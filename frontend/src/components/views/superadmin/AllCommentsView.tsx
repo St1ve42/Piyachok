@@ -1,5 +1,4 @@
 import {getAccessCookie} from "@/src/services/server.service";
-import Link from "next/link";
 import {Heading} from "@heroui/react";
 import PaginationWithEclipses from "@/src/components/shared/components/pagination/PaginationWithEclipses";
 import {FC} from "react";
@@ -12,6 +11,7 @@ import CommentSuperadminCard from "@/src/components/features/comments/CommentSup
 import CommentSort from "@/src/components/features/comments/CommentSort";
 import Filter from "@/src/components/shared/components/filter/Filter";
 import {CommentSearchByTranslation} from "@/src/constants/comment-search-by.translation";
+import NoResults from "@/src/components/shared/ui/NoResults";
 
 type PropsType = {
     searchParams: IQueryComments
@@ -19,38 +19,28 @@ type PropsType = {
 
 const AllCommentsView: FC<PropsType> = async ({searchParams}) => {
     const {page = 1, sort, sortBy, limit} = searchParams
-    const {search, searchBy, ...restSearchParams} = searchParams
+    const {search, searchBy = CommentSearchByEnum.TEXT, ...restSearchParams} = searchParams
     const accessCookie = await getAccessCookie()
-    const searchObj = searchBy ? {[searchBy]: search} : {[CommentSearchByEnum.TEXT]: search}
-    const comments = await superadminCommentsService.find({...restSearchParams, ...searchObj}, accessCookie)
+    const comments = await superadminCommentsService.find({...restSearchParams, [searchBy]: search}, accessCookie)
     if(!comments.success){
         return <div>{comments.data.message}</div>
     }
     const {total, totalPages} = comments.data
-    const filterAndSortComponent = <div className="flex justify-end items-center gap-2">
-        <Limit currentLimit={limit}/>
-        <CommentSort initialSortValue={sort} initialSortByValue={sortBy}/>
-        <Filter searchByEnum={CommentSearchByEnum} searchByTranslation={CommentSearchByTranslation}/>
-        <CommentSearch searchBy={searchBy}/>
-    </div>
-    const emptyDataComponent = searchBy || search ? <div className="flex flex-col gap-2">
-        {filterAndSortComponent}
-        <div className="flex flex-col">
-            <p>За Вашим фільтром коментарів не знайдено.</p>
-            <Link className="text-blue-600" href={`/account/superadmin/reviews`} scroll={false}>Скинути фільтри</Link>
-        </div>
-    </div> : <div>Коментарів немає</div>
     return (
         <section className="flex flex-col gap-3 pr-15">
             <Heading level={3}>Усі коментарі</Heading>
             <Heading level={5}>Знайдено: {total}</Heading>
-            {comments.data.data.length > 0 ?
-                <div className="flex flex-col gap-3">
-                    {filterAndSortComponent}
-                    <div className="flex flex-col gap-3 mb-3">
-                        {comments.data.data.map(comment => <CommentSuperadminCard key={comment.id} comment={comment}/>)}
-                    </div>
-                </div> : emptyDataComponent}
+            <div className="flex flex-col gap-3">
+                <div className="flex justify-end items-center gap-2">
+                    <Limit currentLimit={limit}/>
+                    <CommentSort initialSortValue={sort} initialSortByValue={sortBy}/>
+                    <Filter searchByEnum={CommentSearchByEnum} searchByTranslation={CommentSearchByTranslation} initialSearchByValue={searchBy}/>
+                    <CommentSearch searchBy={searchBy} initialSearch={search}/>
+                </div>
+                {comments.data.data.length > 0 ? <div className="flex flex-col gap-3 mb-3">
+                    {comments.data.data.map(comment => <CommentSuperadminCard key={comment.id} comment={comment}/>)}
+                </div> : <NoResults isButtonClearFilters={false}/>}
+            </div>
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

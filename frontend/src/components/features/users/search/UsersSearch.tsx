@@ -6,11 +6,12 @@ import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 
 type PropsType = {
     searchBy: UserSearchByEnum
-    isDropdown?: boolean
+    isDropdown?: boolean,
+    initialSearch?: string
 }
 
-const UsersSearch: FC<PropsType> = ({searchBy, isDropdown = true}) => {
-  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch({searchBy, isDropdown})
+const UsersSearch: FC<PropsType> = ({searchBy, isDropdown = true, initialSearch}) => {
+  const {inputValue, pathname, router, createQueryString, usersResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useUsersSearch({searchBy, isDropdown, initialSearch})
   return (
     <div className="flex gap-3 items-center">
       <div className="relative w-[250px]">

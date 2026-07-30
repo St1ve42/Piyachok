@@ -18,11 +18,12 @@ export const useSearch = ({initialValue}: PropsType) => {
         }
     }, [inputValue]);
     useEffect(() => {
+        const query = createQueryString('page', '1', 'set')
         if(!debouncedInputValue){
-          router.push(pathname + '?' + createQueryString('search', null, "delete"))
+          router.push(pathname + '?' + createQueryString('search', null, "delete", query))
         }
         else{
-          router.push(pathname + '?' + createQueryString('search', debouncedInputValue))
+          router.push(pathname + '?' + createQueryString('search', debouncedInputValue, 'set', query))
         }
   }, [debouncedInputValue]);
     const handleChangeInput: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (e) => {

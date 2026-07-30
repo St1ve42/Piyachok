@@ -3,9 +3,9 @@ import {Key} from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 import {useReviewQuery} from "@/src/hooks/tanstack-query/useUserReviewsQuery";
 
-export const useReviewSearch = ({searchBy, isDropdown, type}: {searchBy: string, isDropdown: boolean, type: 'user' | 'superadmin'}) => {
+export const useReviewSearch = ({searchBy, isDropdown, type, initialSearchValue}: {searchBy: string, isDropdown: boolean, type: 'user' | 'superadmin', initialSearchValue?: string}) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [inputValue, setInputValue] = useState<string>('')
+    const [inputValue, setInputValue] = useState<string>(initialSearchValue ?? '')
     const [debouncedInputValue, setDebouncedInputValue] = useState<string>('')
     const usersReviewsResponse = useReviewQuery({ searchBy, inputValue: debouncedInputValue, isDropdown, type });
     const {pathname, router, createQueryString} = useURL()
@@ -14,7 +14,8 @@ export const useReviewSearch = ({searchBy, isDropdown, type}: {searchBy: string,
         return () => clearTimeout(timer)
     }, [inputValue]);
       useEffect(() => {
-          router.push(pathname + '?' + createQueryString('search', debouncedInputValue))
+          const query = createQueryString('page', '1', 'set')
+          router.push(pathname + '?' + createQueryString('search', debouncedInputValue, 'set', query))
       }, [debouncedInputValue]);
     const handleChangeInput: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (e) => {
         const val = e.target.value

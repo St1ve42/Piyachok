@@ -23,14 +23,14 @@ const UsersPage = async ({searchParams}: Props) => {
     if(error){
       redirect("/account/superadmin/users");
     }
-    const {search, searchBy = UserSearchByEnum.NAME, ...restAwaitedParams} = value as userQueryValidatorType
+    const {search, searchBy = UserSearchByEnum.NAME, sort, sortBy, ...restAwaitedParams} = value as userQueryValidatorType
     const accessCookie = await getAccessCookie()
     const query = (search && searchBy) ? {...restAwaitedParams, [searchBy]: search} : restAwaitedParams
     const response = await superadminUsersService.find(query, {headers: {'Cookie': accessCookie}})
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <AllUsersView users={response.data} page={restAwaitedParams.page} limit={restAwaitedParams.limit} searchBy={searchBy}/>
+    return <AllUsersView users={response.data} page={restAwaitedParams.page} limit={restAwaitedParams.limit} searchBy={searchBy} sort={sort} sortBy={sortBy} initialSearch={search}/>
 }
 
 export default UsersPage;

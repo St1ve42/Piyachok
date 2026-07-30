@@ -5,6 +5,9 @@ import FoodAndDrinksModerationView from "@/src/components/views/superadmin/FoodA
 import {FC} from "react";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {redirect} from "next/navigation";
+import {queryFoodAndDrinkValidator} from "@/src/validators/food-and-drink/query-food-and-drink.validator";
+import {ValidationError} from "joi";
+import {FoodAndDrinkSearchParamsType} from "@/src/components/views/HomeView";
 
 export const metadata: Metadata = {
     title: 'Модерація закладів'
@@ -15,18 +18,18 @@ type PropsType = {
 }
 
 const FoodAndDrinkModeratePage: FC<PropsType> = async ({searchParams}) => {
-    let {page = 1, name, limit = 5} = await searchParams
-    page = Number(page)
-    limit = Number(limit)
-    if(page < 1 || isNaN(page) || limit < 1 || isNaN(limit)){
-        redirect('/account/superadmin/food-and-drinks/moderate')
+    const awaitedSearchParams = await searchParams
+    const {error, value}: {error?: ValidationError, value: FoodAndDrinkSearchParamsType & {limit: number}} = queryFoodAndDrinkValidator.validate(awaitedSearchParams)
+    if(error){
+        redirect('/')
     }
+    const {page, limit, name, sortBy, sort} = value
     const accessCookie = await getAccessCookie()
     const response = await superadminFoodAndDrinkService.find({limit, page, status: FoodAndDrinkStatusEnum.PENDING, name}, {headers: {'Cookie': accessCookie}})
     if(!response.success){
         return <div>{response.data.message}</div>
     }
-    return <FoodAndDrinksModerationView foodAndDrinkListData={response.data} page={page} accessCookie={accessCookie} limit={limit}/>
+    return <FoodAndDrinksModerationView foodAndDrinkListData={response.data} page={page} accessCookie={accessCookie} limit={limit} initialSortByValue={sortBy} initialSortValue={sort} initialSearchValue={name}/>
 }
 
 export default FoodAndDrinkModeratePage;

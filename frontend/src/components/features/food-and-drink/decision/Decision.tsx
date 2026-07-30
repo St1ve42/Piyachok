@@ -4,6 +4,7 @@ import {FC, MouseEventHandler} from "react";
 import {superadminFoodAndDrinkService} from "@/src/services/superadmin-food-and-drink.service";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
 import {useRouter} from "next/navigation";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     id: string
@@ -14,6 +15,7 @@ const Decision: FC<PropsType> = ({id}) => {
     const handleAccept: MouseEventHandler<SVGSVGElement> = async () => {
         const response = await superadminFoodAndDrinkService.setStatus(id, FoodAndDrinkStatusEnum.ACTIVE);
         if(response.success){
+            await updateTagAction('food-and-drink-list')
             router.refresh()
         }
     }

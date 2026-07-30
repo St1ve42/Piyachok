@@ -7,10 +7,11 @@ import {ICommentWithUserAndFoodAndDrink} from "@/src/interfaces/comments/ICommen
 import {superadminCommentsService} from "@/src/services/superadmin-comments.service";
 
 type PropsType = {
-  searchBy?: CommentSearchByEnum;
+    searchBy?: CommentSearchByEnum;
+    initialSearch?: string
 };
 
-const CommentSearch: FC<PropsType> = ({ searchBy = CommentSearchByEnum.TEXT }) => {
+const CommentSearch: FC<PropsType> = ({ searchBy = CommentSearchByEnum.TEXT, initialSearch}) => {
   const mapCallback: (comment: ICommentWithUserAndFoodAndDrink) => ReactNode = (
     comment,
   ) => {
@@ -42,6 +43,7 @@ const CommentSearch: FC<PropsType> = ({ searchBy = CommentSearchByEnum.TEXT }) =
       queryFn={findCommentsHandler}
       mapCallback={mapCallback}
       notFoundMessage={'Коментарів немає'}
+      initialValue={initialSearch}
     />
   );
 };

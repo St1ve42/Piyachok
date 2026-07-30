@@ -9,13 +9,13 @@ import {INews} from "@/src/interfaces/news/INews";
 export class NewsService {
     async find(query?: INewsQuery): Promise<IApiResponse<IGeneralNewsListData>> {
         const endpoint = `/news`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3*60, tags: ['public-news']}}
         return await fetchApi20<IGeneralNewsListData>(endpoint, baseRequestOptions, {query})
     }
 
     async findById(id: string): Promise<IApiResponse<IGeneralNewsById>> {
         const endpoint = `/news/${id}`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3*60, tags: [`detail-news-${id}`]}}
         return await fetchApi20<IGeneralNewsById>(endpoint, baseRequestOptions)
     }
 
@@ -28,12 +28,6 @@ export class NewsService {
     async uploadPhoto(id: string, formData: FormData): Promise<IApiResponse> {
         const endpoint = `/news/${id}/photo`;
         const baseRequestOptions: RequestInit = {method: 'POST', body: formData}
-        return await fetchApi20(endpoint, baseRequestOptions)
-    }
-
-    async deletePhoto(id: string): Promise<IApiResponse> {
-        const endpoint = `/news/${id}/photo`;
-        const baseRequestOptions: RequestInit = {method: 'DELETE'}
         return await fetchApi20(endpoint, baseRequestOptions)
     }
 

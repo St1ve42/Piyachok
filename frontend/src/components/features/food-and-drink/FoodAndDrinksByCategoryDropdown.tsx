@@ -17,6 +17,7 @@ const FoodAndDrinksByCategoryDropdown: FC<PropsType> = ({categoryId, foodAndDrin
             toast.danger(response.data.message)
         }
         await updateTagAction(`all-food-and-drinks-by-category-${categoryId}`)
+        await updateTagAction(`food-and-drink-list`)
     }
     return (
         <Dropdown>

@@ -28,6 +28,7 @@ import {piyachokService} from "@/src/services/piyachok.service";
 import {IPiyachokDetail} from "@/src/interfaces/piyachok/IPiyachokDetail";
 import {parseDate, parseTime} from "@internationalized/date";
 import {Pencil} from "@gravity-ui/icons";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     foodAndDrinkId?: string,
@@ -63,6 +64,7 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
             toast.danger(piyachokCreateResponse.data.message)
             return
         }
+        await updateTagAction('piyachoks')
         toast.success('Успішно створено пиячок!')
         reset()
         if(closeButtonRef.current){
@@ -78,10 +80,12 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
         body.meetDate = meetDate.toString()
         body.meetTime = meetTime.toString()
         const piyachokUpdateResponse = await piyachokService.update(piyachok.id, body)
+
         if(!piyachokUpdateResponse.success){
             toast.danger(piyachokUpdateResponse.data.message)
             return
         }
+        await updateTagAction('piyachoks')
         toast.success('Успішно оновлено пиячок!')
         reset()
         if(closeButtonRef.current){

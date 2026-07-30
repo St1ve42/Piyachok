@@ -11,7 +11,6 @@ type PropsType = {
 export default async function HomePage({searchParams}: PropsType) {
     const awaitedSearchParams = await searchParams
     const {error, value} = queryFoodAndDrinkValidator.validate(awaitedSearchParams)
-    console.log(error)
     if(error){
       redirect('/')
     }

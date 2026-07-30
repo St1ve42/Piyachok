@@ -17,6 +17,7 @@ const TopCategoryDropdown: FC<PropsType> = ({topCategory}) => {
     const handleDelete = async () => {
         await topCategoryService.delete(id)
         await updateTagAction('all-top-categories')
+        await updateTagAction(`food-and-drink-list`)
     }
     const handleOnClickUpdate = async () => {
         setIsOpen(true)

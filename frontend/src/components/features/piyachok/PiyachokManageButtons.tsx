@@ -6,6 +6,7 @@ import DeleteModalWindow from "@/src/components/shared/components/delete-modal-w
 import {piyachokService} from "@/src/services/piyachok.service";
 import {toast} from "@heroui/react";
 import {redirect} from "next/navigation";
+import {updateTagAction} from "@/src/actions/server.actions";
 
 type PropsType = {
     piyachok: IPiyachokDetail
@@ -20,6 +21,7 @@ const PiyachokManageButtons: FC<PropsType> = ({piyachok}) => {
             toast.danger(response.data.message)
             return
         }
+        await updateTagAction('piyachoks')
         toast.success('Успішно видалено пиячок!')
         redirect('/piyachok')
     }

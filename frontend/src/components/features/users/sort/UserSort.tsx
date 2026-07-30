@@ -1,9 +1,16 @@
 'use client'
 import {Label, ListBox, Select} from "@heroui/react";
 import useUserSort from "@/src/components/features/users/sort/useUserSort";
+import {SortEnum} from "@/src/enums/shared/SortEnum";
+import {FC} from "react";
 
-const UserSort = () => {
-    const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useUserSort()
+type PropsType = {
+    initialSortBy?: string,
+    initialSort?: SortEnum
+}
+
+const UserSort: FC<PropsType> = (props) => {
+    const {sort, sortBy, handleChangeSortBy, handleChangeSort} = useUserSort(props)
     return (
         <div className="flex gap-3">
             <Select className="w-[160px]" placeholder="Сортувати за:" value={sortBy} onChange = {handleChangeSortBy}>

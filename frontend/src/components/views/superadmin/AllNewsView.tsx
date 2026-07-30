@@ -23,15 +23,15 @@ const AllNewsView: FC<PropsType> = async ({query}) => {
     }
     const {total, totalPages, data: newsList} = data
     return <div className="flex justify-between flex-col gap-1">
-        <NewsTab href={'/account/superadmin/news'}/>
+        <NewsTab href={'/account/superadmin/news'} activeCategory={category}/>
         <div className="flex flex-col gap-3">
             <Heading level={3}>Знайдено: {total}</Heading>
             <div className="self-end">
-                <NewsSearch category={category ?? NewsCategoryEnum.GENERAL}/>
+                <NewsSearch category={category ?? NewsCategoryEnum.GENERAL} initialSearchValue={search}/>
             </div>
             {newsList.length > 0 ?
                 <div className="grid grid-cols-3 gap-3">{newsList.map((news) => <FoodAndDrinkNewsCard key={news.id} news={news} href={'account/news/'}/>)}</div>
-                : <NoResults/>
+                : <NoResults isButtonClearFilters={false}/>
             }
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </div>

@@ -10,16 +10,17 @@ import {IFullData} from "@/src/interfaces/shared/IFullData";
 
 type PropsType = {
     newsResponse: IApiResponse<IFullData<INews>>,
-    hasRightToManageNews?: boolean
+    hasRightToManageNews?: boolean,
+    foodAndDrinkId: string
 }
 
-const FoodAndDrinkNews: FC<PropsType> = ({newsResponse, hasRightToManageNews = false}) => {
+const FoodAndDrinkNews: FC<PropsType> = ({newsResponse, hasRightToManageNews = false, foodAndDrinkId}) => {
     if(!newsResponse.success){
         return <div>Сталась помилка при відображенні новини. Причина: {newsResponse.data.message}</div>
     }
     const {total, data: news} = newsResponse.data;
     return (
-        <section className="px-3">
+        <section>
             <Heading level={3}>Новини</Heading>
             <Swiper className="w-full"
                     modules={[Navigation, Pagination]}
@@ -28,7 +29,7 @@ const FoodAndDrinkNews: FC<PropsType> = ({newsResponse, hasRightToManageNews = f
                     pagination={true}
                     slidesPerView={total > 3 ? 3 : total}
             >
-                {news.map((oneNews => <SwiperSlide key={oneNews.id} className="m-1 w-full"><FoodAndDrinkNewsCard news={oneNews} hasRightToManageNews={hasRightToManageNews} mode={'default'}/></SwiperSlide>))}
+                {news.map((oneNews => <SwiperSlide key={oneNews.id} className="m-1 w-full"><FoodAndDrinkNewsCard news={oneNews} hasRightToManageNews={hasRightToManageNews} mode={'default'} foodAndDrinkId={foodAndDrinkId}/></SwiperSlide>))}
             </Swiper>
         </section>
     )

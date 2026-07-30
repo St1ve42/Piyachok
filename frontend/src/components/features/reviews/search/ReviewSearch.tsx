@@ -8,11 +8,12 @@ import {IReviewWithCreatorAndFoodAndDrink} from "@/src/interfaces/reviews/IRevie
 type PropsType = {
     searchBy?: UserReviewSearchByEnum
     isDropdown?: boolean,
-    type: 'user' | 'superadmin'
+    type: 'user' | 'superadmin',
+    initialSearchValue?: string
 }
 
-const ReviewSearch: FC<PropsType> = ({searchBy = UserReviewSearchByEnum.TEXT, isDropdown = true, type}) => {
-  const {inputValue, pathname, router, createQueryString, usersReviewsResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useReviewSearch({searchBy, isDropdown, type})
+const ReviewSearch: FC<PropsType> = ({searchBy = UserReviewSearchByEnum.TEXT, isDropdown = true, type, initialSearchValue}) => {
+  const {inputValue, pathname, router, createQueryString, usersReviewsResponse, isOpen, setIsOpen, handleChangeInput, handleOnKeyDownInput, handleClickClearButton, handleActionListBox} = useReviewSearch({searchBy, isDropdown, type, initialSearchValue})
   const mapCallback: (review: IReviewWithCreatorAndFoodAndDrink) => JSX.Element = (review) => {
       let search: string
       switch (searchBy) {

@@ -22,11 +22,12 @@ export const useFoodAndDrinkSearch = ({type, accessCookie, initialValue}: PropsT
         }
     }, [inputValue]);
     useEffect(() => {
+        const query = createQueryString('page', '1', 'set')
         if(!debouncedInputValue){
-          router.push(pathname + '?' + createQueryString('name', null, "delete"))
+          router.push(pathname + '?' + createQueryString('name', null, "delete", query))
         }
         else{
-          router.push(pathname + '?' + createQueryString('name', debouncedInputValue))
+          router.push(pathname + '?' + createQueryString('name', debouncedInputValue, 'set', query))
         }
   }, [debouncedInputValue]);
     const handleChangeInput: ChangeEventHandler<HTMLInputElement, HTMLInputElement> = (e) => {
