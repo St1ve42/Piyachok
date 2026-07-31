@@ -1,5 +1,6 @@
 import Joi from "joi";
 import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
+import {SortEnum} from "@/src/enums/shared/SortEnum";
 
 export const userQueryValidator = Joi.object({
     page: Joi.number().min(1).default(1),
@@ -13,7 +14,7 @@ export const userQueryValidator = Joi.object({
 export type userQueryValidatorType = {
     page: number,
     limit: number,
-    sort?: 'asc' | 'desc',
+    sort?: SortEnum,
     sortBy?: string,
     searchBy?: UserSearchByEnum,
     search?: string

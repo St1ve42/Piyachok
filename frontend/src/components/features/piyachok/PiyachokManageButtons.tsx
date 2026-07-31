@@ -28,7 +28,7 @@ const PiyachokManageButtons: FC<PropsType> = ({piyachok}) => {
     return (
         <div className="flex gap-3">
             <PiyachokForm piyachok={piyachok} mode={'update'}/>
-            <DeleteModalWindow handleDelete={handleDelete} resourceDescription={resourceDescription}/>
+            <DeleteModalWindow handleDelete={handleDelete} resourceDescription={resourceDescription} isButton={true}/>
         </div>
     )
 }

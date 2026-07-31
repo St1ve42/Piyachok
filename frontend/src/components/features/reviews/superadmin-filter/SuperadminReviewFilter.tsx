@@ -7,7 +7,7 @@ import {FC} from "react";
 
 type PropsType = {
     initialSearchByValue?: string,
-    rating?: string
+    rating?: number
 }
 
 const SuperadminReviewFilter: FC<PropsType> = ({initialSearchByValue, rating}) => {

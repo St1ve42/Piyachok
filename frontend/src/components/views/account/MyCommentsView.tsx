@@ -25,7 +25,7 @@ const MyCommentsView: FC<PropsType> = async ({page}) => {
         </div> : <NoResults text={'Почніть писати коментарі!'} isButtonClearFilters={false}/>
     }
     else{
-        listMarkup = <div>data.message</div>
+        listMarkup = <div>{data.message}</div>;
     }
     return (
       <section className="flex flex-col gap-3">

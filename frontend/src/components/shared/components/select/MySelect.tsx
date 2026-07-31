@@ -1,13 +1,12 @@
 import { ListBox, Select } from "@heroui/react";
-import {FC} from "react";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
+import { ControllerRenderProps, FieldValues, Path} from "react-hook-form";
 
-type PropsType = {
+type PropsType<T extends FieldValues, K extends Path<T>> = {
     enumValues: Record<string, string>,
-    field?: ControllerRenderProps<FieldValues, string>
+    field?: ControllerRenderProps<T, K>
 }
 
-const MySelect: FC<PropsType> = ({enumValues, field}) => {
+const MySelect = <T extends FieldValues,K extends Path<T>>({enumValues, field}: PropsType<T, K>) => {
     const handledField = field ?? {}
     const entries = Object.entries(enumValues)
     return (

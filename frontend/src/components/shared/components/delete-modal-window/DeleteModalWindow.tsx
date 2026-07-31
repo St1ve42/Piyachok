@@ -3,14 +3,13 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { Button, Modal } from "@heroui/react";
 import {TrashBin} from "@gravity-ui/icons";
 
-type SharedType = {
-    handleDelete: () => void,
-    resourceDescription: string
-}
-
 type PropsType = ({
-    isButton: true,
-} & SharedType) | (SharedType & {isButton: false, isOpen: boolean, setIsOpen: Dispatch<SetStateAction<boolean>>} )
+    handleDelete: () => void,
+    resourceDescription: string,
+    isButton?: boolean,
+    isOpen?: boolean,
+    setIsOpen?: Dispatch<SetStateAction<boolean>>
+})
 
 const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, isButton = true, isOpen, setIsOpen}) => {
     return (
@@ -19,7 +18,11 @@ const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, is
             <Modal.Backdrop>
                 <Modal.Container>
                     <Modal.Dialog className="sm:max-w-[450px]">
-                        <Modal.CloseTrigger onClick={() => setIsOpen(false)}/>
+                        <Modal.CloseTrigger onClick={() => {
+                            if(setIsOpen){
+                                setIsOpen(false)
+                            }
+                        }}/>
                         <Modal.Header>
                             <Modal.Heading className="text-red-600 line-clamp-3">Видалити {resourceDescription}?</Modal.Heading>
                         </Modal.Header>
@@ -33,7 +36,11 @@ const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, is
                             <Button onClick={handleDelete} variant="danger" className="w-full" slot="close">
                                 Так
                             </Button>
-                            <Button className="w-full" slot="close" onClick={() => setIsOpen(false)}>
+                            <Button className="w-full" slot="close" onClick={() => {
+                                if(setIsOpen){
+                                    setIsOpen(false)
+                                }
+                            }}>
                                 Ні
                             </Button>
                         </Modal.Footer>

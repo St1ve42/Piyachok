@@ -1,18 +1,12 @@
 import { ListBox, Select } from "@heroui/react";
-import {
-  Control,
-  Controller,
-  FieldValues,
-} from "react-hook-form";
-import {FC} from "react";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-type PropsType = {
-    name: string,
-    isOpenEdit: boolean,
-    control: Control<FieldValues, any, FieldValues> | undefined
+type PropsType<T extends FieldValues> = {
+    name: Path<T>,
+    control: Control<T, any, T> | undefined
 }
 
-const GenderSelection: FC<PropsType> = ({name, control}) => {
+const GenderSelection = <T extends FieldValues>({name, control}: PropsType<T>) => {
     return (
         <Controller render={({field}) => (
             <Select {...field} className="flex flex-col gap-1" placeholder={'Не вказано'} aria-label='Вибір гендеру'>

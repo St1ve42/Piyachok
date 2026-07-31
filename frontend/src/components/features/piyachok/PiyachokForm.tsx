@@ -40,10 +40,7 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
     let defaultValues: IPiyachokUserInput | undefined = undefined
     if(piyachok){
         const {creator, updatedAt, createdAt, id, status, foodAndDrink, meetDate, meetTime, ...restPiyachok} = piyachok
-        const piyachokDefaultValues: IPiyachokUserInput = {...restPiyachok}
-        piyachokDefaultValues.meetDate = parseDate(meetDate)
-        piyachokDefaultValues.meetTime = parseTime(meetTime)
-        defaultValues = piyachokDefaultValues
+        defaultValues = {...restPiyachok, meetDate: parseDate(meetDate), meetTime: parseTime(meetTime)}
     }
     const {register, handleSubmit, control, reset, formState: {errors, isValid, isDirty}} = useForm<IPiyachokUserInput>({
         mode: 'all',
@@ -133,7 +130,7 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Тип оплати</Label>
-                                    <Controller render={({field}) => <MySelect field={field} enumValues={PiyachokPaymentTypeTranslation}/>} name={'paymentType'} control={control}/>
+                                    <Controller render={({field}) => <MySelect<IPiyachokUserInput, "paymentType"> field={field} enumValues={PiyachokPaymentTypeTranslation}/>} name={'paymentType'} control={control}/>
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Бюджет на особу (грн)</Label>

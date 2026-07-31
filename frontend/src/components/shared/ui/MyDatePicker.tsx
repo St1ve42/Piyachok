@@ -6,14 +6,13 @@ import {
   DatePickerTriggerIndicator,
   DatePicker, I18nProvider
 } from "@heroui/react";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import {FC} from "react";
+import { ControllerRenderProps, FieldValues, Path} from "react-hook-form";
 
-type PropsType = {
-    field?: ControllerRenderProps<FieldValues, string>
+type PropsType<T extends FieldValues, K extends Path<T>> = {
+    field?: ControllerRenderProps<T, K>
 }
 
-const MyDatePicker: FC<PropsType> = ({field}) => {
+const MyDatePicker = <T extends FieldValues, K extends Path<T>>({field}: PropsType<T, K>) => {
     const handledField = field ?? {}
     return (
         <I18nProvider locale="uk-UA">

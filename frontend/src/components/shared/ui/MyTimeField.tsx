@@ -1,12 +1,11 @@
 import { TimeField } from "@heroui/react";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import {FC} from "react";
+import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 
-type PropsType = {
-    field?: ControllerRenderProps<FieldValues, string>
+type PropsType<T extends FieldValues, K extends Path<T>> = {
+    field?: ControllerRenderProps<T, K>
 }
 
-const MyTimeField: FC<PropsType> = ({field}) => {
+const MyTimeField = <T extends FieldValues,K extends Path<T>>({field}: PropsType<T,K>) => {
     const handledField = field ?? {}
     return (
         <TimeField {...handledField} name="time" hourCycle={24} aria-label='Поле для введеня часу'>

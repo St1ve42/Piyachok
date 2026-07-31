@@ -18,7 +18,7 @@ const NoResults: FC<PropsType> = ({image, text, queryNamesToRemove, isButtonClea
     const handleOnPressFilter = () => {
         const query = (queryNamesToRemove as string[]).reduce((accum, currentValue) => {
             return createQueryString(currentValue, null, 'delete', accum)
-        }, createQueryString('page', 1, 'set'))
+        }, createQueryString('page', '1', 'set'))
         router.push(pathname + '?' + query)
     }
     return <div className="h-[50vh] flex justify-center items-center">

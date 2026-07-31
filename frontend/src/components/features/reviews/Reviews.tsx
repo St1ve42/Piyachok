@@ -33,14 +33,14 @@ const Reviews: FC<PropsType> = async ({foodAndDrinkId, user, isOwner, searchPara
             <p>За Вашим фільтром відгуків не знайдено.</p>
             <Link className="text-blue-600" href={`/food-and-drink/${foodAndDrinkId}`} scroll={false}>Скинути фільтри</Link>
         </div>
-    </div> : <div>На даний момент відгуків немає. Будьте першим, хто їх залишить.</div>
+    </div> : <p>На цей момент відгуків немає. Будьте першим, хто їх залишить.</p>
     return <Surface className="flex flex-col gap-3 rounded-3xl p-6 border-1" variant="default">
         <Heading level={6}>Відгуки</Heading>
         {reviews.success ?
             (reviews.data.data.length > 0 ?
                 <div className="flex flex-col gap-3">
                     {filterAndSortComponent}
-                    <div className="max-h-[500px] flex flex-col gap-3 overflow-y-scroll">
+                    <div className="max-h-[500px] flex flex-col gap-3 overflow-y-auto">
                         {reviews.data.data.map(review => <ReviewCard key={review.id} review={review} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>)}</div></div> : emptyDataComponent)
             : <div>{reviews.data.message}</div>}
         {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

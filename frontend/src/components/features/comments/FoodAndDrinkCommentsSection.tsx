@@ -18,7 +18,7 @@ const FoodAndDrinkCommentsSection: FC<PropsType> = ({photo, isLogged, foodAndDri
     return (
         <section className="flex flex-col gap-3">
             <Heading level={3}>Коментарі</Heading>
-            <div className="flex gap-3 w-full items-center">
+            <div className="flex gap-3 w-full items-center mb-2">
                 <AvatarCustom photo={photo} defaultPhoto={UserAvatar.src} width={50} height={50}/>
                 <CommentForm isLogged={isLogged} foodAndDrinkId={foodAndDrinkId}/>
             </div>

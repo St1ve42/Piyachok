@@ -92,13 +92,13 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
 
                 <div className="lg:col-span-5 flex flex-col gap-4 max-h-[500px]">
 
+
                     <Card className="p-4 border border-neutral-100 shadow-sm bg-white rounded-2xl">
                         <h3 className="font-bold text-sm">Мета</h3>
-                        <p className="text-xs leading-relaxed whitespace-pre-line">
+                        <p className="text-xs leading-relaxed whitespace-pre-line max-h-[70px] overflow-y-auto">
                             {purpose}
                         </p>
                     </Card>
-
                     <Card className="p-4 border border-neutral-100 shadow-sm bg-white rounded-2xl">
                         <h3 className="font-bold text-sm text-neutral-900">Дата та Час</h3>
                         <div className="space-y-1 text-xs text-neutral-700">
@@ -140,19 +140,21 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
                         </div>
                     </Card>
                 </div>
-                <div className="lg:col-span-3 flex flex-col gap-1 justify-between">
+                <div className="lg:col-span-3 flex flex-col gap-1">
                     <PiyachokReplyForm piyachokId={id}/>
-                    <Heading level={5}>Відповіді</Heading>
-                    {replies.success ? (
-                        replies.data.data.length > 0 ?
-                            <div className="flex flex-col">
-                                <div className="flex flex-col gap-3 overflow-y-scroll max-h-[350px] py-1">
-                                    {replies.data.data.map(reply => <PiyachokReplyCard key={reply.id} piyachokReply={reply} loggedUser={loggedUser} piyachokId={id}/>)}
+                    <div>
+                        <Heading level={5}>Відповіді</Heading>
+                        {replies.success ? (
+                            replies.data.data.length > 0 ?
+                                <div className="flex flex-col">
+                                    <div className="flex flex-col gap-3 overflow-y-auto max-h-[350px] py-1">
+                                        {replies.data.data.map(reply => <PiyachokReplyCard key={reply.id} piyachokReply={reply} loggedUser={loggedUser} piyachokId={id}/>)}
+                                    </div>
+                                    {replies.data.totalPages > 1 && <div><PaginationWithEclipses totalPages={replies.data.totalPages} currentPage={page} isPageInput={false}/></div>}
                                 </div>
-                                {replies.data.totalPages > 0 && <div><PaginationWithEclipses totalPages={replies.data.totalPages} currentPage={page} isPageInput={false}/></div>}
-                            </div>
-                            : <NoResults text={'Будьте першим, хто залишить відповідь на цей пиячок!'}/>
-                    ) : <div>Сталась помилка: {replies.data.message}</div>}
+                                : <NoResults text={'Будьте першим, хто залишить відповідь на цей пиячок!'}/>
+                        ) : <div>Сталась помилка: {replies.data.message}</div>}
+                    </div>
                 </div>
             </div>
         </section>

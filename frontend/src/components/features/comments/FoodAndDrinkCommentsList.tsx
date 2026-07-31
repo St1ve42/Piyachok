@@ -31,13 +31,13 @@ const FoodAndDrinkCommentsList: FC<PropsType> = ({foodAndDrinkId, user, isOwner}
         }
     }, [inView, hasNextPage, fetchNextPage])
     return (
-        comments && comments.length > 0 && <div className="flex flex-col gap-2 mb-5">
+        comments && (comments.length > 0 ? <div className="flex flex-col gap-2 mb-5">
             {comments.map((comment, index) => {
                 if(comment){
                     return <CommentCard key={comment.id} ref={index === comments.length - 2 ? ref : undefined} comment={comment} user={user} isOwner={isOwner} foodAndDrinkId={foodAndDrinkId}/>
                 }
             })}
-        </div>
+        </div> : <p className="mb-5">На цей момент коментарів немає. Будьте першим, хто їх залишить.</p>)
     )
 }
 

@@ -9,13 +9,13 @@ import {IFoodAndDrinkOneFromList} from "@/src/interfaces/food-and-drink/IFoodAnd
 import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/FoodAndDrinkSort";
 import Limit from "@/src/components/shared/components/limitation/Limit";
 import FoodAndDrinkSuperadminFilter from "@/src/components/features/food-and-drink/superadmin/FoodAndDrinkSuperadminFilter";
-import {FoodAndDrinkSearchParamsType} from "@/src/components/views/HomeView";
 import {FoodAndDrinkStatusEnum} from "@/src/enums/food-and-drink/food-and-drink-status.enum";
+import {IFoodAndDrinkQuery} from "@/src/interfaces/shared/IBaseQuery";
 
 type PropType = {
     foodAndDrinkListData: IFullData<IFoodAndDrinkOneFromList>
     page: number,
-    searchParams: FoodAndDrinkSearchParamsType & {status?: FoodAndDrinkStatusEnum}
+    searchParams: IFoodAndDrinkQuery & {status?: FoodAndDrinkStatusEnum}
     accessCookie: string
     limit?: number
 }
