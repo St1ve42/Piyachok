@@ -8,6 +8,7 @@ import FoodAndDrinkSort from "@/src/components/features/food-and-drink/sort/Food
 import FoodAndDrinkList from "@/src/components/features/food-and-drink/FoodAndDrinkList";
 import { FoodAndDrinkTypeEnum } from "@/src/enums/food-and-drink/food-and-drink-type.enum";
 import {Heading} from "@heroui/react";
+import FiltrationSidebar from "@/src/components/features/food-and-drink/FiltrationSidebar";
 
 export type FoodAndDrinkSearchParamsType = Record<'name' | 'sortBy', string | undefined> & Record<'rating' | 'averageReceipt[gte]' | 'averageReceipt[lte]', number | undefined> & {type?: FoodAndDrinkTypeEnum} & {sort: 'asc' | 'desc'} & {"features[]"?: string[] | string} & {page: number}
 
@@ -37,15 +38,19 @@ const HomeView = async ({searchParams}: PropsType) => {
         <section>
             <TabMenu/>
             <div className="flex justify-between">
-                <div className="w-[18%] h-[80vh]">
+                <div className="w-[18%] h-[80vh] max-lg:hidden">
                     <FoodAndDrinkFiltration initialTypeValue={type} initialRating={rating} initialFeatures={restParams['features[]']} initialAverageReceipt={[restParams['averageReceipt[gte]'] ?? 0, restParams['averageReceipt[lte]'] ?? 5000]}/>
                 </div>
-                <div className="w-[77%] flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                        <Heading level={5}>Знайдено: {total}</Heading>
-                        <div className="flex gap-3">
+                <div className="w-[77%] flex flex-col gap-3 max-lg:w-full">
+                    <Heading level={5} className="lg:hidden">Знайдено: {total}</Heading>
+                    <div className="flex gap-3 max-md:flex-col-reverse justify-between items-center">
+                        <Heading level={5} className="max-lg:hidden">Знайдено: {total}</Heading>
+                        <div className="flex gap-3 max-md:flex-col-reverse items-center">
                             <FoodAndDrinkSort initialSortValue={sort} initialSortByValue={sortBy}/>
-                            <FoodAndDrinkSearch type={'public'} initialValue={name}/>
+                            <div className="flex gap-3">
+                                <FiltrationSidebar/>
+                                <FoodAndDrinkSearch type={'public'} initialValue={name}/>
+                            </div>
                         </div>
                     </div>
                     <FoodAndDrinkList mode={'default'} foodAndDrinkList={foodAndDrinkList} href={'/food-and-drink/'}/>

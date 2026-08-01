@@ -28,12 +28,12 @@ const FoodAndDrinkNewsView: FC<PropsType> = async ({query}) => {
     }
     const {total, totalPages, data: newsList} = data
     return (
-        <div className="flex justify-between flex-col gap-3">
+        <div className="flex flex-col justify-between gap-3 max-sm:gap-2">
             <NewsTab href={'/account/news'} activeCategory={category}/>
-            <Heading level={3}>Знайдено: {total}</Heading>
+            <Heading level={3} className="max-sm:text-lg">Знайдено: {total}</Heading>
             {newsList.length > 0 ?
-                <div className="grid grid-cols-3 gap-3 mb-2">{newsList.map((news) => <FoodAndDrinkNewsCard href={`account/news`} key={news.id} news={news}/>)}</div>
-                : <div className="mt-20"><NoResults/></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-sm:gap-2 mb-2">{newsList.map((news) => <FoodAndDrinkNewsCard href={`account/news`} key={news.id} news={news}/>)}</div>
+                : <NoResults text={'Почніть створювати новини!'}/>
             }
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </div>

@@ -15,9 +15,9 @@ const StatisticsView: FC<PropsType> = ({id}) => {
     if(data && !data.success){
         return <div>{data.data.message}.</div>
     }
-    return <section className="flex flex-col gap-3">
+    return <section className="flex flex-col gap-3 max-sm:gap-2">
       <DateRangePickerStatistics start={start} end={end}/>
-      {!isLoading ? (data && <ChartStatistics start={start} end={end} foodAndDrinkViews={data.data}/>) : <div>Завантаження...</div>}
+      {!isLoading ? (data && <ChartStatistics start={start} end={end} foodAndDrinkViews={data.data}/>) : <div className="max-sm:text-sm">Завантаження...</div>}
     </section>;
 };
 

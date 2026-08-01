@@ -25,12 +25,12 @@ const FoodAndDrinksModerationView: FC<PropsType> = ({foodAndDrinkListData, page,
         redirect('/account/superadmin/food-and-drinks/moderate')
     }
     return (
-        <div className="h-full flex flex-col gap-3 mb-5">
-            <Heading level={3}>Модерація закладів</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            <div className="flex items-center justify-between">
+        <div className="h-full flex flex-col gap-3 max-sm:gap-2 mb-5">
+            <Heading level={3} className="max-sm:text-lg">Модерація закладів</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2">
                 <Limit currentLimit={limit}/>
-                <div className="flex gap-3 items-center">
+                <div className="flex flex-wrap gap-3 max-sm:gap-2 items-center w-full md:w-auto">
                   <FoodAndDrinkSort initialSortValue={initialSortValue} initialSortByValue={initialSortByValue}/>
                   <FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie} initialValue={initialSearchValue}/>
                 </div>

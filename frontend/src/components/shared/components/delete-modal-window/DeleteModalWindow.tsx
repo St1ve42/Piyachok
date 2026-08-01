@@ -28,7 +28,7 @@ const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, is
                         </Modal.Header>
                         <Modal.Body>
                             <div>
-                                <p className="line-clamp-3">Ви збираєтесь назавжди видалити {resourceDescription}</p>
+                                <p className="line-clamp-3">Ви збираєтесь назавжди видалити {resourceDescription}.</p>
                                 <p>Ви впевнені в цьому?</p>
                             </div>
                         </Modal.Body>

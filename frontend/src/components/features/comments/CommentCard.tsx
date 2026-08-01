@@ -58,7 +58,7 @@ const CommentCard: FC<PropsType> = ({comment, user, isOwner, foodAndDrinkId, ref
 
                 </div>
             </div>
-            {user && (user.role === GlobalUserRoleEnum.SUPERADMIN || user.id === creatorId || isOwner) && <FoodAndDrinkCommentCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} setIsEdited={setIsEdited}/>}
+            {user && (user.role === GlobalUserRoleEnum.SUPERADMIN || user.id === creatorId || isOwner) && <FoodAndDrinkCommentCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} setIsEdited={setIsEdited} isOwner={isOwner} user={user} creator={comment.user}/>}
         </Card>
     )
 }

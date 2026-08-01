@@ -14,17 +14,18 @@ type PropsType = {
     href?: string,
     hasRightToManageNews?: boolean,
     mode?: 'default',
-    foodAndDrinkId?: string
+    foodAndDrinkId?: string,
+    foodAndDrinkName?: string
 }
 
-const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToManageNews = false, mode, foodAndDrinkId}) => {
+const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToManageNews = false, mode, foodAndDrinkId, foodAndDrinkName}) => {
     const {id, title, createdAt, photo, category} = news
     const createdAtLocalDateString = utilsService.getLocalDate(createdAt)
     const createdAtLocalTimeString = utilsService.getLocalTime(createdAt)
     return (
         <Link href={`/${href}/${id}`} className="w-full">
-            <Card className="text-sm h-[45vh] relative">
-                <div className="relative h-[22vh]">
+            <Card className="text-sm h-[350px] relative">
+                <div className="relative h-[150px]">
                     <Image src={photo ? utilsService.buildStorageURL(photo) : NoImage} fill={true} alt={photo ?? 'Відсутнє зображення'}/>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -37,7 +38,7 @@ const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToMan
                         {title}
                     </Card.Title>
                 </div>
-                {mode === 'default' && hasRightToManageNews && foodAndDrinkId && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id} foodAndDrinkId={foodAndDrinkId}/></div>}
+                {mode === 'default' && hasRightToManageNews && foodAndDrinkId && foodAndDrinkName && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id} foodAndDrinkId={foodAndDrinkId} foodAndDrinkName={foodAndDrinkName} title={title}/></div>}
             </Card>
         </Link>
     )

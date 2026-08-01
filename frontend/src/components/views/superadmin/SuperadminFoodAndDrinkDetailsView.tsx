@@ -39,15 +39,15 @@ const SuperadminFoodAndDrinkDetailsView: FC<PropsType> = async ({id, search}) =>
     const topCategories = topCategoriesResponse.data.data
     const {images, id: foodAndDrinkId, owner} = foodAndDrink
     return (
-        <div className="flex flex-col gap-3 mb-2">
-            <div className="flex justify-between">
+        <div className="flex flex-col gap-3 max-sm:gap-2 mb-2">
+            <div className="flex flex-col md:flex-row justify-between gap-3 max-sm:gap-2">
                 <ShortOwnerInfo owner={owner}/>
                 <FoodAndDrinkSuperadminManageButtons foodAndDrink={foodAndDrink} users={users} topCategories={topCategories}/>
             </div>
             <FoodAndDrinkImages images={images}/>
             <FoodAndDrinkSystemInfo foodAndDrink={foodAndDrink}/>
             <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>
-            <Heading level={3} className="text-center">Статистика</Heading>
+            <Heading level={3} className="text-center max-sm:text-lg">Статистика</Heading>
             <StatisticsView id={foodAndDrinkId}/>
         </div>
     )

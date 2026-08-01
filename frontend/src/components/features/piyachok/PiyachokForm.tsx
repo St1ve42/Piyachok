@@ -94,7 +94,7 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
     const headingText = mode === 'create' ? 'Створити пиячок' : 'Оновити пиячок'
     return (
         <Modal>
-            <Button>{mainButtonText}</Button>
+            <Button className="w-full">{mainButtonText}</Button>
             <Modal.Backdrop>
                 <Modal.Container>
                     <Modal.Dialog className="sm:max-w-[500px]">

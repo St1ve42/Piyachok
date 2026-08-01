@@ -12,7 +12,7 @@ type PropsType = {
 const MyFoodAndDrinkView: FC<PropsType> = ({foodAndDrink}) => {
     const {images} = foodAndDrink
     return (
-        <div className="flex flex-col gap-3 mb-2">
+        <div className="flex flex-col gap-3 max-sm:gap-2 mb-2">
             <div className="self-end">
                 <FoodAndDrinkOwnerManageButtons foodAndDrink={foodAndDrink}/>
             </div>

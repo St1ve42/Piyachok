@@ -8,7 +8,7 @@ import PaginationWithEclipses from "@/src/components/shared/components/paginatio
 import {ReviewSortByEnum} from "@/src/enums/ReviewSortByEnum";
 import ReviewFilter from "@/src/components/features/reviews/food-and-drink-filter/ReviewFilter";
 import {SortEnum} from "@/src/enums/shared/SortEnum";
-import Link from "next/link";
+import NoResults from "@/src/components/shared/ui/NoResults";
 
 type PropsType = {
     foodAndDrinkId: string
@@ -29,10 +29,7 @@ const Reviews: FC<PropsType> = async ({foodAndDrinkId, user, isOwner, searchPara
     </div>
     const emptyDataComponent = rating ? <div className="flex flex-col gap-2">
         {filterAndSortComponent}
-        <div className="flex flex-col">
-            <p>За Вашим фільтром відгуків не знайдено.</p>
-            <Link className="text-blue-600" href={`/food-and-drink/${foodAndDrinkId}`} scroll={false}>Скинути фільтри</Link>
-        </div>
+        <NoResults isButtonClearFilters={true} queryNamesToRemove={['rating']} text={`Спробуйте очистити фільтри — це має допомогти!`}/>
     </div> : <p>На цей момент відгуків немає. Будьте першим, хто їх залишить.</p>
     return <Surface className="flex flex-col gap-3 rounded-3xl p-6 border-1" variant="default">
         <Heading level={6}>Відгуки</Heading>

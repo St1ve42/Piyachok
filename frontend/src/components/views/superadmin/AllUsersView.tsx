@@ -28,18 +28,18 @@ const AllUsersView: FC<PropsType> = ({users, page, limit, searchBy, sort, sortBy
       redirect('/account/superadmin/users')
     }
     return (
-        <section className="flex flex-col gap-4 h-full">
-            <Heading level={3}>Усі користувачі</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            <div className="flex justify-between">
+        <section className="flex flex-col gap-4 max-sm:gap-2 h-full">
+            <Heading level={3} className="max-sm:text-lg">Усі користувачі</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            <div className="flex flex-col md:flex-row justify-between gap-3 max-sm:gap-2">
               <Limit currentLimit={limit}/>
-              <div className="flex gap-3 items-center">
+              <div className="flex flex-wrap gap-3 max-sm:gap-2 items-center">
                 <UserSort initialSort={sort} initialSortBy={sortBy}/>
                 <UserFilter searchBy={searchBy}/>
-                <UsersSearch searchBy={searchBy} initialSearch={initialSearch}/>
+                <UsersSearch initialSearch={initialSearch}/>
               </div>
             </div>
-            {data.length !== 0 ? <div className="grid grid-cols-3 gap-4 mb-3">
+            {data.length !== 0 ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-sm:gap-2 mb-3">
                 {data.map(user => <UserCard key={user.id} user={user}/>)}
             </div> : <NoResults isButtonClearFilters={false}/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

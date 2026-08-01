@@ -10,7 +10,7 @@ type PropsType = {
 const FoodAndDrinkNewsDetailsView: FC<PropsType> = ({news}) => {
     const {id, foodAndDrink: {id: foodAndDrinkId}} = news
     return (
-        <section className="w-full flex flex-col gap-3">
+        <section className="w-full flex flex-col gap-3 max-sm:gap-2">
             <div className="self-end">
                 <NewsOwnerManageButtons newsId={id} foodAndDrinkId={foodAndDrinkId}/>
             </div>

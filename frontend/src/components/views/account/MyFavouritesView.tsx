@@ -21,9 +21,9 @@ const MyFavouritesView: FC<PropsType> = async ({page}) => {
         redirect('/account/superadmin/food-and-drinks')
     }
     return (
-    <section className="flex flex-col gap-3">
-      <Heading level={3}>Мої улюблені заклади</Heading>
-      <Heading level={5}>Знайдено: {total}</Heading>
+    <section className="flex flex-col gap-3 max-sm:gap-2">
+      <Heading level={3} className="max-sm:text-lg">Мої улюблені заклади</Heading>
+      <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
       <FoodAndDrinkList
         foodAndDrinkList={data}
         href={"/food-and-drink"}

@@ -25,13 +25,14 @@ const ActivationView = ({token}: PropsType) => {
         return <Error message={userData.data.message} isImage={true} image={AlreadyChecked} alt={'Вже активовано'} buttonMessage={'Перейти на головну'} href={'/'}/>
     }
     return (
-        <section className="h-full flex justify-center items-center">
-            {userData && <Surface className="w-[600px] mb-5 flex justify-center items-center flex-col gap-5"><Image src={Success} alt={'Успіх'} width={100} height={100}/>
-            <div className="w-full text-[2.5rem] text-center">
+        <section className="h-full flex justify-center items-center px-4 max-sm:px-2">
+            {userData && <Surface className="w-[600px] max-md:w-full max-md:max-w-[600px] mb-5 flex justify-center items-center flex-col gap-5 max-sm:gap-3 p-6 max-sm:p-4">
+                <Image src={Success} alt={'Успіх'} width={100} height={100} className="max-sm:w-20 max-sm:h-20"/>
+            <div className="w-full text-[2.5rem] max-sm:text-xl text-center max-sm:text-base">
                 Акаунт успішно активований!
             </div>
-            <Button>
-                <Link href={'/'}>Перейти на головну</Link>
+            <Button className="w-full">
+                <Link href={'/'} className="w-full">Перейти на головну</Link>
             </Button></Surface>}
         </section>
     )

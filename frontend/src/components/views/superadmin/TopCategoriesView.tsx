@@ -19,13 +19,13 @@ const TopCategoriesView: FC<PropsType> = async ({page}) => {
     }
     const {data: topCategoriesList, total, totalPages} = topCategories.data
     return (
-        <section className="flex flex-col gap-3">
-            <Heading>Усі топ категорії</Heading>
-            <div className="flex justify-between">
-                <Heading level={5}>Знайдено: {total}</Heading>
+        <section className="flex flex-col gap-3 max-sm:gap-2">
+            <Heading className="max-sm:text-xl">Усі топ категорії</Heading>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 max-sm:gap-2">
+                <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
                 <CreateOrUpdateTopCategory/>
             </div>
-            {topCategoriesList.length > 0 ? <div className="flex flex-col gap-3">
+            {topCategoriesList.length > 0 ? <div className="flex flex-col gap-3 max-sm:gap-2">
                 {topCategoriesList.map(topCategory => <TopCategoryCard key={topCategory.id} topCategory={topCategory}/>)}
             </div> : <NoResults/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

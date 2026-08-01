@@ -16,8 +16,8 @@ const NewsCard: FC<PropsType> = ({news}) => {
     const createdAtLocalTimeString = utilsService.getLocalTime(createdAt)
     return (
         <Link href={`/news/${id}`}>
-            <Card className="text-sm h-[48vh] relative">
-                <div className="relative h-[24vh] shrink-0">
+            <Card className="text-sm h-[350px] relative">
+                <div className="relative h-[150px] shrink-0">
                     <Image src={photo ? utilsService.buildStorageURL(photo) : NoImage} fill={true} alt={photo ?? 'Відсутнє зображення'}/>
                 </div>
                 <p>📅 {createdAtLocalDateString}, {createdAtLocalTimeString}</p>

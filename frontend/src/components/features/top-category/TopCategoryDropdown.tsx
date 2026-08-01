@@ -6,14 +6,16 @@ import { FC, useState } from "react";
 import CreateOrUpdateTopCategory from "@/src/components/features/top-category/CreateOrUpdateTopCategory";
 import {ITopCategory} from "@/src/interfaces/top-category/ITopCategory";
 import {updateTagAction} from "@/src/actions/server.actions";
+import DeleteModalWindow from "@/src/components/shared/components/delete-modal-window/DeleteModalWindow";
 
 type PropsType = {
     topCategory: ITopCategory
 }
 
 const TopCategoryDropdown: FC<PropsType> = ({topCategory}) => {
-    const {id} = topCategory
+    const {id, name} = topCategory
     const [isOpen, setIsOpen] = useState(false)
+    const [isOpenDelete, setIsOpenDelete] = useState(false)
     const handleDelete = async () => {
         await topCategoryService.delete(id)
         await updateTagAction('all-top-categories')
@@ -31,10 +33,11 @@ const TopCategoryDropdown: FC<PropsType> = ({topCategory}) => {
                 <Dropdown.Popover>
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={handleOnClickUpdate} className="text-blue-600"><Pencil/> Редагування</Dropdown.Item>
-                        <Dropdown.Item onClick={handleDelete} className="text-red-600"><TrashBin/> Видалити</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setIsOpenDelete(true)} className="text-red-600"><TrashBin/> Видалити</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown.Popover>
             </Dropdown>
+            <DeleteModalWindow handleDelete={handleDelete} resourceDescription={`топ категорії "${name}"`} isButton={false} isOpen={isOpenDelete} setIsOpen={setIsOpenDelete}/>
             <CreateOrUpdateTopCategory mode={'update'} topCategory={topCategory} isOpen={isOpen} setIsOpen={setIsOpen}/>
         </div>
     )

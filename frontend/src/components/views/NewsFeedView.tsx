@@ -28,7 +28,7 @@ const NewsFeedView: FC<PropsType> = async ({query}) => {
         <div className="flex flex-col gap-3">
             <Heading level={5}>Знайдено: {total}</Heading>
             {newsList.length > 0 ?
-                <div className="grid grid-cols-4 gap-3">{newsList.map((news) => <NewsCard key={news.id} news={news}/>)}</div>
+                <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">{newsList.map((news) => <NewsCard key={news.id} news={news}/>)}</div>
                 : <div className="mt-20"><NoResults/></div>
             }
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

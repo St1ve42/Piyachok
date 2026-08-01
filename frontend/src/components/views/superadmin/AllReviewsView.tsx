@@ -26,17 +26,17 @@ const AllReviewsView: FC<PropsType> = async ({searchParams}) => {
     }
     const {total, totalPages} = reviews.data
     return (
-        <section className="flex flex-col gap-3 pr-15">
-            <Heading level={3}>Усі відгуки</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            <div className="flex justify-end items-center gap-2">
+        <section className="flex flex-col gap-3 max-sm:gap-2 pr-15 max-sm:pr-0">
+            <Heading level={3} className="max-sm:text-lg">Усі відгуки</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1">
                 <Limit currentLimit={limit}/>
                 <ReviewSort initialSortValue={sort} initialSortByValue={sortBy}/>
                 <SuperadminReviewFilter initialSearchByValue={searchBy} rating={rating}/>
-                <ReviewSearch searchBy={searchBy} type={'superadmin'} initialSearchValue={search}/>
+                <ReviewSearch initialSearchValue={search}/>
             </div>
             {reviews.data.data.length > 0 ?
-                    <div className="flex flex-col gap-3 mb-3">
+                    <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">
                         {reviews.data.data.map(review => <SuperadminReviewCard key={review.id} review={review}/>)}
                     </div>
                 : <NoResults queryNamesToRemove={['rating']}/>}

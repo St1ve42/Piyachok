@@ -27,12 +27,12 @@ const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessC
         redirect('/account/superadmin/food-and-drinks')
     }
     return (
-        <section className="h-full flex flex-col gap-3">
-            <Heading level={3}>Усі заклади</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            <div className="flex items-center justify-between">
+        <section className="h-full flex flex-col gap-3 max-sm:gap-2">
+            <Heading level={3} className="max-sm:text-lg">Усі заклади</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2">
                       <Limit currentLimit={limit}/>
-                      <div className="flex gap-3 items-center">
+                      <div className="flex flex-wrap gap-3 max-sm:gap-2 items-center w-full md:w-auto">
                         <FoodAndDrinkSort initialSortByValue={sortBy} initialSortValue={sort}/>
                         <FoodAndDrinkSuperadminFilter status={status}/>
                         <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie} initialValue={name}/>

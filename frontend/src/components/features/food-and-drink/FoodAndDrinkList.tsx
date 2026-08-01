@@ -12,7 +12,7 @@ type PropsType = {
 
 const FoodAndDrinkList: FC<PropsType> = ({foodAndDrinkList, href, mode}) => {
     return (foodAndDrinkList.length !== 0 ?
-        (<div className="grid grid-cols-3 w-full gap-3 mb-3">{foodAndDrinkList.map(foodAndDrink =>
+        (<div className="grid grid-cols-3 w-full gap-3 mb-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:w-full">{foodAndDrinkList.map(foodAndDrink =>
             <FoodAndDrinkCard foodAndDrinkOneFromList={foodAndDrink} mode={mode} id={foodAndDrink.id} key={foodAndDrink.id} href={href}/>
         )}
         </div>)

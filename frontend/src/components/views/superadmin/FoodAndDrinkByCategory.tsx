@@ -20,10 +20,10 @@ const FoodAndDrinkByCategory: FC<PropsType> = async ({id, query}) => {
     }
     const {data: {topCategory, foodAndDrinks}, total, totalPages} = foodAndDrinksResponse.data
     return (
-        <section className="flex flex-col gap-3">
-            <Heading level={5}>Усі заклади за топ категорією &#34;{topCategory}&#34;</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            {foodAndDrinks.length > 0 ? <div className="grid grid-cols-3 gap-3">
+        <section className="flex flex-col gap-3 max-sm:gap-2">
+            <Heading level={5} className="max-sm:text-base">Усі заклади за топ категорією &#34;{topCategory}&#34;</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            {foodAndDrinks.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-sm:gap-2">
                 {foodAndDrinks.map(foodAndDrink => <FoodAndDrinkCard key={foodAndDrink.id} foodAndDrinkOneFromList={foodAndDrink} id={foodAndDrink.id} href={'/account/superadmin/food-and-drinks'} mode={'superadmin-top'} categoryId={id}/>)}
             </div> : <NoResults/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages}/>}

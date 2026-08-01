@@ -14,48 +14,48 @@ const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, foodAndDr
     const submitLabel = mode === 'create' ? 'Створити' : 'Оновити'
 
     return (
-        <Form onSubmit={handleSubmit(mode === 'create' ? handleCreateFormSubmit : handleUpdateFormSubmit)} className="flex flex-col gap-6 w-[30vw]">
-            <h1 className="font-bold text-2xl">{mode === 'create' ? 'Створити новину' : 'Оновити новину'}</h1>
+        <Form onSubmit={handleSubmit(mode === 'create' ? handleCreateFormSubmit : handleUpdateFormSubmit)} className="flex flex-col gap-6 max-sm:gap-4 w-[30vw] max-lg:w-full max-lg:max-w-[500px] max-sm:px-4">
+            <h1 className="font-bold text-2xl max-sm:text-xl">{mode === 'create' ? 'Створити новину' : 'Оновити новину'}</h1>
 
-            <div className="flex flex-col gap-2">
-                <Label isRequired className="font-bold">Фото</Label>
-                        <div className="w-full h-48 border-2 border-dashed rounded-[40px] flex items-center justify-center overflow-hidden relative">
+            <div className="flex flex-col gap-2 max-sm:gap-1">
+                <Label isRequired className="font-bold max-sm:text-sm">Фото</Label>
+                        <div className="w-full h-48 max-sm:h-32 border-2 border-dashed rounded-[40px] max-sm:rounded-2xl flex items-center justify-center overflow-hidden relative">
                             {photoPreview ? (
                                 <>
                                     <MyImage photoPreview={photoPreview}/>
                                     <div className="absolute top-2 right-2">
-                                        <Button type="button" onClick={() => handlePhotoClear()} className="!px-2 !py-1">Видалити</Button>
+                                        <Button type="button" onClick={() => handlePhotoClear()} className="!px-2 max-sm:!px-1 !py-1 max-sm:!py-0.5 text-xs max-sm:text-[10px]">Видалити</Button>
                                     </div>
                                 </>
                             ) : (
                                 <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer text-gray-500">
-                                    <span>Натисніть або перетягніть фото</span>
+                                    <span className="max-sm:text-sm">Натисніть або перетягніть фото</span>
                                     <input type="file" accept="image/jpeg,image/jpg,image/png" className="hidden" onChange={(e) => handlePhotoSelect(e.target.files)} />
                                 </label>
                             )}
                         </div>
                         <div className="flex-1">
-                            <div className="text-sm text-gray-600">Одна фотографія. Формати: jpg, jpeg, png. Максимум 1 МБ.</div>
+                            <div className="text-sm max-sm:text-xs text-gray-600">Одна фотографія. Формати: jpg, jpeg, png. Максимум 1 МБ.</div>
                         </div>
             </div>
 
-            <div className="flex flex-col gap-2 relative w-full">
-                <Label isRequired htmlFor="title" className="font-bold">Заголовок</Label>
-                <Input id="title" placeholder={'Введіть заголовок...'} type="text" required {...register('title')} />
-                {errors.title && <div className="absolute text-red-600 text-[12px] bottom-[-20px] leading-none">{errors.title.message}</div>}
+            <div className="flex flex-col gap-2 max-sm:gap-1 relative w-full">
+                <Label isRequired htmlFor="title" className="font-bold max-sm:text-sm">Заголовок</Label>
+                <Input id="title" placeholder={'Введіть заголовок...'} type="text" required className="max-sm:text-sm" {...register('title')} />
+                {errors.title && <div className="absolute text-red-600 text-[12px] max-sm:text-[10px] bottom-[-20px] leading-none">{errors.title.message}</div>}
             </div>
 
 
-            <div className="flex flex-col gap-2 relative w-full">
-                <Label isRequired htmlFor="text" className="font-bold">Текст</Label>
-                <TextArea id={'text'} placeholder={'Введіть текст новини...'} className="h-[10rem] resize-none" maxLength={500} required {...register('text')} />
-                <div className="text-sm absolute bottom-[-25px] right-0 text-gray-500">Макс 500 символів</div>
-                {errors.text && <div className="absolute text-red-600 text-[12px] bottom-[-20px] leading-none">{errors.text.message}</div>}
+            <div className="flex flex-col gap-2 max-sm:gap-1 relative w-full">
+                <Label isRequired htmlFor="text" className="font-bold max-sm:text-sm">Текст</Label>
+                <TextArea id={'text'} placeholder={'Введіть текст новини...'} className="h-[10rem] max-sm:h-[8rem] resize-none max-sm:text-sm" maxLength={500} required {...register('text')} />
+                <div className="text-sm max-sm:text-xs absolute bottom-[-25px] right-0 text-gray-500">Макс 500 символів</div>
+                {errors.text && <div className="absolute text-red-600 text-[12px] max-sm:text-[10px] bottom-[-20px] leading-none">{errors.text.message}</div>}
             </div>
 
 
             <div className="relative mb-2">
-                <Button type={'submit'} className={'mt-4'} isDisabled={!isValid || isLoading || !photoPreview || !isDirty}>{submitLabel}</Button>
+                <Button type={'submit'} className={'mt-4 max-sm:mt-2 max-sm:w-full'} isDisabled={!isValid || isLoading || !photoPreview || !isDirty}>{submitLabel}</Button>
             </div>
         </Form>
     )

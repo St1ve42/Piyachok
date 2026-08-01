@@ -14,7 +14,7 @@ type PropsType = {
 
 const PiyachokManageButtons: FC<PropsType> = ({piyachok}) => {
     const {id, purpose} = piyachok
-    const resourceDescription = `пиячок з метою "${purpose}"`
+    const resourceDescription = `пиячок "${purpose}"`
     const handleDelete = async () => {
         const response = await piyachokService.delete(id)
         if(!response.success){

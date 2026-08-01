@@ -20,7 +20,7 @@ const TopFoodAndDrinkView: FC<PropsType> = async ({page}) => {
         <section className="flex flex-col gap-3">
             <Heading level={3}>Знайдено: {total}</Heading>
             {topFoodAndDrinks.length > 0 ?
-                <div className="grid grid-cols-4 gap-3">{topFoodAndDrinks.map((topFoodAndDrink) => <FoodAndDrinkCard key={topFoodAndDrink.id} id={topFoodAndDrink.id} href={`/food-and-drink`} foodAndDrinkOneFromList={topFoodAndDrink} mode={'top'}/>)}</div>
+                <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">{topFoodAndDrinks.map((topFoodAndDrink) => <FoodAndDrinkCard key={topFoodAndDrink.id} id={topFoodAndDrink.id} href={`/food-and-drink`} foodAndDrinkOneFromList={topFoodAndDrink} mode={'top'}/>)}</div>
                 : <div className="mt-20"><NoResults/></div>
             }
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}

@@ -16,14 +16,14 @@ const MyReviewsView: FC<PropsType> = async ({page}) => {
     const total = success ? data.total : 0
     const totalPages = success ? data.totalPages : 0
     return (
-        <section className="flex flex-col gap-3 pr-15">
-            <Heading level={3}>Мої відгуки</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
+        <section className="flex flex-col gap-3 max-sm:gap-2 pr-15 max-sm:pr-0">
+            <Heading level={3} className="max-sm:text-lg">Мої відгуки</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
             {success ? (data.data.length > 0 ?
-                        <div className="flex flex-col gap-3 mb-3">
+                        <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">
                             {data.data.map(review => <MyReviewCard key={review.id} review={review}/>)}
                         </div>
-                : <NoResults text={'Почніть писати відгуки!'} isButtonClearFilters={false}/>) : <div>{data.message}</div>}
+                : <NoResults text={'Почніть писати відгуки!'} isButtonClearFilters={false}/>) : <div className="max-sm:text-sm">{data.message}</div>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

@@ -20,7 +20,7 @@ const MyCommentsView: FC<PropsType> = async ({page}) => {
         total = data.total
         totalPages = data.totalPages
         const comments = data.data
-        listMarkup = comments.length > 0 ? <div className="flex flex-col gap-3 mb-3">
+        listMarkup = comments.length > 0 ? <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">
             {comments.map(comment => <CommentUserCard comment={comment} key={comment.id}/>)}
         </div> : <NoResults text={'Почніть писати коментарі!'} isButtonClearFilters={false}/>
     }
@@ -28,12 +28,12 @@ const MyCommentsView: FC<PropsType> = async ({page}) => {
         listMarkup = <div>{data.message}</div>;
     }
     return (
-      <section className="flex flex-col gap-3">
-        <Heading level={3}>Мої коментарі</Heading>
-        <Heading level={5}>Знайдено: {total}</Heading>
-        {listMarkup}
-        {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
-      </section>
+        <section className="flex flex-col gap-3 max-sm:gap-2">
+            <Heading level={3} className="max-sm:text-lg">Мої коментарі</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            {listMarkup}
+            {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
+        </section>
     );
 }
 

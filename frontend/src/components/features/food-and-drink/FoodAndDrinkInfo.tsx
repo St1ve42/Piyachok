@@ -35,7 +35,7 @@ const FoodAndDrinkInfo: FC<PropsType> = ({foodAndDrink}) => {
 
             <p className="text-gray-700">{description}</p>
             <h3><span className="font-semibold">Середній чек:</span> {averageReceipt} грн</h3>
-            <div className="gap-2 grid grid-cols-2">
+            <div className="lg:gap-2 lg:grid lg:grid-cols-2 flex flex-col gap-2">
                 <div>
                     <h3 className="font-semibold">Контакти</h3>
                     <div className="flex items-center gap-2"><Smartphone/>{phone}</div>
@@ -53,15 +53,15 @@ const FoodAndDrinkInfo: FC<PropsType> = ({foodAndDrink}) => {
                 </div>
                 <div>
                     <h3 className="font-semibold mb-2">Години роботи</h3>
-                    <ul className="text-sm text-gray-700 grid grid-rows-4 grid-flow-col gap-x-4">
+                    <ul className="text-sm text-gray-700 lg:grid lg:grid-rows-4 lg:grid-flow-col lg:gap-x-4 flex flex-col gap-1">
                         {Object.values(FoodAndDrinkDaysEnum).map(day => {
                             const foundedBusinessHour = businessHours.find(businessHour => businessHour.day === day)
                             if(!foundedBusinessHour){
-                                return <li key={uuidv4()} className="flex justify-between mr-5"><span>{day}</span><span>не вказано</span></li>
+                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px] mr-5"><span>{day}</span><span>не вказано</span></li>
                             }
                             else{
                                 const {open, close} = foundedBusinessHour
-                                return <li key={uuidv4()} className="flex justify-between"><span>{day}</span><span>{open} - {close}</span></li>
+                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px]"><span>{day}</span><span>{open} - {close}</span></li>
                             }
                         })}
                     </ul>

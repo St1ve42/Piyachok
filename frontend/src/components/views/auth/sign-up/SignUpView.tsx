@@ -8,29 +8,29 @@ import { Button, Form, Heading, Input, Label } from "@heroui/react";
 const SignUpView = () => {
     const {isLoading, previousApiResponse, isOpenRegion, setIsOpenRegion, isShownPassword, setIsShownPassword, isShownRepeatedPassword, setIsShownRepeatedPassword, isOpenCity, setIsOpenCity, regionId, regionInputValue, cityInputValue, errors, register, isValid, regionQuery, cityQuery, ref, handleCityInputChange, handleRegionInputChange, handleRegionSelect, handleCitySelect, regions, cities, apiErrorMessage, handleSubmit, handleFormSubmit, onFocusInput} = useSignUpView()
     return (
-        <section className="h-full flex justify-center">
-            <Form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-[35vw] px-4 backdrop-blur-sm py-2 sign-up-form gap-[13px] rounded-[24px] [&_input]:mt-1">
-                <Heading level={3} className='text-xl text-center'>Створити акаунт</Heading>
-                <div className="flex justify-between w-full">
-                    <div className="w-[48%] relative">
-                        <Label>Ім&#39;я</Label>
+        <section className="h-full flex justify-center px-4 max-sm:px-2">
+            <Form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col w-[35vw] max-md:w-full max-md:max-w-[600px] px-4 max-sm:px-2 backdrop-blur-sm py-2 sign-up-form gap-[13px] max-sm:gap-3 rounded-[24px] [&_input]:mt-1">
+                <Heading level={3} className='text-xl max-sm:text-lg text-center'>Створити акаунт</Heading>
+                <div className="flex flex-col md:flex-row justify-between w-full gap-3 max-sm:gap-2">
+                    <div className="w-full md:w-[48%] relative">
+                        <Label className="max-sm:text-sm">Ім&#39;я</Label>
                         <Input onFocus={onFocusInput} type='text' className="w-full" placeholder='Введіть ім`я...' disabled={isLoading} {...register('name')}></Input>
-                        {errors.name && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.name.message}</div>}
+                        {errors.name && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.name.message}</div>}
                     </div>
-                    <div className="w-[48%] relative">
-                        <Label>Прізвище</Label>
+                    <div className="w-full md:w-[48%] relative">
+                        <Label className="max-sm:text-sm">Прізвище</Label>
                         <Input onFocus={onFocusInput} type='text' className="w-full" placeholder='Введіть прізвище...' disabled={isLoading} {...register('surname')}></Input>
-                        {errors.surname && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.surname.message}</div>}
+                        {errors.surname && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.surname.message}</div>}
                     </div>
                 </div>
                 <div className="relative w-full">
-                    <Label>Вік</Label>
+                    <Label className="max-sm:text-sm">Вік</Label>
                     <Input onFocus={onFocusInput} type='number' className="w-full" placeholder='Введіть вік...' min={1} max={100} disabled={isLoading} {...register('age')}></Input>
-                    {errors.age && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.age.message}</div>}
+                    {errors.age && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.age.message}</div>}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col md:flex-row gap-2 max-sm:gap-1">
                     <div className="relative w-full">
-                        <Label>Область</Label>
+                        <Label className="max-sm:text-sm">Область</Label>
                         <Input
                             placeholder={'Введіть область...'}
                             value={regionInputValue}
@@ -52,21 +52,21 @@ const SignUpView = () => {
                                     <div
                                         key={region.id}
                                         onClick={() => handleRegionSelect(region.id, region.name)}
-                                        className="p-2 hover:bg-blue-600 hover:text-white cursor-pointer"
+                                        className="p-2 hover:bg-blue-600 hover:text-white cursor-pointer text-sm max-sm:text-xs"
                                     >
                                         {region.name}
                                     </div>
-                                )) : <div className="mt-2 ml-2">Не знайдено регіону</div>}
+                                )) : <div className="mt-2 ml-2 text-xs max-sm:text-[10px]">Не знайдено регіону</div>}
 
-                                <div ref={ref} className="p-2 text-center text-sm text-gray-500">
+                                <div ref={ref} className="p-2 text-center text-sm max-sm:text-xs text-gray-500">
                                     {regionQuery.isFetchingNextPage && 'Завантаження...'}
                                 </div>
                             </div>
                         )}
-                        {errors.regionId && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.regionId.message}</div>}
+                        {errors.regionId && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.regionId.message}</div>}
                     </div>
-                    <div className="relative w-[96%]">
-                        <Label>Місто</Label>
+                    <div className="relative w-full md:w-[96%]">
+                        <Label className="max-sm:text-sm">Місто</Label>
                         <Input
                             placeholder={'Введіть місто...'}
                             value={cityInputValue}
@@ -89,28 +89,28 @@ const SignUpView = () => {
                                     <div
                                         key={city.id}
                                         onClick={() => handleCitySelect(city.id, city.name)}
-                                        className="p-2 hover:bg-blue-600 hover:text-white cursor-pointer"
+                                        className="p-2 hover:bg-blue-600 hover:text-white cursor-pointer text-sm max-sm:text-xs"
                                     >
                                         {city.name}
                                     </div>
-                                )) : <div className="mt-2 ml-2">Не знайдено місто</div>}
-                                <div ref={ref} className="p-2 text-center text-sm text-gray-500">
+                                )) : <div className="mt-2 ml-2 text-xs max-sm:text-[10px]">Не знайдено місто</div>}
+                                <div ref={ref} className="p-2 text-center text-sm max-sm:text-xs text-gray-500">
                                     {cityQuery.isFetchingNextPage && 'Завантаження...'}
                                 </div>
                             </div>
                         )}
-                        {errors.cityId && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.cityId.message}</div>}
+                        {errors.cityId && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.cityId.message}</div>}
                     </div>
                 </div>
                 <Input type="hidden" {...register('regionId')} />
                 <Input type="hidden" {...register('cityId')} />
                 {!previousApiResponse && <div className='relative w-full'>
-                    <Label>Email</Label>
+                    <Label className="max-sm:text-sm">Email</Label>
                     <Input onFocus={onFocusInput} type='email' className='w-full' placeholder='Введіть імейл...' disabled={isLoading} {...register('email')}></Input>
-                    {'email' in errors && errors.email && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.email.message}</div>}
+                    {'email' in errors && errors.email && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.email.message}</div>}
                 </div>}
                 {!previousApiResponse && <div>
-                    <Label>Пароль</Label>
+                    <Label className="max-sm:text-sm">Пароль</Label>
                     <div className="relative">
                         <Input onFocus={onFocusInput} type={isShownPassword ? 'text' : 'password'} placeholder='Введіть пароль...' disabled={isLoading} className='w-full pr-10 psw' {...register('password')}></Input>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
@@ -120,11 +120,11 @@ const SignUpView = () => {
                             <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)}
                                    style={{display: isShownPassword ? 'block' : 'none'}}/>
                         </div>
-                        {'password' in errors && errors.password && <div className="mt-1 absolute text-red-600 text-[10px] leading-none">{errors.password.message}</div>}
+                        {'password' in errors && errors.password && <div className="mt-1 absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none">{errors.password.message}</div>}
                     </div>
                 </div>}
-                {!previousApiResponse && <div className="relative mt-[5px]">
-                    <Label>Повторіть пароль</Label>
+                {!previousApiResponse && <div className="relative mt-[5px] max-sm:mt-2">
+                    <Label className="max-sm:text-sm">Повторіть пароль</Label>
                     <div className="relative">
                         <Input onFocus={onFocusInput} type={isShownRepeatedPassword ? 'text' : 'password'} placeholder='Введіть пароль...'
                                className='w-full pr-10 psw' disabled={isLoading} {...register('repeatedPassword')}></Input>
@@ -136,10 +136,10 @@ const SignUpView = () => {
                                    style={{display: isShownRepeatedPassword ? 'block' : 'none'}}/>
                         </div>
                         {apiErrorMessage &&
-                            <div className="absolute text-red-600 text-xs leading-none mt-1">{apiErrorMessage}</div>}
-                        {'repeatedPassword' in errors && errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
+                            <div className="absolute text-red-600 text-xs max-sm:text-[9px] leading-none mt-1">{apiErrorMessage}</div>}
+                        {'repeatedPassword' in errors && errors.repeatedPassword && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-1">{errors.repeatedPassword.message}</div>}
                     </div>
-                <Button type="submit" className="text-center text-white mt-6 w-full" isDisabled={!isValid || isLoading}
+                <Button type="submit" className="text-center text-white mt-6 max-sm:mt-4 w-full" isDisabled={!isValid || isLoading}
                         style={{opacity: isValid && !isLoading ? 1 : 0.8, cursor: isValid && !isLoading ? 'pointer' : 'default'}}>{isLoading ? 'Завантаження...' : 'Зареєструватись'}
                 </Button>
             </div>}

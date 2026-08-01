@@ -107,7 +107,7 @@ export class FoodAndDrinkService {
                                 | FindOptionsWhere<Tag>
                                 | FindOptionsWhere<City>
                                 | string
-                                | FindOperator<string> = Like(`%${search}%`);
+                                | FindOperator<string> = Like(`${search}%`);
                             switch (searchBy) {
                                 case 'tag':
                                     findOperator = {

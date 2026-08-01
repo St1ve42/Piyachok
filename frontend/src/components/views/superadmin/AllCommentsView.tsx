@@ -27,17 +27,17 @@ const AllCommentsView: FC<PropsType> = async ({searchParams}) => {
     }
     const {total, totalPages} = comments.data
     return (
-        <section className="flex flex-col gap-3 pr-15">
-            <Heading level={3}>Усі коментарі</Heading>
-            <Heading level={5}>Знайдено: {total}</Heading>
-            <div className="flex flex-col gap-3">
-                <div className="flex justify-end items-center gap-2">
+        <section className="flex flex-col gap-3 max-sm:gap-2 pr-15 max-sm:pr-0">
+            <Heading level={3} className="max-sm:text-lg">Усі коментарі</Heading>
+            <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
+            <div className="flex flex-col gap-3 max-sm:gap-2">
+                <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1">
                     <Limit currentLimit={limit}/>
                     <CommentSort initialSortValue={sort} initialSortByValue={sortBy}/>
                     <Filter searchByEnum={CommentSearchByEnum} searchByTranslation={CommentSearchByTranslation} initialSearchByValue={searchBy}/>
                     <CommentSearch searchBy={searchBy} initialSearch={search}/>
                 </div>
-                {comments.data.data.length > 0 ? <div className="flex flex-col gap-3 mb-3">
+                {comments.data.data.length > 0 ? <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">
                     {comments.data.data.map(comment => <CommentSuperadminCard key={comment.id} comment={comment}/>)}
                 </div> : <NoResults isButtonClearFilters={false}/>}
             </div>

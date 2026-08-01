@@ -18,7 +18,7 @@ const PiyachokFeedView: FC<PropsType> = async ({page}) => {
     return (
         <section className="flex flex-col gap-3">
             <Heading level={5}>Знайдено: {total}</Heading>
-            {piyachoks.length > 0 ? <div className="grid grid-cols-4 gap-3">{piyachoks.map(piyachok => <PiyachokCard key={piyachok.id} piyachok={piyachok}/>)}</div> : <NoResults/>}
+            {piyachoks.length > 0 ? <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">{piyachoks.map(piyachok => <PiyachokCard key={piyachok.id} piyachok={piyachok}/>)}</div> : <NoResults/>}
             {totalPages > 1 && <PaginationWithEclipses totalPages={totalPages} currentPage={page}/>}
         </section>
     )

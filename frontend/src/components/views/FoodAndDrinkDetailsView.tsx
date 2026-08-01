@@ -27,6 +27,7 @@ type PropsType = {
 const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParams}) => {
     const {
         id,
+        name,
         region,
         city,
         rating,
@@ -52,7 +53,7 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
     const hasRightToManageResource = isOwner || user?.role === GlobalUserRoleEnum.SUPERADMIN
     const newsResponse = await foodAndDrinkService.findNews(id, {category: undefined, limit: 20})
     return <section className="flex flex-col h-auto gap-3">
-        <div className="grid grid-cols-100 grid-rows-[25rem_auto] gap-3">
+        <div className="grid grid-cols-100 grid-rows-[25rem_auto] gap-3 max-lg:hidden">
             <div className="flex flex-col gap-3 col-span-64">
                 <div>
                     <FoodAndDrinkImages images={images}/>
@@ -67,7 +68,7 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
                         <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
                     </div>
                 </div>
-                <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource} foodAndDrinkId={id}/>
+                <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource} foodAndDrinkId={id} foodAndDrinkName={name}/>
                 <FoodAndDrinkCommentsSection photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
             </div>
             <div className="flex flex-col gap-4 mb-2 col-span-36">
@@ -80,6 +81,31 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
                 </div>
                 <Reviews searchParams={searchParams} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
             </div>
+        </div>
+        <div className="flex flex-col gap-3 lg:hidden">
+                <div>
+                    <FoodAndDrinkImages images={images}/>
+                </div>
+                <div className="flex gap-1 justify-evenly w-full max-sm:flex-col max-sm:gap-3">
+                    <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>
+                    <PiyachokForm foodAndDrinkId={id}/>
+                </div>
+                <div className="relative">
+                    <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>
+                    <div className="absolute bottom-[15px] right-[15px]">
+                        <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>
+                    </div>
+                </div>
+                <div className="h-[25rem] w-full flex-shrink-0">
+                    <MapWrapper foodAndDrinkPosition={centerPosition} foodAndDrinkLocationInfo={{region, city}}/>
+                </div>
+                <FoodAndDrinkNews newsResponse={newsResponse} hasRightToManageNews={hasRightToManageResource} foodAndDrinkId={id} foodAndDrinkName={name}/>
+                <RatingStatistics foodAndDrinkId={id} rating={rating}/>
+                <div className="flex flex-col gap-2">
+                    <ReviewForm isLogged={isLogged} foodAndDrinkId={id} isOwner={isOwner}/>
+                </div>
+                <Reviews searchParams={searchParams} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
+                <FoodAndDrinkCommentsSection photo={user?.photo ?? null} isLogged={isLogged} foodAndDrinkId={id} user={user} isOwner={isOwner}/>
         </div>
     </section>
 };
