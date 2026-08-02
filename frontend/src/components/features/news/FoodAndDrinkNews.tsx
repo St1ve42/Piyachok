@@ -27,14 +27,14 @@ const FoodAndDrinkNews: FC<PropsType> = ({newsResponse, hasRightToManageNews = f
     return (
         <section>
             <Heading level={3}>Новини</Heading>
-            {clientWidth ? <Swiper className="w-full"
+            {clientWidth ? <Swiper className={`!ml-0`} style={{width: total >= 3 ? '100%' : `${total*33}%`}}
                     modules={[Navigation, Pagination]}
                     spaceBetween={10}
                     navigation={true}
                     pagination={true}
                     slidesPerView={clientWidth > 620 ? (total > 3 ? 3 : total) : 1}
             >
-                {news.map((oneNews => <SwiperSlide key={oneNews.id} className="m-1 w-full"><FoodAndDrinkNewsCard news={oneNews} hasRightToManageNews={hasRightToManageNews} mode={'default'} foodAndDrinkId={foodAndDrinkId} foodAndDrinkName={foodAndDrinkName}/></SwiperSlide>))}
+                {news.map((oneNews => <SwiperSlide key={oneNews.id} className="m-1"><FoodAndDrinkNewsCard news={oneNews} hasRightToManageNews={hasRightToManageNews} mode={'default'} foodAndDrinkId={foodAndDrinkId} foodAndDrinkName={foodAndDrinkName}/></SwiperSlide>))}
             </Swiper> : <p>Завантаження...</p>}
         </section>
     )
