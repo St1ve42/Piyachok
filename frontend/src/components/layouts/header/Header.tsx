@@ -11,7 +11,7 @@ import UserInfo from "@/src/components/features/users/user-info/UserInfo";
 import {Button} from "@heroui/react";
 
 interface HeaderProps {
-    user?: IUser;
+    user: IUser | null;
 }
 
 const Header = ({user}: HeaderProps) => {

@@ -8,7 +8,6 @@ import FoodAndDrinkNewsCard from "@/src/components/features/news/FoodAndDrinkNew
 import {queryNewsType} from "@/src/validators/news/query-news";
 import {FC} from "react";
 import NewsSearch from "@/src/components/features/news/NewsSearch";
-import {NewsCategoryEnum} from "@/src/enums/news/news-category.enum";
 
 type PropsType = {
     query: queryNewsType
@@ -27,7 +26,7 @@ const AllNewsView: FC<PropsType> = async ({query}) => {
         <div className="flex flex-col gap-3 max-sm:gap-2">
             <Heading level={3} className="max-sm:text-lg">Знайдено: {total}</Heading>
             <div className="self-end">
-                <NewsSearch category={category ?? NewsCategoryEnum.GENERAL} initialSearchValue={search}/>
+                <NewsSearch initialSearchValue={search}/>
             </div>
             {newsList.length > 0 ?
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-sm:gap-2">{newsList.map((news) => <FoodAndDrinkNewsCard key={news.id} news={news} href={'account/news/'}/>)}</div>

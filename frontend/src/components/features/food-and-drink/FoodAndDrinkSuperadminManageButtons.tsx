@@ -99,7 +99,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
     }
 
     const {register, handleSubmit, formState: {errors, isValid}} = useForm<ISuperadminFoodAndDrinkUpdate>(({mode: 'all', resolver: joiResolver(SuperadminFoodAndDrinkUpdateValidator, JoiOptions)}))
-    const handleChangeRating = async (data: IFoodAndDrinkSuperadminInfo) => {
+    const handleChangeRating = async (data: ISuperadminFoodAndDrinkUpdate) => {
         const response = await superadminFoodAndDrinkService.update(id, data)
         if(!response.success){
             toast.danger(response.data.message)
@@ -194,7 +194,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                             </Modal.Header>
                             <Modal.Body className="flex gap-3 flex-col">
                                 <div className="ml-1">
-                                    <UsersSearch isDropdown={false}/>
+                                    <UsersSearch/>
                                 </div>
                                 <div className="mb-3">
                                     {users.length !== 0 ? users.map(user => <Card key={user.id} className="text-[14px] h-fit mt-3">

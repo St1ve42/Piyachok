@@ -3,13 +3,14 @@ import {IFoodAndDrinkOwnerInfo} from "@/src/interfaces/food-and-drink/IFoodAndDr
 import {IFoodAndDrinkSuperadminInfo} from "@/src/interfaces/food-and-drink/IFoodAndDrinkSuperadminInfo";
 import {FC} from "react";
 import {statusTranslation} from "@/src/constants/status-translation";
+import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 
 type PropsType = {
     foodAndDrink: IFoodAndDrinkOwnerInfo | IFoodAndDrinkSuperadminInfo
 }
 
 const FoodAndDrinkSystemInfo: FC<PropsType> = ({foodAndDrink}) => {
-    const {createdAt, updatedAt, email, isEmailVerified, status} = foodAndDrink
+    const {createdAt, updatedAt, email, isEmailVerified, status, rating} = foodAndDrink
     const offset = -(new Date().getTimezoneOffset())
     const createdAtDate = new Date(new Date(createdAt).getTime() + offset*60*1000)
     const updatedAtDate = new Date(new Date(updatedAt).getTime() + offset*60*1000)
@@ -32,12 +33,26 @@ const FoodAndDrinkSystemInfo: FC<PropsType> = ({foodAndDrink}) => {
                         <Label className="min-w-[90px] text-gray-500">Оновлено:</Label>
                         <span className="font-medium">{updatedAtDate.toLocaleDateString('uk-UA', dateOptions)}, {updatedAtDate.toLocaleTimeString('uk-UA')}</span>
                     </div>
+                    <div className="flex items-center gap-2">
+                        <Label className="min-w-[40px] text-gray-500">Рейтинг закладу:</Label>
+                        {rating ? <div className="text-sm text-gray-500 flex items-center gap-1">
+                            <p>{rating}</p>
+                            <ReadOnlyStarRating initialValue={rating}/>
+                        </div> : <p className="text-sm text-gray-500">відсутній</p>}
+                    </div>
+                    {'customRating' in foodAndDrink && <div className="flex items-center gap-2">
+                        <Label className="min-w-[40px] text-gray-500">Змінений рейтинг закладу:</Label>
+                        {foodAndDrink.customRating ? <div className="text-sm text-gray-500 flex items-center gap-1">
+                            <p>{foodAndDrink.customRating}</p>
+                            <ReadOnlyStarRating initialValue={foodAndDrink.customRating}/>
+                        </div> : <p className="text-sm text-gray-500">відсутній</p>}
+                    </div>}
+                </div>
+                <div>
                     <div className="flex items-center text-sm text-gray-700 gap-2">
                         <Label className="min-w-[90px] text-gray-500">Електронна пошта закладу:</Label>
                         <span className="break-words">{email}</span>
                     </div>
-                </div>
-                <div>
                     <div className="flex items-center gap-2">
                         <Label className="min-w-[90px] text-gray-500">Статус підтвердження електронної пошти:</Label>
                         <Chip color={isEmailVerified ? 'success' : 'danger'}>
@@ -50,7 +65,6 @@ const FoodAndDrinkSystemInfo: FC<PropsType> = ({foodAndDrink}) => {
                             {statusTranslation[status]}
                         </Chip>
                     </div>
-
                 </div>
             </CardContent>
 

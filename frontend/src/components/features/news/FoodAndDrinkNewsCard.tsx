@@ -38,7 +38,7 @@ const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToMan
                         {title}
                     </Card.Title>
                 </div>
-                {mode === 'default' && hasRightToManageNews && foodAndDrinkId && foodAndDrinkName && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id} foodAndDrinkId={foodAndDrinkId} foodAndDrinkName={foodAndDrinkName} title={title}/></div>}
+                {mode === 'default' && hasRightToManageNews && foodAndDrinkId && foodAndDrinkName && <div className="absolute top-3 right-3"><NewsFoodAndDrinkDropdown newsId={id} foodAndDrinkId={foodAndDrinkId} title={title}/></div>}
             </Card>
         </Link>
     )

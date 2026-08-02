@@ -68,6 +68,13 @@ export class SuperadminFoodAndDrinkFindOnePresenter {
     @Expose()
     rating: number | null;
 
+    @Transform(
+        ({ obj: { customRating } }: { obj: FoodAndDrink }) => !!customRating,
+        { toClassOnly: true },
+    )
+    @Expose()
+    isCustomRating: boolean;
+
     @Expose()
     averageReceipt: number;
 

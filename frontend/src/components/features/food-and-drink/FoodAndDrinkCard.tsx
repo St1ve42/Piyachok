@@ -10,9 +10,10 @@ import ReadOnlyStarRating from "@/src/components/shared/ui/ReadOnlyStarRating";
 import Favourite from "@/src/components/features/food-and-drink/Favourite";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
 import FoodAndDrinksByCategoryDropdown from "@/src/components/features/food-and-drink/FoodAndDrinksByCategoryDropdown";
+import {Pencil} from "@gravity-ui/icons";
 
 type PropsType = {
-    foodAndDrinkOneFromList: IFoodAndDrinkOneFromList
+    foodAndDrinkOneFromList: IFoodAndDrinkOneFromList & {isCustomRating?: boolean}
     id: string
     href: string | UrlObject
     mode?: 'default' | 'moderate' | 'favourite' | 'top' | 'superadmin-top' | 'all',
@@ -34,7 +35,7 @@ export const FoodAndDrinkCard = async ({foodAndDrinkOneFromList, id, href, mode 
                 <p>{response.success && <span>{utilsService.capitalizeFirstLetter(response.data[type])}</span>}</p>
                 <p>{street}, {city}{distance ? `, ${distance}` : ''}</p>
                 <div className="flex justify-between">
-                    <p>{rating ?? 0} <ReadOnlyStarRating initialValue={rating ?? 0}/></p>
+                    <p className="flex gap-1 items-center">{rating ?? 0} <ReadOnlyStarRating initialValue={rating ?? 0}/> {mode === 'all' && 'isCustomRating' in foodAndDrinkOneFromList && (foodAndDrinkOneFromList.isCustomRating ? <Pencil/> : '')}</p>
                     <p>{averageReceipt} грн / чек</p>
                 </div>
                 {mode === 'top' && (topCategories ? <div className="flex gap-1 flex-wrap items-center">🏆 Найкращі для: {topCategories.map(topCategory => <Chip key={topCategory}>{topCategory}</Chip>)}</div> : <div>🏆 Найкращі для: <Chip>Інформація відсутня</Chip></div>)}
