@@ -54,7 +54,7 @@ const SignInView = () => {
                 <Link href = {'/auth/forgot-password'} className="text-blue-600 text-sm max-sm:text-xs">Забули пароль?</Link>
                 </div>
             </Form>
-            <div className="flex flex-col md:flex-row w-[400px] max-md:w-full max-md:max-w-[400px] gap-2 max-sm:gap-1 px-4 max-sm:px-2 text-sm max-sm:text-xs justify-center md:justify-start">
+            <div className="flex flex-col sm:flex-row w-[400px] max-md:w-full max-md:max-w-[400px] gap-2 max-sm:gap-1 px-4 max-sm:px-2 text-sm max-sm:text-xs justify-center md:justify-start">
                 <p>Не маєте акаунта?</p>
                 <Link href={'/auth/sign-up'} className="text-blue-600">Зареєструватись</Link>
             </div>

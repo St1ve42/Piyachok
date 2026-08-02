@@ -121,6 +121,12 @@ export class FoodAndDrinkInfoPresenter {
         description: 'Рейтинг закладу (від 0 до 10)',
         nullable: true,
     })
+    @Transform(
+        ({ obj: { rating, customRating } }: { obj: FoodAndDrink }) => {
+            return customRating ?? rating;
+        },
+        { toClassOnly: true },
+    )
     @Expose()
     rating: number | null;
 

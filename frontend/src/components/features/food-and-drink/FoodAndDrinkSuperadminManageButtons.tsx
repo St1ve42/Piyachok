@@ -3,16 +3,15 @@ import {
   Avatar,
   Button,
   Card,
-  Dropdown,
+  Dropdown, Form,
   Header,
   Input,
   Label,
   Modal,
-  PressEvent,
+  PressEvent, toast,
 } from "@heroui/react";
 import {EllipsisVertical, Pencil, Route, TrashBin} from "@gravity-ui/icons";
 import UsersSearch from "@/src/components/features/users/search/UsersSearch";
-import {UserSearchByEnum} from "@/src/enums/user/user-search-by.enum";
 import {utilsService} from "@/src/services/utils.service";
 import UserAvatar from "@/src/public/default_user_avatar.png";
 import {foodAndDrinkService} from "@/src/services/food-and-drink.service";
@@ -26,6 +25,11 @@ import {IUser} from "@/src/interfaces/users/IUser";
 import {ITopCategory} from "@/src/interfaces/top-category/ITopCategory";
 import TopCategoryCard from "@/src/components/features/top-category/TopCategoryCard";
 import NoResults from "@/src/components/shared/ui/NoResults";
+import {useForm} from "react-hook-form";
+import {ISuperadminFoodAndDrinkUpdate} from "@/src/interfaces/food-and-drink/ISuperadminFoodAndDrinkUpdate";
+import {joiResolver} from "@hookform/resolvers/joi";
+import {SuperadminFoodAndDrinkUpdateValidator} from "@/src/validators/food-and-drink/superadmin-food-and-drink-update.validator";
+import {JoiOptions} from "@/src/constants/joi.options";
 
 type PropsType = {
     foodAndDrink: IFoodAndDrinkSuperadminInfo,
@@ -37,6 +41,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
     const {id, name, status} = foodAndDrink
     const [isCorrectInput, setIsCorrectInput] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<null | string>(null)
+    const [isOpenRatingModal, setIsOpenRatingModal] = useState<boolean>(false)
     const router = useRouter()
     const closeTriggerButtonRef = useRef<HTMLButtonElement | null>(null)
 
@@ -93,6 +98,31 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
 
     }
 
+    const {register, handleSubmit, formState: {errors, isValid}} = useForm<ISuperadminFoodAndDrinkUpdate>(({mode: 'all', resolver: joiResolver(SuperadminFoodAndDrinkUpdateValidator, JoiOptions)}))
+    const handleChangeRating = async (data: IFoodAndDrinkSuperadminInfo) => {
+        const response = await superadminFoodAndDrinkService.update(id, data)
+        if(!response.success){
+            toast.danger(response.data.message)
+            return
+        }
+        toast.success('Успішно змінено рейтинг закладу!')
+        setIsOpenRatingModal(false)
+        await updateTagAction(`food-and-drink-by-id-${id}`)
+        await updateTagAction(`food-and-drink-list`)
+    }
+
+    const handleResetToSystemRating = async () => {
+        const response = await superadminFoodAndDrinkService.update(id, {customRating: null})
+        if(!response.success){
+            toast.danger(response.data.message)
+            return
+        }
+        toast.success('Успішно встановлено системне значення рейтингу!')
+        setIsOpenRatingModal(false)
+        await updateTagAction(`food-and-drink-by-id-${id}`)
+        await updateTagAction(`food-and-drink-list`)
+    }
+
     return (
         <div className="flex items-center gap-4">
             <Dropdown>
@@ -106,12 +136,39 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                             <Dropdown.Item onClick={handleChangeStatus}>
                                 <Label>{status === 'active' ? 'Деактивувати' : 'Активувати'}</Label>
                             </Dropdown.Item>
+                            <Dropdown.Item onClick={() => setIsOpenRatingModal(true)}>
+                                <Label>Змінити рейтинг</Label>
+                            </Dropdown.Item>
                         </Dropdown.Section>
                     </Dropdown.Menu>
                 </Dropdown.Popover>
             </Dropdown>
+            <Modal isOpen={isOpenRatingModal}>
+                <Modal.Backdrop>
+                    <Modal.Container>
+                        <Modal.Dialog className="sm:max-w-[300px] flex gap-3 flex-col">
+                            <Modal.CloseTrigger onClick={() => setIsOpenRatingModal(false)}/>
+                            <Modal.Header>
+                                <Modal.Heading>Новий рейтинг</Modal.Heading>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form className="flex gap-3 flex-col" onSubmit={handleSubmit(handleChangeRating)}>
+                                    <div className="relative p-1 w-full">
+                                        <Input type="number" min={0} max={5} step={0.1} {...register('customRating')} className="w-full"/>
+                                        {errors.customRating && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] bottom-[-20px] leading-none">{errors.customRating.message}</div>}
+                                    </div>
+                                    <div className="flex flex-col justify-between mt-4 gap-2">
+                                        <Button type="submit" isDisabled={!isValid} className="w-full">Змінити</Button>
+                                        <Button onClick={handleResetToSystemRating}>Скинути до системного рейтингу</Button>
+                                    </div>
+                                </Form>
+                            </Modal.Body>
+                        </Modal.Dialog>
+                    </Modal.Container>
+                </Modal.Backdrop>
+            </Modal>
             <Modal>
-                <Button className="bg-orange-400"><Route/>Додати до топ категорії</Button>
+                <Button className="bg-green-400">🏆 Додати до топ категорії</Button>
                 <Modal.Backdrop>
                     <Modal.Container>
                         <Modal.Dialog className="sm:max-w-[450px] h-[60vh]">
@@ -137,7 +194,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                             </Modal.Header>
                             <Modal.Body className="flex gap-3 flex-col">
                                 <div className="ml-1">
-                                    <UsersSearch searchBy={UserSearchByEnum.EMAIL} isDropdown={false}/>
+                                    <UsersSearch isDropdown={false}/>
                                 </div>
                                 <div className="mb-3">
                                     {users.length !== 0 ? users.map(user => <Card key={user.id} className="text-[14px] h-fit mt-3">

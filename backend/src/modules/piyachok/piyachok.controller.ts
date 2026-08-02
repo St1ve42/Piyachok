@@ -46,7 +46,7 @@ import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-reques
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { PiyachokRepliesService } from '../piyachok-replies/piyachok-replies.service';
 
-@ApiTags('Piyachok')
+@ApiTags('Пиячок')
 @Controller('piyachok')
 export class PiyachokController {
     constructor(

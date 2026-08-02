@@ -30,18 +30,6 @@ const SuperadminFoodAndDrinkByIdPage = async ({params, searchParams}: Props) => 
     if(!id){
         notFound()
     }
-    // const accessToken = await getAccessCookie()
-    // const foodAndDrinkResponse = await superadminFoodAndDrinkService.findById(id, {headers: {'Cookie': accessToken}})
-    // if(!foodAndDrinkResponse.success && (foodAndDrinkResponse.status === 404 || foodAndDrinkResponse.status === 400)){
-    //     notFound()
-    // }
-    // else if(!foodAndDrinkResponse.success){
-    //     return <div>{foodAndDrinkResponse.data.message}</div>
-    // }
-    // const usersResponse = await superadminUsersService.find({role: GlobalUserRoleEnum.USER, email: search}, {headers: {'Cookie': accessToken}})
-    // if(!usersResponse.success){
-    //     return <div>{usersResponse.data.message}</div>
-    // }
     return <SuperadminFoodAndDrinkDetailsView id={id} search={search}/>
 }
 

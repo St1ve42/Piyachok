@@ -93,6 +93,9 @@ export class FoodAndDrink {
     @Column({ default: false })
     isTop: boolean;
 
+    @Column('float', { nullable: true })
+    customRating: number | null;
+
     @Column('varchar', { nullable: true })
     site?: string | null;
 

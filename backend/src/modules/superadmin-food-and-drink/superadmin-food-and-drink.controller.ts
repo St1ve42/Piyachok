@@ -5,6 +5,7 @@ import {
     HttpCode,
     HttpStatus,
     Param,
+    Patch,
     Post,
     Query,
     SerializeOptions,
@@ -30,10 +31,13 @@ import {
     ApiNotFoundResponse,
     ApiNoContentResponse,
     ApiConflictResponse,
+    ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { ResponseErrorDto } from '../../shared/dto/response-error.dto';
 import { SuperadminFoodAndDrinkBindOwnershipDto } from './dto/superadmin-food-and-drink-bind-ownership.dto';
 import { SuperadminFoodAndDrinkInfoPresenter } from './presenters/superadmin-food-and-drink-info-presenter';
+import { ResponseBadRequestErrorDto } from '../../shared/dto/response-bad-request-error.dto';
+import { SuperadminFoodAndDrinkUpdateDto } from './dto/superadmin-food-and-drink-update.dto';
 
 @ApiTags('Адміністрування закладів (Суперадмін)')
 @UseGuards(AuthGuard('jwt'), IsSuperadminGuard)
@@ -122,6 +126,10 @@ export class SuperadminFoodAndDrinkController {
     @ApiNoContentResponse({
         description: 'Статус закладу успішно змінено',
     })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
         type: ResponseErrorDto,
@@ -165,6 +173,10 @@ export class SuperadminFoodAndDrinkController {
     @ApiNoContentResponse({
         description: 'Власника закладу успішно змінено',
     })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
     @ApiUnauthorizedResponse({
         description: 'Користувач не авторизований',
         type: ResponseErrorDto,
@@ -196,6 +208,54 @@ export class SuperadminFoodAndDrinkController {
         await this.foodAndDrinkService.bindOwnership(
             id,
             superadminFoodAndDrinkBindOwnershipDto,
+        );
+    }
+
+    @ApiCookieAuth('accessToken')
+    @ApiOperation({
+        summary: 'Оновлення системних даних закладу',
+        description:
+            'Дозволяє суперадміністратору оновити системні дані закладу.',
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'UUID ідентифікатор закладу',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+    })
+    @ApiNoContentResponse({
+        description: 'Заклад успішно оновлено',
+    })
+    @ApiBadRequestResponse({
+        description: 'Дані не пройшли валідацію',
+        type: ResponseBadRequestErrorDto,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Користувач не авторизований',
+        type: ResponseErrorDto,
+    })
+    @ApiForbiddenResponse({
+        description: 'Тільки суперадміністратори мають доступ до цього ресурсу',
+        type: ResponseErrorDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Заклад не знайдено',
+        type: ResponseErrorDto,
+    })
+    @Patch(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async update(
+        @Param(
+            'id',
+            FoodAndDrinkIdValidationPipe,
+            FoodAndDrinkBodyValidationPipe,
+        )
+        id: string,
+        @Body()
+        superadminFoodAndDrinkBindUpdateDto: SuperadminFoodAndDrinkUpdateDto,
+    ): Promise<void> {
+        await this.foodAndDrinkService.systemUpdate(
+            id,
+            superadminFoodAndDrinkBindUpdateDto,
         );
     }
 }

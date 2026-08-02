@@ -7,6 +7,7 @@ import { City } from '../../cities/entities/city.entity';
 import { FoodAndDrinkFeaturesEnum } from '../enums/food-and-drink-features.enum';
 import { FoodAndDrinkTopCategory } from '../../food-and-drink-top-category/entities/food-and-drink-top-category.entity';
 import { FoodAndDrinkTopCategoryPresenter } from '../../food-and-drink-top-category/presenters/FoodAndDrinkTopCategoryPresenter';
+import { FoodAndDrink } from '../entities/food-and-drink.entity';
 
 export class FoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -61,6 +62,12 @@ export class FoodAndDrinkFindOnePresenter {
         description: 'Рейтинг закладу (від 0 до 10)',
         nullable: true,
     })
+    @Transform(
+        ({ obj: { rating, customRating } }: { obj: FoodAndDrink }) => {
+            return customRating ?? rating;
+        },
+        { toClassOnly: true },
+    )
     @Expose()
     rating: number | null;
 

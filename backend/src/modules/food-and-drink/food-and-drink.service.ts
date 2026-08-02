@@ -52,6 +52,7 @@ import { IJwtFoodAndDrinkActionPayload } from '../auth/interfaces/IJwtFoodAndDri
 import { ErrorResponse } from '../../shared/error/error-response';
 import { Tag } from '../tags/entity/tag.entity';
 import { City } from '../cities/entities/city.entity';
+import { SuperadminFoodAndDrinkUpdateDto } from '../superadmin-food-and-drink/dto/superadmin-food-and-drink-update.dto';
 
 @Injectable()
 export class FoodAndDrinkService {
@@ -350,6 +351,13 @@ export class FoodAndDrinkService {
             status: FoodAndDrinkStatusEnum.PENDING,
         });
         return savedFoodAndDrink;
+    }
+
+    async systemUpdate(
+        id: string,
+        superadminFoodAndDrinkDto: SuperadminFoodAndDrinkUpdateDto,
+    ): Promise<void> {
+        await this.foodAndDrinkRepository.update(id, superadminFoodAndDrinkDto);
     }
 
     async delete(id: string): Promise<void> {

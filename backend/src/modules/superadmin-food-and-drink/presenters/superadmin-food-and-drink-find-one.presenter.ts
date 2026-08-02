@@ -1,9 +1,10 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { FoodAndDrinkTypeEnum } from '../../food-and-drink/enums/food-and-drink-type.enum';
 import { FoodAndDrinkStatusEnum } from '../../food-and-drink/enums/food-and-drink-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocationPresenter } from '../../food-and-drink/presenters/location.presenter';
 import { FoodAndDrinkFeaturesEnum } from '../../food-and-drink/enums/food-and-drink-features.enum';
+import { FoodAndDrink } from '../../food-and-drink/entities/food-and-drink.entity';
 
 export class SuperadminFoodAndDrinkFindOnePresenter {
     @ApiProperty({
@@ -58,6 +59,12 @@ export class SuperadminFoodAndDrinkFindOnePresenter {
         description: 'Рейтинг закладу (від 0 до 10)',
         nullable: true,
     })
+    @Transform(
+        ({ obj: { rating, customRating } }: { obj: FoodAndDrink }) => {
+            return customRating ?? rating;
+        },
+        { toClassOnly: true },
+    )
     @Expose()
     rating: number | null;
 
