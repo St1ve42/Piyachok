@@ -5,7 +5,7 @@ import { Avatar } from "@heroui/react";
 import { utilsService } from "@/src/services/utils.service";
 import {Gear} from "@gravity-ui/icons";
 import Link from "next/link";
-import MobileNavigation from "@/src/components/layouts/header/MobileNavigation.new";
+import MobileNavigation from "@/src/components/layouts/header/MobileNavigation";
 
 type PropsType = {
     user: IUser
