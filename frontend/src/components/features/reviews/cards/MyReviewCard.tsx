@@ -17,7 +17,7 @@ const MyReviewCard: FC<PropsType> = ({review}) => {
             <Card.Header>
                 <div className="flex justify-between">
                     <p className="font-bold">{name} {status !== FoodAndDrinkStatusEnum.ACTIVE && '[Заклад неактивний]'}</p>
-                    <UserReviewCardDropdown reviewId={id} foodAndDrinkId={foodAndDrinkId} status={status}/>
+                    <UserReviewCardDropdown reviewId={id} foodAndDrinkId={foodAndDrinkId} status={status} text={text}/>
                 </div>
                 <p>{localCreatedAt}</p>
                 <ReadOnlyStarRating initialValue={rating}/>

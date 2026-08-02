@@ -20,7 +20,7 @@ const CommentUserCard: FC<PropsType> = ({comment}) => {
                 </Card.Title>
                 <Card.Content>{text}</Card.Content>
             </div>
-            <CommentUserCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} status={status}/>
+            <CommentUserCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} status={status} text={text}/>
         </Card>
     )
 }

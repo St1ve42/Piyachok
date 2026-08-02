@@ -29,7 +29,7 @@ const CommentSuperadminCard: FC<PropsType> = ({comment}) => {
                     </div>
                 </div>
             </div>
-            <CommentSuperadminCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} userId={userId}/>
+            <CommentSuperadminCardDropdown commentId={id} foodAndDrinkId={foodAndDrinkId} userId={userId} text={text}/>
         </Card>
     )
 }

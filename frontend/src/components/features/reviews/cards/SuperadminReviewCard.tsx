@@ -18,7 +18,7 @@ const SuperadminReviewCard: FC<PropsType> = ({review}) => {
             <Card.Header>
                 <div className="flex justify-between">
                     <p className="font-bold">{foodAndDrinkName}</p>
-                    <SuperadminReviewCardDropdown reviewId={id} foodAndDrinkId={foodAndDrinkId} userId={userId}/>
+                    <SuperadminReviewCardDropdown reviewId={id} foodAndDrinkId={foodAndDrinkId} userId={userId} text={text}/>
                 </div>
                 <div className="flex gap-3 items-center">
                     <AvatarCustom photo={photo} defaultPhoto={UserAvatar.src}/>

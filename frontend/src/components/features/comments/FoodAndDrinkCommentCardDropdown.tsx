@@ -16,10 +16,11 @@ type PropsType = {
     setIsEdited: Dispatch<SetStateAction<boolean>>,
     user?: IUser,
     isOwner: boolean | null,
-    creator: IUserShortInfo
+    creator: IUserShortInfo,
+    text: string
 }
 
-const FoodAndDrinkCommentCardDropdown: FC<PropsType> = ({commentId, foodAndDrinkId, setIsEdited, user, isOwner, creator}) => {
+const FoodAndDrinkCommentCardDropdown: FC<PropsType> = ({commentId, foodAndDrinkId, setIsEdited, user, isOwner, creator, text}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const queryClient = useQueryClient();
     const handleDelete = async () => {
@@ -31,7 +32,7 @@ const FoodAndDrinkCommentCardDropdown: FC<PropsType> = ({commentId, foodAndDrink
         }
     }
     const {name, surname} = creator
-    const deleteMessage = (user?.role === GlobalUserRoleEnum.SUPERADMIN || isOwner) ? `коментар користувача ${name} ${surname}` : `свій коментар`
+    const deleteMessage = (user?.role === GlobalUserRoleEnum.SUPERADMIN || isOwner) ? `коментар користувача ${name} ${surname}: "${text}"` : `свій коментар`
     return (
         <div>
             <Dropdown>

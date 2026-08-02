@@ -37,7 +37,7 @@ const TopCategoryDropdown: FC<PropsType> = ({topCategory}) => {
                     </Dropdown.Menu>
                 </Dropdown.Popover>
             </Dropdown>
-            <DeleteModalWindow handleDelete={handleDelete} resourceDescription={`топ категорії "${name}"`} isButton={false} isOpen={isOpenDelete} setIsOpen={setIsOpenDelete}/>
+            <DeleteModalWindow handleDelete={handleDelete} resourceDescription={`топ категорію "${name}"`} isButton={false} isOpen={isOpenDelete} setIsOpen={setIsOpenDelete}/>
             <CreateOrUpdateTopCategory mode={'update'} topCategory={topCategory} isOpen={isOpen} setIsOpen={setIsOpen}/>
         </div>
     )

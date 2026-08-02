@@ -8,7 +8,7 @@ type PropsType = ({
     resourceDescription: string,
     isButton?: boolean,
     isOpen?: boolean,
-    setIsOpen?: Dispatch<SetStateAction<boolean>>
+    setIsOpen?: Dispatch<SetStateAction<boolean>>,
 })
 
 const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, isButton = true, isOpen, setIsOpen}) => {
@@ -29,19 +29,18 @@ const DeleteModalWindow: FC<PropsType> = ({handleDelete, resourceDescription, is
                         <Modal.Body>
                             <div>
                                 <p className="line-clamp-3">Ви збираєтесь назавжди видалити {resourceDescription}.</p>
-                                <p>Ви впевнені в цьому?</p>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button onClick={handleDelete} variant="danger" className="w-full" slot="close">
-                                Так
+                                Видалити
                             </Button>
                             <Button className="w-full" slot="close" onClick={() => {
                                 if(setIsOpen){
                                     setIsOpen(false)
                                 }
                             }}>
-                                Ні
+                                Скасувати
                             </Button>
                         </Modal.Footer>
                     </Modal.Dialog>
