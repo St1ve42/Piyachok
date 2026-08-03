@@ -189,12 +189,41 @@ export class FoodAndDrinkService {
             const totalPages = Math.ceil((total - skip) / limit);
             return [result, total, totalPages];
         }
-        if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
+        if (
+            sortBy &&
+            sort &&
+            sortBy !== FoodAndDrinkSortByEnum.DISTANCE &&
+            sortBy !== FoodAndDrinkSortByEnum.RATING
+        ) {
             delete order['rating'];
             order[sortBy] = sort;
         }
         const total = await this.foodAndDrinkRepository.countBy(filter);
         const totalPages = Math.ceil((total - skip) / limit);
+        if (order.rating) {
+            return [
+                await this.foodAndDrinkRepository
+                    .createQueryBuilder('fad')
+                    .select(`fad`)
+                    .addSelect(
+                        `IF(customRating is NULL, rating, customRating)`,
+                        'rat',
+                    )
+                    .innerJoinAndSelect('fad.city', 'city')
+                    .where(filter)
+                    .orderBy(
+                        'rat',
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-expect-error
+                        (order.rating as 'asc' | 'desc').toUpperCase(),
+                    )
+                    .take(limit)
+                    .skip(UtilsService.calculateSkipRecords(page, limit, skip))
+                    .getMany(),
+                total,
+                totalPages,
+            ];
+        }
         return [
             await this.foodAndDrinkRepository.find({
                 take: limit,

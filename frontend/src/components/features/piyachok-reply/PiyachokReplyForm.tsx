@@ -7,12 +7,14 @@ import {IPiyachokReplyUserInput} from "@/src/interfaces/piyachok-reply/IPiyachok
 import { FC, useRef, useState } from "react";
 import {piyachokRepliesService} from "@/src/services/piyachok-replies.service";
 import {updateTagAction} from "@/src/actions/server.actions";
+import {redirect} from "next/navigation";
 
 type PropsType = {
-    piyachokId: string
+    piyachokId: string,
+    isLogged: boolean
 }
 
-const PiyachokReplyForm: FC<PropsType> = ({piyachokId}) => {
+const PiyachokReplyForm: FC<PropsType> = ({piyachokId, isLogged}) => {
     const {register, handleSubmit, reset} = useForm<IPiyachokReplyUserInput>({mode: 'all'})
     const [isLoading, setIsLoading] = useState(false)
     const sendReplyButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -21,11 +23,17 @@ const PiyachokReplyForm: FC<PropsType> = ({piyachokId}) => {
         const piyachokReplyCreateResponse = await piyachokRepliesService.create({...formData, piyachokId})
         if(!piyachokReplyCreateResponse.success){
             toast.danger(piyachokReplyCreateResponse.data.message)
+            setIsLoading(false)
             return
         }
         await updateTagAction(`piyachok-replies-${piyachokId}`)
         reset()
         setIsLoading(false)
+    }
+    const handleFocusInput = () => {
+        if(!isLogged){
+            redirect('/auth/sign-in')
+        }
     }
     return (
         <section className="flex flex-col gap-1">
@@ -36,7 +44,7 @@ const PiyachokReplyForm: FC<PropsType> = ({piyachokId}) => {
                     <Heading level={5}>Написати мені</Heading>
                 </div>
                 <div className="flex justify-between">
-                    <Input disabled={isLoading} placeholder='Введіть повідомлення...' className="resize-none w-[230px]" maxLength={255} {...register('text')}/>
+                    <Input onFocus={handleFocusInput} disabled={isLoading} placeholder='Введіть повідомлення...' className="resize-none w-[230px]" maxLength={255} {...register('text')}/>
                     <Button type='submit' ref={sendReplyButtonRef} isDisabled={isLoading}><PaperPlane/></Button>
                 </div>
             </Form>
