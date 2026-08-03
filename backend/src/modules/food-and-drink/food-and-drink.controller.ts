@@ -174,7 +174,6 @@ export class FoodAndDrinkController {
             await this.foodAndDrinkService.find(query, {
                 status: FoodAndDrinkStatusEnum.ACTIVE,
             });
-        console.log(foodAndDrinks);
         return { data: foodAndDrinks, ...query, total, totalPages };
     }
 
