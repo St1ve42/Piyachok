@@ -189,12 +189,7 @@ export class FoodAndDrinkService {
             const totalPages = Math.ceil((total - skip) / limit);
             return [result, total, totalPages];
         }
-        if (
-            sortBy &&
-            sort &&
-            sortBy !== FoodAndDrinkSortByEnum.DISTANCE &&
-            sortBy !== FoodAndDrinkSortByEnum.RATING
-        ) {
+        if (sortBy && sort && sortBy !== FoodAndDrinkSortByEnum.DISTANCE) {
             delete order['rating'];
             order[sortBy] = sort;
         }
