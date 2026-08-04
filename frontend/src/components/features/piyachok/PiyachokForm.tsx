@@ -29,14 +29,16 @@ import {IPiyachokDetail} from "@/src/interfaces/piyachok/IPiyachokDetail";
 import {parseDate, parseTime} from "@internationalized/date";
 import {Pencil} from "@gravity-ui/icons";
 import {updateTagAction} from "@/src/actions/server.actions";
+import {redirect} from "next/navigation";
 
 type PropsType = {
     foodAndDrinkId?: string,
     mode?: 'create' | 'update',
-    piyachok?: IPiyachokDetail
+    piyachok?: IPiyachokDetail,
+    isLogged: boolean
 }
 
-const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}) => {
+const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok, isLogged}) => {
     let defaultValues: IPiyachokUserInput | undefined = undefined
     if(piyachok){
         const {creator, updatedAt, createdAt, id, status, foodAndDrink, meetDate, meetTime, ...restPiyachok} = piyachok
@@ -89,6 +91,11 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
             closeButtonRef.current.click()
         }
     }
+    const handleFocusInput = () => {
+        if(!isLogged){
+            redirect('/auth/sign-in')
+        }
+    }
     const mainButtonText = mode === 'create' ? <div>Створити пиячок</div> : <div className="flex gap-2 items-center"><Pencil/> Оновити</div>
     const submitButtonText = mode === 'create' ? 'Створити' : 'Оновити'
     const headingText = mode === 'create' ? 'Створити пиячок' : 'Оновити пиячок'
@@ -106,35 +113,35 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok}
                             <Form className="flex flex-col gap-5 p-2" onSubmit={handleSubmit(mode === 'create' ? handlePiyachokCreate : handlePiyachokUpdate)}>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Мета</Label>
-                                    <TextArea className="resize-none h-[15vh]" placeholder={'Введіть мету...'} min={0} required {...register('purpose')}/>
+                                    <TextArea onFocus={handleFocusInput} className="resize-none h-[15vh]" placeholder={'Введіть мету...'} min={0} required {...register('purpose')}/>
                                     {errors.purpose && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.purpose.message}</div>}
                                 </div>
                                 <div className="flex gap-3">
                                     <div className="w-[65%]">
                                         <Label isRequired>Дата зустрічі</Label>
-                                        <Controller render={({field}) => <MyDatePicker field={field}/>} name={'meetDate'} control={control}/>
+                                        <Controller render={({field}) => <MyDatePicker handleFocusInput={handleFocusInput} field={field}/>} name={'meetDate'} control={control}/>
                                     </div>
                                     <div className="w-[33%]">
                                         <Label isRequired>Час зустрічі</Label>
-                                        <Controller render={({field}) => <MyTimeField field={field}/>} name={'meetTime'} control={control}/>
+                                        <Controller render={({field}) => <MyTimeField handleFocusInput={handleFocusInput} field={field}/>} name={'meetTime'} control={control}/>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label htmlFor="gender">Бажана стать гостей</Label>
-                                    <GenderSelection name={'targetGender'} control={control}/>
+                                    <GenderSelection handleFocusInput={handleFocusInput} name={'targetGender'} control={control}/>
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Кількість людей (включаючи Вас)</Label>
-                                    <Input type="number" placeholder={'Введіть кількість людей...'} min={1} required {...register('peopleCount')}/>
+                                    <Input onFocus={handleFocusInput} type="number" placeholder={'Введіть кількість людей...'} min={1} required {...register('peopleCount')}/>
                                     {errors.peopleCount && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.peopleCount.message}</div>}
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Тип оплати</Label>
-                                    <Controller render={({field}) => <MySelect<IPiyachokUserInput, "paymentType"> field={field} enumValues={PiyachokPaymentTypeTranslation}/>} name={'paymentType'} control={control}/>
+                                    <Controller render={({field}) => <MySelect<IPiyachokUserInput, "paymentType"> handleFocusInput={handleFocusInput} field={field} enumValues={PiyachokPaymentTypeTranslation}/>} name={'paymentType'} control={control}/>
                                 </div>
                                 <div className="flex flex-col gap-1 relative">
                                     <Label isRequired>Бюджет на особу (грн)</Label>
-                                    <Input type="number" placeholder={'Введіть бюджет...'} min={1} required {...register('budget')}/>
+                                    <Input onFocus={handleFocusInput} type="number" placeholder={'Введіть бюджет...'} min={1} required {...register('budget')}/>
                                     {errors.budget && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.budget.message}</div>}
                                 </div>
                                 <Button type='submit' isDisabled={!isValid || !isDirty}>{submitButtonText}</Button>

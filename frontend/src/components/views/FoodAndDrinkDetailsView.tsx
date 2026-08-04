@@ -62,7 +62,7 @@ const FoodAndDrinkDetailsView: FC<PropsType> = async ({foodAndDrink, searchParam
                     <FoodAndDrinkInfo foodAndDrink={foodAndDrink}/>
                     <div className="absolute top-[15px] right-[15px] flex gap-3 items-center">
                         <FoodAndDrinkContact foodAndDrinkId={id} user={user}/>
-                        <PiyachokForm foodAndDrinkId={id}/>
+                        <PiyachokForm foodAndDrinkId={id} isLogged={isLogged}/>
                     </div>
                     <div className="absolute bottom-[15px] right-[15px]">
                         <TotalStatistics foodAndDrinkId={id} isFavourite={isFavourite}/>

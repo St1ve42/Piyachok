@@ -3,13 +3,14 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 type PropsType<T extends FieldValues> = {
     name: Path<T>,
-    control: Control<T, any, T> | undefined
+    control: Control<T, any, T> | undefined,
+    handleFocusInput: () => void
 }
 
-const GenderSelection = <T extends FieldValues>({name, control}: PropsType<T>) => {
+const GenderSelection = <T extends FieldValues>({name, control, handleFocusInput}: PropsType<T>) => {
     return (
         <Controller render={({field}) => (
-            <Select {...field} className="flex flex-col gap-1" placeholder={'Не вказано'} aria-label='Вибір гендеру'>
+            <Select onFocus={handleFocusInput} {...field} className="flex flex-col gap-1" placeholder={'Не вказано'} aria-label='Вибір гендеру'>
                 <Select.Trigger>
                     <Select.Value/>
                     <Select.Indicator/>

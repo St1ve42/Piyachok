@@ -6,17 +6,20 @@ import {
   DatePickerTriggerIndicator,
   DatePicker, I18nProvider
 } from "@heroui/react";
-import { ControllerRenderProps, FieldValues, Path} from "react-hook-form";
+import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 type PropsType<T extends FieldValues, K extends Path<T>> = {
-    field?: ControllerRenderProps<T, K>
+    field?: ControllerRenderProps<T, K>,
+    handleFocusInput?: () => void
 }
 
-const MyDatePicker = <T extends FieldValues, K extends Path<T>>({field}: PropsType<T, K>) => {
+const MyDatePicker = <T extends FieldValues, K extends Path<T>>({field, handleFocusInput}: PropsType<T, K>) => {
     const handledField = field ?? {}
+    const now = today(getLocalTimeZone());
     return (
         <I18nProvider locale="uk-UA">
-            <DatePicker {...handledField} className="w-full" name="date" aria-label='Вибір дати'>
+            <DatePicker {...handledField} onFocus={handleFocusInput} className="w-full" name="date" aria-label='Вибір дати'>
                 <DateField.Group fullWidth>
                     <DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
                     <DateField.Suffix>
@@ -26,7 +29,7 @@ const MyDatePicker = <T extends FieldValues, K extends Path<T>>({field}: PropsTy
                     </DateField.Suffix>
                 </DateField.Group>
                 <DatePickerPopover>
-                    <Calendar aria-label="Event date">
+                    <Calendar aria-label="Event date" minValue={now}>
                         <Calendar.Header>
                             <Calendar.YearPickerTrigger>
                                 <Calendar.YearPickerTriggerHeading />
