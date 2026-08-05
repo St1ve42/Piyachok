@@ -23,7 +23,7 @@ import {PiyachokPaymentTypeTranslation} from "@/src/constants/piyachok-payment-t
 import {joiResolver} from "@hookform/resolvers/joi";
 import {piyachokCreateValidator} from "@/src/validators/piyachok/piyachokCreateValidator";
 import {JoiOptions} from "@/src/constants/joi.options";
-import { FC, useRef } from "react";
+import { FC, useRef, useEffect } from "react";
 import {piyachokService} from "@/src/services/piyachok.service";
 import {IPiyachokDetail} from "@/src/interfaces/piyachok/IPiyachokDetail";
 import {parseDate, parseTime} from "@internationalized/date";
@@ -50,6 +50,13 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok,
         defaultValues
     })
     const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+    
+    useEffect(() => {
+        if(piyachok && mode === 'update'){
+            const {creator, updatedAt, createdAt, id, status, foodAndDrink, meetDate, meetTime, ...restPiyachok} = piyachok
+            reset({...restPiyachok, meetDate: parseDate(meetDate), meetTime: parseTime(meetTime)})
+        }
+    }, [piyachok, reset, mode])
     const handlePiyachokCreate = async (formData: IPiyachokUserInput) => {
         if(!foodAndDrinkId){
             return
@@ -84,13 +91,13 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok,
             toast.danger(piyachokUpdateResponse.data.message)
             return
         }
-        reset()
-        await updateTagAction('piyachoks')
-        await updateTagAction(`piyachok-${piyachok.id}`)
-        toast.success('Успішно оновлено пиячок!')
         if(closeButtonRef.current){
             closeButtonRef.current.click()
         }
+        await updateTagAction('piyachoks')
+        await updateTagAction(`piyachok-${piyachok.id}`)
+        reset()
+        toast.success('Успішно оновлено пиячок!')
     }
     const handleFocusInput = () => {
         if(isLogged !== undefined && !isLogged){
