@@ -35,7 +35,7 @@ type PropsType = {
     foodAndDrinkId?: string,
     mode?: 'create' | 'update',
     piyachok?: IPiyachokDetail,
-    isLogged: boolean
+    isLogged?: boolean
 }
 
 const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok, isLogged}) => {
