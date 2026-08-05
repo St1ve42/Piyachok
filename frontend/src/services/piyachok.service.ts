@@ -16,7 +16,7 @@ export class PiyachokService {
 
     async findById(id: string): Promise<IApiResponse<IPiyachokDetail>> {
         const endpoint = `/piyachok/${id}`;
-        const baseRequestOptions: RequestInit = {}
+        const baseRequestOptions: RequestInit = {next: {revalidate: 3*60, tags: [`piyachok-${id}`]}}
         return await fetchApi20<IPiyachokDetail>(endpoint, baseRequestOptions)
     }
 

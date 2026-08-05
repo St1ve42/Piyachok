@@ -84,15 +84,16 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok,
             toast.danger(piyachokUpdateResponse.data.message)
             return
         }
-        await updateTagAction('piyachoks')
-        toast.success('Успішно оновлено пиячок!')
         reset()
+        await updateTagAction('piyachoks')
+        await updateTagAction(`piyachok-${piyachok.id}`)
+        toast.success('Успішно оновлено пиячок!')
         if(closeButtonRef.current){
             closeButtonRef.current.click()
         }
     }
     const handleFocusInput = () => {
-        if(!isLogged){
+        if(isLogged !== undefined && !isLogged){
             redirect('/auth/sign-in')
         }
     }

@@ -18,8 +18,11 @@ export const getPiyachok = async(params: Promise<{id?: string}>): Promise<IPiyac
     return data
 }
 
-export const metadata: Metadata = {
-    title: "Пиячок",
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const {purpose} = await getPiyachok(params);
+  return {
+      title: purpose
+  };
 };
 
 type Props = {
