@@ -149,6 +149,7 @@ export class FoodAndDrinkService {
         }
         if (search.isTop) {
             relations['topCategories'] = true;
+            delete order['rating'];
         }
         if (
             sortBy &&
