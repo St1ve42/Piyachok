@@ -195,7 +195,11 @@ export class FoodAndDrinkService {
         }
         const total = await this.foodAndDrinkRepository.countBy(filter);
         const totalPages = Math.ceil((total - skip) / limit);
-        if (order.rating) {
+        if (
+            order.rating &&
+            search.isTop === undefined &&
+            filter.topCategories === undefined
+        ) {
             return [
                 await this.foodAndDrinkRepository
                     .createQueryBuilder('fad')
