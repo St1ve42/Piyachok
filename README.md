@@ -1,25 +1,33 @@
-# Пиячок
+# Piyachok
 
-Сайт для знаходження закладів. Основний функціонал пов'язаний з пошуком закладів
-та виставленням оголошень стосовно пошуку компанії для проведення часу в закладі.
+A website for finding venues. The main functionality is related to searching for venues and posting ads to find company to spend time at a venue.
 
-## Інструкція із запуску (Local)
+## Local Setup Instructions
 
-Для запуску проєкту локально необхідно мати докер.
+To run the project locally, you need to have Docker.
 
-**1.** Клонувати репозиторій:
+**1.** Clone the repository:
+
 ```
 git clone https://github.com/St1ve42/Piyachok
 cd Piyachok
-```
-**2.** Забілдити образи:
-```
-docker compose build
-```
-**3.** Запуск контейнерів:
-```
-docker compose up
+
 ```
 
-## Swagger документація
-На localhost через докер документація доступна за шляхом /api/docs
+**2.** Build the images:
+
+```
+docker compose build
+
+```
+
+**3.** Run the containers:
+
+```
+docker compose up
+
+```
+
+## Swagger Documentation
+
+On localhost via Docker, documentation is available at the path /api/docs
