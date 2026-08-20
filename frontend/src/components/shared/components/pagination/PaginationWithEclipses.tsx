@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState } from "react";
 import { Input, Pagination } from "@heroui/react";
 import {useURL} from "@/src/hooks/shared/useURL";
 
@@ -19,8 +19,24 @@ function PaginationWithEclipses({totalPages, currentPage = 1, isPageInput = true
         setInputPageValue(currentPage.toString())
     }, [currentPage]);
 
+    const addPageQuery = useCallback((page: string) => {
+        if(page === '1'){
+            router.push(pathname + '?' + createQueryString('page', undefined, 'delete'), {scroll: false})
+        }
+        else{
+            router.push(pathname + '?' + createQueryString('page', page), {scroll: false})
+        }
+    }, [])
+
     useEffect(() => {
-      const timer = setTimeout(() => router.push(pathname + '?' + createQueryString('page', inputPageValue), {scroll: false}), 500)
+      const timer = setTimeout(() => {
+          if(inputPageValue === '1'){
+              router.push(pathname + '?' + createQueryString('page', undefined, 'delete'), {scroll: false})
+          }
+          else{
+              router.push(pathname + '?' + createQueryString('page', inputPageValue), {scroll: false})
+          }
+      }, 500)
       return () => clearTimeout(timer)
     }, [inputPageValue]);
 
@@ -61,7 +77,7 @@ function PaginationWithEclipses({totalPages, currentPage = 1, isPageInput = true
                 </div>}
                 <Pagination.Content className="max-sm:self-center">
                     <Pagination.Item>
-                        <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page-1}`), {scroll: false})
+                        <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)} onClick={() => addPageQuery(`${page-1}`)
                         }>
                             <Pagination.PreviousIcon />
                         </Pagination.Previous>
@@ -73,14 +89,14 @@ function PaginationWithEclipses({totalPages, currentPage = 1, isPageInput = true
                             </Pagination.Item>
                         ) : (
                             <Pagination.Item key={p}>
-                                <Pagination.Link isActive={p === currentPage} onPress={() => setPage(p)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${p}`), {scroll: false})}>
+                                <Pagination.Link isActive={p === currentPage} onPress={() => setPage(p)} onClick={() => addPageQuery(`${p}`)}>
                                     {p}
                                 </Pagination.Link>
                             </Pagination.Item>
                         ),
                     )}
                     <Pagination.Item>
-                        <Pagination.Next isDisabled={page === totalPages} onPress={() => setPage((p) => p + 1)} onClick={() => router.push(pathname + '?' + createQueryString('page', `${page+1}`), {scroll: false})}>
+                        <Pagination.Next isDisabled={page === totalPages} onPress={() => setPage((p) => p + 1)} onClick={() => addPageQuery(`${page+1}`)}>
                             <Pagination.NextIcon />
                         </Pagination.Next>
                     </Pagination.Item>
