@@ -43,11 +43,11 @@ const HomeView = async ({searchParams}: PropsType) => {
                 </div>
                 <div className="w-[77%] flex flex-col gap-3 max-lg:w-full">
                     <Heading level={5} className="lg:hidden">Знайдено: {total}</Heading>
-                    <div className="flex gap-3 max-md:flex-col-reverse justify-between items-center">
+                    <div className="flex gap-3 max-md:flex-col-reverse justify-between items-center max-md:items-end">
                         <Heading level={5} className="max-lg:hidden">Знайдено: {total}</Heading>
-                        <div className="flex gap-3 max-md:flex-col-reverse items-center">
+                        <div className="flex gap-3 max-md:flex-col items-center">
                             <FoodAndDrinkSort initialSortValue={sort} initialSortByValue={sortBy}/>
-                            <div className="flex gap-3">
+                            <div className="flex gap-3 items-center">
                                 <FiltrationSidebar initialTypeValue={type} initialRating={rating} initialFeatures={restParams['features[]']} initialAverageReceipt={[restParams['averageReceipt[gte]'] ?? 0, restParams['averageReceipt[lte]'] ?? 5000]}/>
                                 <FoodAndDrinkSearch type={'public'} initialValue={name}/>
                             </div>

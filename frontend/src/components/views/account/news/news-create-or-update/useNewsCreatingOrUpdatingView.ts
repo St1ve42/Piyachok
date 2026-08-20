@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 import {useForm} from "react-hook-form";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {JoiOptions} from "@/src/constants/joi.options";
@@ -16,6 +16,7 @@ type Props = { mode?: 'create' | 'update', news?: IGeneralNewsById, foodAndDrink
 const useNewsCreatingOrUpdatingView = ({mode = 'create', news, foodAndDrinkId}: Props) => {
     const [photoPreview, setPhotoPreview] = useState<File | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [textLength, setTextLength] = useState<number>(0)
 
     const {register, handleSubmit, control, formState: {errors, isValid, isDirty}} = useForm<INewsCreate>({
         resolver: joiResolver(createNewsSchema, JoiOptions),
@@ -25,6 +26,10 @@ const useNewsCreatingOrUpdatingView = ({mode = 'create', news, foodAndDrinkId}: 
             text: news?.text ?? '',
         }
     })
+
+    const handleChangeText: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+        setTextLength(e.target.value.length)
+    }
 
     useEffect(() => {
         if (mode === 'update' && news?.photo) {
@@ -110,7 +115,7 @@ const useNewsCreatingOrUpdatingView = ({mode = 'create', news, foodAndDrinkId}: 
         redirect(`/account/news/${id}`)
     }
 
-    return {register, handleSubmit, isDirty, control, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect}
+    return {register, handleSubmit, isDirty, control, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect, textLength, handleChangeText}
 }
 
 export default useNewsCreatingOrUpdatingView

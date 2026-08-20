@@ -21,9 +21,9 @@ const TotalStatistics: FC<PropsType> = ({foodAndDrinkId, isFavourite}) => {
         }
         else{
             const {totalFavourites, totalViews} = data.data
-            return <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2"><Eye/> {totalViews}</div>
-                <div className="flex items-center gap-2"><Favourite isFavourite={isFavourite} foodAndDrinkId={foodAndDrinkId}/> {totalFavourites}</div>
+            return <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4 text-sm">
+                <div className="flex items-center gap-2"><Eye/> <span className="font-medium">{totalViews}</span></div>
+                <div className="flex items-center gap-2"><Favourite isFavourite={isFavourite} foodAndDrinkId={foodAndDrinkId}/> <span className="font-medium">{totalFavourites}</span></div>
             </div>
         }
     }

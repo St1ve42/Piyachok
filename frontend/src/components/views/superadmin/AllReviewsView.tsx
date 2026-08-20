@@ -29,11 +29,13 @@ const AllReviewsView: FC<PropsType> = async ({searchParams}) => {
         <section className="flex flex-col gap-3 max-sm:gap-2 pr-15 max-sm:pr-0">
             <Heading level={3} className="max-sm:text-lg">Усі відгуки</Heading>
             <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
-            <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1">
-                <Limit currentLimit={limit}/>
-                <ReviewSort initialSortValue={sort} initialSortByValue={sortBy}/>
-                <SuperadminReviewFilter initialSearchByValue={searchBy} rating={rating}/>
-                <ReviewSearch initialSearchValue={search}/>
+            <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1 max-[500px]:flex-col max-[500px]:items-stretch max-[500px]:gap-1">
+                <div className="max-[500px]:w-full max-[500px]:mb-2"><Limit currentLimit={limit}/></div>
+                <div className="max-[500px]:w-full"><ReviewSort initialSortValue={sort} initialSortByValue={sortBy}/></div>
+                <div className="flex gap-3 items-center">
+                    <div className="max-[500px]:w-full"><SuperadminReviewFilter initialSearchByValue={searchBy} rating={rating}/></div>
+                    <div className="max-[500px]:w-full"><ReviewSearch initialSearchValue={search}/></div>
+                </div>
             </div>
             {reviews.data.data.length > 0 ?
                     <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">

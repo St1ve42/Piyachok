@@ -28,11 +28,11 @@ const FoodAndDrinksModerationView: FC<PropsType> = ({foodAndDrinkListData, page,
         <div className="h-full flex flex-col gap-3 max-sm:gap-2 mb-5">
             <Heading level={3} className="max-sm:text-lg">Модерація закладів</Heading>
             <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2">
-                <Limit currentLimit={limit}/>
-                <div className="flex flex-wrap gap-3 max-sm:gap-2 items-center w-full md:w-auto">
-                  <FoodAndDrinkSort initialSortValue={initialSortValue} initialSortByValue={initialSortByValue}/>
-                  <FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie} initialValue={initialSearchValue}/>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2 max-[500px]:items-stretch max-[500px]:gap-1">
+                <div className="max-[500px]:w-full max-[500px]:mb-2"><Limit currentLimit={limit}/></div>
+                <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1 max-[500px]:flex-col max-[500px]:items-stretch max-[500px]:gap-1">
+                  <div className="max-[500px]:w-full"><FoodAndDrinkSort initialSortValue={initialSortValue} initialSortByValue={initialSortByValue}/></div>
+                  <div className="max-[500px]:w-full"><FoodAndDrinkSearch type={'moderate'} accessCookie={accessCookie} initialValue={initialSearchValue}/></div>
                 </div>
             </div>
             <FoodAndDrinkList mode={'moderate'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>

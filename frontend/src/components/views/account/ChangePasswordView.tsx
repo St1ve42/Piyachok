@@ -14,10 +14,12 @@ const ChangePasswordView = () => {
     const [isShownPassword, setIsShownPassword]= useState<boolean>(false)
     const [isShownNewPassword, setIsShownNewPassword]= useState<boolean>(false)
     const [isShownNewRepeatedPassword, setIsShownNewRepeatedPassword]= useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
     const [error, setErrorMessage] = useState<string | null>(null)
     const {register, handleSubmit, formState: {isValid, errors}} = useForm<IChangePasswordInput>({mode: "all", resolver: joiResolver(ChangePasswordValidator, JoiOptions)})
     const handleChangePassword = async (data: IChangePasswordInput) => {
+        setIsLoading(true)
         const {repeatedNewPassword, ...restData} = data
         const response = await authService.changePassword(restData)
         if(!response.success){
@@ -29,6 +31,7 @@ const ChangePasswordView = () => {
                 timeout: 10*1000
             })
         }
+        setIsLoading(false)
     }
     return <section className="h-[90%] max-sm:h-full flex items-center justify-center p-4 max-sm:p-2">
         <Form onSubmit={handleSubmit(handleChangePassword)} className="flex flex-col items-center gap-7 max-sm:gap-5 border-solid border-black border rounded-2xl max-sm:rounded-xl p-5 max-sm:p-4 [&_input]:w-[20vw] max-sm:[&_input]:w-full max-lg:[&_input]:w-[50vw]">
@@ -60,7 +63,7 @@ const ChangePasswordView = () => {
             <div className="relative w-full">
                 {error && <div className="absolute text-red-600 text-[9.5px] max-sm:text-[8px] bottom-[-20px] leading-none mt-1">{error}</div>}
             </div>
-            <Button type={'submit'} className="max-sm:w-full" isDisabled={!isValid}>Змінити</Button>
+            <Button type={'submit'} className="max-sm:w-full" isDisabled={!isValid || isLoading}>Змінити</Button>
         </Form>
     </section>;
 };

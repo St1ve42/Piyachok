@@ -23,7 +23,7 @@ const Sidebar: FC<PropsType> = ({user}) => {
         }
     }
     return (
-        <section className="w-[20%] h-[80%] border-2 rounded-2xl mt-2 hidden lg:block max-lg:hidden">
+        <section className="w-[20%] h-[80%] border-2 rounded-2xl mt-2 hidden lg:block">
             <Header className="text-xl text-black border-b-[1px] rounded-t-2xl pl-3">Особистий кабінет</Header>
             <ListBox className="gap-0 overflow-y-scroll max-h-[73vh]" aria-label={'бокова панель'} onAction = {async (key: Key | null) => {
                 if(key === 'exit'){

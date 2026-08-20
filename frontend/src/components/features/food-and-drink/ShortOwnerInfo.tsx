@@ -13,19 +13,23 @@ type PropsType = {
 const ShortOwnerInfo: FC<PropsType> = ({owner}) => {
     const {photo, id, name, surname, email} = owner
     return (
-        <Card className="text-[14px] h-fit w-[17vw] self-end flex-row items-center shrink-0">
-            <Avatar className={'size-14'}>
-                <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo ) : UserAvatar.src} width={100} height={100}/>
-            </Avatar>
-            <CardContent>
-                <Heading level={6}>Власник</Heading>
-                <div>{name} {surname}</div>
-                <div>{email}</div>
+        <Card className="text-[14px] h-fit w-70 max-sm:w-full flex-row items-center gap-3 p-2 shrink-0">
+            <div className="flex-shrink-0">
+                <Avatar className={'size-12'}>
+                    <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo ) : UserAvatar.src} width={48} height={48}/>
+                </Avatar>
+            </div>
+            <CardContent className="text-left">
+                <Heading level={6} className="text-sm">Власник</Heading>
+                <div className="font-medium">{name} {surname}</div>
+                <div className="text-sm text-gray-600 truncate max-w-[140px]">{email}</div>
             </CardContent>
-            <Link href={`/account/superadmin/users/${id}`}>
-                <Eye/>
-            </Link>
-    </Card>
+            <div className="ml-auto">
+                <Link href={`/account/superadmin/users/${id}`} className="inline-flex items-center justify-center p-1 rounded hover:bg-gray-100">
+                    <Eye/>
+                </Link>
+            </div>
+        </Card>
     )
 }
 

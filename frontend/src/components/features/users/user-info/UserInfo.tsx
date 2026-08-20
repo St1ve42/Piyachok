@@ -16,10 +16,10 @@ const UserInfo: FC<PropsType> = ({user}) => {
     return (
         <div className="flex items-center gap-10">
             <div className="flex items-center gap-3">
-                <Avatar className={'size-14'}>
+                <Avatar className={'size-14 max-sm:hidden'}>
                     <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo) : UserAvatar.src} width={100} height={100}/>
                 </Avatar>
-                <p>{name} {surname}</p>
+                <p className="max-sm:hidden">{name} {surname}</p>
                 {user && <MobileNavigation user={user}/>}
                 <Link href={'/account'} className="flex gap-2 max-lg:hidden">
                     <Gear width={25} height={25}/>

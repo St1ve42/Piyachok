@@ -40,7 +40,7 @@ const SuperadminFoodAndDrinkDetailsView: FC<PropsType> = async ({id, search}) =>
     const {images, id: foodAndDrinkId, owner} = foodAndDrink
     return (
         <div className="flex flex-col gap-3 max-sm:gap-2 mb-2">
-            <div className="flex flex-col md:flex-row justify-between gap-3 max-sm:gap-2">
+            <div className="flex flex-col items-end gap-3 max-sm:gap-2">
                 <ShortOwnerInfo owner={owner}/>
                 <FoodAndDrinkSuperadminManageButtons foodAndDrink={foodAndDrink} users={users} topCategories={topCategories}/>
             </div>

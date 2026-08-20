@@ -57,11 +57,11 @@ const FoodAndDrinkInfo: FC<PropsType> = ({foodAndDrink}) => {
                         {Object.values(FoodAndDrinkDaysEnum).map(day => {
                             const foundedBusinessHour = businessHours.find(businessHour => businessHour.day === day)
                             if(!foundedBusinessHour){
-                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px] mr-5"><span>{day}</span><span>не вказано</span></li>
+                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px] max-sm:w-[250px] max-sm:mr-5"><span>{day}</span><span>не вказано</span></li>
                             }
                             else{
                                 const {open, close} = foundedBusinessHour
-                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px]"><span>{day}</span><span>{open} - {close}</span></li>
+                                return <li key={uuidv4()} className="flex justify-between max-lg:w-[300px] max-sm:w-[250px]"><span>{day}</span><span>{open} - {close}</span></li>
                             }
                         })}
                     </ul>
@@ -80,14 +80,18 @@ const FoodAndDrinkInfo: FC<PropsType> = ({foodAndDrink}) => {
                         {tags.map((tag) => <Link href={{pathname: '/', query: {tag}}} key={uuidv4()}><Chip className="hover:text-blue-600">{tag}</Chip></Link>)}
                     </div> : <div className="text-sm">Відсутні</div>}
                 </div>
-                <div className="w-[50%]">
+                <div className="w-full max-md:w-1/2">
                     <h3 className="font-semibold mb-2">Соціальні мережі</h3>
                     {socialNetworks && Object.keys(socialNetworks).length !==0 ? <ul className="text-sm text-gray-700">
                         {Object.entries(socialNetworks).map(([key, value]) => (
-                            <li key={key} className="flex gap-2 mt-1">
-                                <Image src={icons[key]} alt={key} width={20} height={20}/>
-                                <span>{key}</span>
-                                <Link href={value}>{value}</Link>
+                            <li key={key} className="mt-1">
+                                <div className="flex items-center gap-2">
+                                    <Image src={icons[key]} alt={key} width={20} height={20}/>
+                                    <span className="font-medium">{key}</span>
+                                </div>
+                                <Link href={value} className="text-blue-600 block break-words pl-7 max-w-full">
+                                    {value}
+                                </Link>
                             </li>
                         ))}
                     </ul> : <div className="text-sm">Відсутні</div>}

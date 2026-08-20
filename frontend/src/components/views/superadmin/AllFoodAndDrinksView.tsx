@@ -30,12 +30,16 @@ const AllFoodAndDrinksView: FC<PropType> = ({foodAndDrinkListData, page, accessC
         <section className="h-full flex flex-col gap-3 max-sm:gap-2">
             <Heading level={3} className="max-sm:text-lg">Усі заклади</Heading>
             <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2">
-                      <Limit currentLimit={limit}/>
-                      <div className="flex flex-wrap gap-3 max-sm:gap-2 items-center w-full md:w-auto">
-                        <FoodAndDrinkSort initialSortByValue={sortBy} initialSortValue={sort}/>
-                        <FoodAndDrinkSuperadminFilter status={status}/>
-                        <FoodAndDrinkSearch type={'all'} accessCookie={accessCookie} initialValue={name}/>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 max-sm:gap-2 max-[500px]:items-stretch max-[500px]:gap-1">
+                      <div className="max-[500px]:w-full max-[500px]:mb-2">
+                        <Limit currentLimit={limit}/>
+                      </div>
+                      <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1 max-[500px]:flex-col max-[500px]:items-stretch max-[500px]:gap-1">
+                        <div className="max-[500px]:w-full"><FoodAndDrinkSort initialSortByValue={sortBy} initialSortValue={sort}/></div>
+                          <div className="flex gap-2 items-center">
+                            <div className="max-[500px]:w-full"><FoodAndDrinkSuperadminFilter status={status}/></div>
+                            <div className="max-[500px]:w-full"><FoodAndDrinkSearch type={'all'} accessCookie={accessCookie} initialValue={name}/></div>
+                          </div>
                       </div>
             </div>
             <FoodAndDrinkList mode={'all'} foodAndDrinkList={data} href={'/account/superadmin/food-and-drinks'}/>

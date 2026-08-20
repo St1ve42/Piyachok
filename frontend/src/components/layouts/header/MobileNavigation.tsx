@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Dropdown, Button, Header } from "@heroui/react";
+import { Dropdown, Button, Header, Avatar } from "@heroui/react";
 import { IUser } from '@/src/interfaces/users/IUser'
 import { GlobalUserRoleEnum } from '@/src/enums/user/global.user.role.enum'
 import { authService } from "@/src/services/auth.service";
@@ -23,6 +23,9 @@ import {
   Bars,
   CircleNumber1,
 } from "@gravity-ui/icons";
+import {utilsService} from "@/src/services/utils.service";
+import UserAvatar from "@/src/public/default_user_avatar.png";
+import React from "react";
 
 interface MobileNavigationProps {
   user: IUser
@@ -38,7 +41,7 @@ const MobileNavigation = ({ user }: MobileNavigationProps) => {
       router.refresh()
     }
   }
-
+  const {name, surname, photo} = user
   return (
     <Dropdown className="max-lg:flex lg:hidden">
       <Button
@@ -49,6 +52,12 @@ const MobileNavigation = ({ user }: MobileNavigationProps) => {
         <Gear/>
       </Button>
       <Dropdown.Popover className="max-w-[40vw]">
+        <div className="pl-[13px] flex flex-col gap-2 mt-2 sm:hidden">
+          <Avatar className={'size-14'}>
+            <Avatar.Image alt="фото" src={photo ? utilsService.buildStorageURL(photo) : UserAvatar.src} width={100} height={100}/>
+          </Avatar>
+          <p className="">{name} {surname}</p>
+        </div>
         <Dropdown.Menu className="w-screen lg:hidden max-lg:gap-0" aria-label="Navigation menu">
           <Dropdown.Section className="max-lg:pb-2">
             <Header>Мій простір</Header>

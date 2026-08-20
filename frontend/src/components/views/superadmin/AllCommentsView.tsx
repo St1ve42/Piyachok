@@ -31,11 +31,13 @@ const AllCommentsView: FC<PropsType> = async ({searchParams}) => {
             <Heading level={3} className="max-sm:text-lg">Усі коментарі</Heading>
             <Heading level={5} className="max-sm:text-base">Знайдено: {total}</Heading>
             <div className="flex flex-col gap-3 max-sm:gap-2">
-                <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1">
-                    <Limit currentLimit={limit}/>
-                    <CommentSort initialSortValue={sort} initialSortByValue={sortBy}/>
-                    <Filter searchByEnum={CommentSearchByEnum} searchByTranslation={CommentSearchByTranslation} initialSearchByValue={searchBy}/>
-                    <CommentSearch searchBy={searchBy} initialSearch={search}/>
+                <div className="flex flex-wrap justify-end items-center gap-2 max-sm:gap-1 max-[500px]:flex-col max-[500px]:items-stretch max-[500px]:gap-1">
+                    <div className="max-[500px]:w-full max-[500px]:mb-2"><Limit currentLimit={limit}/></div>
+                    <div className="max-[500px]:w-full"><CommentSort initialSortValue={sort} initialSortByValue={sortBy}/></div>
+                    <div className="flex items-center gap-3">
+                        <div className="max-[500px]:w-full"><Filter searchByEnum={CommentSearchByEnum} searchByTranslation={CommentSearchByTranslation} initialSearchByValue={searchBy}/></div>
+                        <div className="max-[500px]:w-full"><CommentSearch searchBy={searchBy} initialSearch={search}/></div>
+                    </div>
                 </div>
                 {comments.data.data.length > 0 ? <div className="flex flex-col gap-3 max-sm:gap-2 mb-3">
                     {comments.data.data.map(comment => <CommentSuperadminCard key={comment.id} comment={comment}/>)}

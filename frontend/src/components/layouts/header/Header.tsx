@@ -19,7 +19,7 @@ const Header = ({user}: HeaderProps) => {
         <header className="flex justify-between h-[14.5vh] items-center pb-2 border-b-1 fixed z-10 w-[80%] bg-white max-lg:px-4">
             <div className="flex gap-10 max-lg:gap-4 items-center max-lg:flex-1">
                 <Link href={'/'}>
-                    <Image src={Logo} alt="Logo" width={150} height={150} priority={true} className={`w-[150px] max-sm:w-[100px]`}/>
+                    <Image src={Logo} alt="Logo" width={150} height={150} priority={true} className={`w-[130px]`}/>
                 </Link>
                 <div className="max-lg:hidden">
                     <Menu/>

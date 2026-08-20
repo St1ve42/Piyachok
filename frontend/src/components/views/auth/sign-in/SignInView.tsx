@@ -21,7 +21,7 @@ const SignInView = () => {
                 </div>
                 <div className="w-full">
                     <Label className="max-sm:text-sm">Пароль</Label>
-                    <div className="relative">
+                    <div className="relative w-full">
                         <Input onFocus={onFocusInput} type={isShownPassword ? 'text' : 'password'} placeholder='Введіть пароль...' className='w-full pr-10 psw mt-1' {...register('password')} disabled={isLoading}></Input>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center cursor-pointer hover:opacity-70 transition-opacity">
                             <Image src={Vision} alt={"Показати пароль"} height={25} width={25} onClick={() => {
@@ -30,10 +30,10 @@ const SignInView = () => {
                             <Image src={unVision} alt={"Приховати пароль"} height={25} width={25} onClick={() => setIsShownPassword(false)} style={{display: isShownPassword ? 'block' : 'none'}}/>
                         </div>
                         {errors.password && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none self-start mt-1">{errors.password.message}</div>}
+                        {errorMessage && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-5 self-start w-full">{errorMessage}</div>}
                     </div>
-                    {errorMessage && <div className="absolute text-red-600 text-[10px] max-sm:text-[9px] leading-none mt-5 self-start max-sm:max-w-[300px]">{errorMessage}</div>}
                 </div>
-                <Button type="submit" className="w-full mt-10 max-sm:mt-6" isDisabled={!isValid || isLoading}
+                <Button type="submit" className="w-full mt-11" isDisabled={!isValid || isLoading}
                         style={{opacity: (isValid && !isLoading) ? 1 : 0.8, cursor: (isValid && !isLoading) ? 'pointer' : 'default'}}>
                     {isLoading ? 'Загрузка...' : 'Увійти'}
                 </Button>
@@ -54,7 +54,7 @@ const SignInView = () => {
                 <Link href = {'/auth/forgot-password'} className="text-blue-600 text-sm max-sm:text-xs">Забули пароль?</Link>
                 </div>
             </Form>
-            <div className="flex flex-col sm:flex-row w-[400px] max-md:w-full max-md:max-w-[400px] gap-2 max-sm:gap-1 px-4 max-sm:px-2 text-sm max-sm:text-xs justify-center md:justify-start">
+            <div className="flex w-[400px] max-md:w-full max-md:max-w-[400px] gap-2 max-sm:gap-1 px-4 max-sm:px-2 text-sm max-sm:text-xs justify-center md:justify-start">
                 <p>Не маєте акаунта?</p>
                 <Link href={'/auth/sign-up'} className="text-blue-600">Зареєструватись</Link>
             </div>

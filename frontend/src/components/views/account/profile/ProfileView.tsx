@@ -181,7 +181,7 @@ const ProfileView: FC<PropsType> = ({user, type, id}) => {
                     </div>
                 </div>
 
-                {isOpenEdit && <Button type={'submit'} isDisabled={!isValid || !isDirty} className="md:w-auto max-sm:w-full">Застосувати</Button>}
+                {isOpenEdit && <Button type={'submit'} isDisabled={!isValid || !isDirty} className="max-sm:w-full">Застосувати</Button>}
 
                 {errorResponseMessage && <div className="text-red-600 max-sm:text-sm">{errorResponseMessage}</div>}
             </Form>

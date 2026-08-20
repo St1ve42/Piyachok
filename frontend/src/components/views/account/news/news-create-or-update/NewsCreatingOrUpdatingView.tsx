@@ -9,7 +9,7 @@ import MyImage from "@/src/components/shared/components/image/MyImage";
 type Props = { mode?: 'create' | 'update', news?: IGeneralNewsById, foodAndDrinkId?: string}
 
 const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, foodAndDrinkId}) => {
-    const {register, handleSubmit, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect, isDirty} = useNewsCreatingOrUpdatingView({mode, news, foodAndDrinkId})
+    const {register, handleSubmit, errors, isValid, isLoading, photoPreview, handleCreateFormSubmit, handleUpdateFormSubmit, handlePhotoClear, handlePhotoSelect, isDirty, textLength, handleChangeText} = useNewsCreatingOrUpdatingView({mode, news, foodAndDrinkId})
 
     const submitLabel = mode === 'create' ? 'Створити' : 'Оновити'
 
@@ -48,8 +48,8 @@ const NewsCreatingOrUpdatingView: FC<Props> = ({mode = 'create', news, foodAndDr
 
             <div className="flex flex-col gap-2 max-sm:gap-1 relative w-full">
                 <Label isRequired htmlFor="text" className="font-bold max-sm:text-sm">Текст</Label>
-                <TextArea id={'text'} placeholder={'Введіть текст новини...'} className="h-[10rem] max-sm:h-[8rem] resize-none max-sm:text-sm" maxLength={500} required {...register('text')} />
-                <div className="text-sm max-sm:text-xs absolute bottom-[-25px] right-0 text-gray-500">Макс 500 символів</div>
+                <TextArea id={'text'} placeholder={'Введіть текст новини...'} className="h-[10rem] max-sm:h-[8rem] resize-none max-sm:text-sm" maxLength={1000} required {...register('text', {onChange: handleChangeText})} />
+                <div className="text-sm absolute bottom-[-28px] right-0">{textLength}/1000</div>
                 {errors.text && <div className="absolute text-red-600 text-[12px] max-sm:text-[10px] bottom-[-20px] leading-none">{errors.text.message}</div>}
             </div>
 

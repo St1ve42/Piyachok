@@ -23,7 +23,7 @@ import {PiyachokPaymentTypeTranslation} from "@/src/constants/piyachok-payment-t
 import {joiResolver} from "@hookform/resolvers/joi";
 import {piyachokCreateValidator} from "@/src/validators/piyachok/piyachokCreateValidator";
 import {JoiOptions} from "@/src/constants/joi.options";
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef, useEffect, useState} from "react";
 import {piyachokService} from "@/src/services/piyachok.service";
 import {IPiyachokDetail} from "@/src/interfaces/piyachok/IPiyachokDetail";
 import {parseDate, parseTime} from "@internationalized/date";
@@ -50,7 +50,7 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok,
         defaultValues
     })
     const closeButtonRef = useRef<HTMLButtonElement | null>(null)
-    
+    const [purposeLength, setPurposeLength] = useState<number>(0)
     useEffect(() => {
         if(piyachok && mode === 'update'){
             const {creator, updatedAt, createdAt, id, status, foodAndDrink, meetDate, meetTime, ...restPiyachok} = piyachok
@@ -119,10 +119,11 @@ const PiyachokForm: FC<PropsType> = ({foodAndDrinkId, mode = 'create', piyachok,
                         </Modal.Header>
                         <Modal.Body>
                             <Form className="flex flex-col gap-5 p-2" onSubmit={handleSubmit(mode === 'create' ? handlePiyachokCreate : handlePiyachokUpdate)}>
-                                <div className="flex flex-col gap-1 relative">
+                                <div className="flex flex-col gap-1 relative mb-1">
                                     <Label isRequired>Мета</Label>
-                                    <TextArea onFocus={handleFocusInput} className="resize-none h-[15vh]" placeholder={'Введіть мету...'} min={0} required {...register('purpose')}/>
+                                    <TextArea onFocus={handleFocusInput} minLength={2} maxLength={255} className="resize-none h-[15vh]" placeholder={'Введіть мету...'} min={0} required {...register('purpose', {onChange: (e) => setPurposeLength(e.target.value.length)})}/>
                                     {errors.purpose && <div className="absolute text-red-600 text-[10px] bottom-[-20px] leading-none">{errors.purpose.message}</div>}
+                                    <div className="text-sm absolute bottom-[-28px] right-0">{purposeLength}/255</div>
                                 </div>
                                 <div className="flex gap-3">
                                     <div className="w-[65%]">

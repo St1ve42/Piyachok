@@ -124,9 +124,9 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
     }
 
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:justify-end">
             <Dropdown>
-                <Button isIconOnly aria-label="Menu" variant="secondary">
+                <Button isIconOnly aria-label="Menu" variant="secondary" className="w-[40px] max-sm:w-auto flex justify-center">
                     <EllipsisVertical className="outline-none" />
                 </Button>
                 <Dropdown.Popover>
@@ -168,7 +168,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                 </Modal.Backdrop>
             </Modal>
             <Modal>
-                <Button className="bg-green-400">🏆 Додати до топ категорії</Button>
+                <Button className="w-full sm:w-auto bg-green-400">🏆 Додати до топ категорії</Button>
                 <Modal.Backdrop>
                     <Modal.Container>
                         <Modal.Dialog className="sm:max-w-[450px] h-[60vh]">
@@ -184,7 +184,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                 </Modal.Backdrop>
             </Modal>
             <Modal>
-                <Button className="bg-orange-400"><Route/>Прив`язка</Button>
+                <Button className="w-full sm:w-auto bg-orange-400"><Route/>Прив`язка</Button>
                 <Modal.Backdrop>
                     <Modal.Container>
                         <Modal.Dialog className="sm:max-w-[450px] h-[60vh]">
@@ -217,9 +217,9 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                     </Modal.Container>
                 </Modal.Backdrop>
             </Modal>
-            <Button onPress={() => router.push(`/account/superadmin/food-and-drinks/${id}/update`)}><Pencil/>Редагувати</Button>
+            <Button onPress={() => router.push(`/account/superadmin/food-and-drinks/${id}/update`)} className="w-full sm:w-auto"><Pencil/>Редагувати</Button>
             <Modal>
-                <Button variant="danger" onPress={handleOnPressDeleteButton}><TrashBin/>Видалити</Button>
+                <Button variant="danger" onPress={handleOnPressDeleteButton} className="w-full sm:w-auto"><TrashBin/>Видалити</Button>
                 <Modal.Backdrop>
                     <Modal.Container>
                         <Modal.Dialog className="sm:max-w-[450px]">
@@ -233,7 +233,7 @@ const FoodAndDrinkSuperadminManageButtons: FC<PropsType> = ({foodAndDrink, users
                                     <p>Ви впевнені, що хочете видалити заклад? Це безповоротна дія, яка спричинить видалення закладу, включаючи усі пов`язані коментарі, відгуки і новини.:</p>
                                 </div>
                                 <div>Щоб підтвердити видалення, введіть <span className="font-bold">{name}</span> у поле нижче:</div>
-                                <Input className="my-3 ml-1 w-[90%]" type='email' placeholder='Введіть ім`я закладу для підтвердження' onChange={handleConfirmInputChange}/>
+                                <Input className="my-3 w-full sm:w-[90%] ml-0 sm:ml-1" type='email' placeholder='Введіть ім`я закладу для підтвердження' onChange={handleConfirmInputChange}/>
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button onClick={handleConfirm} isDisabled={!isCorrectInput} variant="danger" className="w-full" slot="close">

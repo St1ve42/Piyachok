@@ -140,7 +140,7 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
                         </div>
                     </Card>
                 </div>
-                <div className="lg:col-span-3 flex flex-col gap-1">
+                <div className="lg:col-span-3 flex flex-col gap-2">
                     <PiyachokReplyForm piyachokId={id} isLogged={!!loggedUser}/>
                     <div>
                         <Heading level={5}>Відповіді</Heading>
