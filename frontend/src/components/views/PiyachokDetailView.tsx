@@ -51,9 +51,9 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <div className="lg:col-span-4 flex flex-col gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3">
                     <Card className="p-0 overflow-hidden border border-neutral-100 shadow-sm bg-white rounded-2xl relative">
-                        <div className="relative w-full h-[300px] bg-neutral-100">
+                        <div className="relative w-full h-[305px] bg-neutral-100">
                             <Image
                                 src={mainImage ? utilsService.buildStorageURL(mainImage) : noImage}
                                 alt={foodAndDrinkName ?? 'Фото закладу'}
@@ -70,7 +70,7 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
                         </div>
                     </Card>
                     <Card className="p-4 border border-neutral-100 shadow-sm bg-white rounded-2xl">
-                        <h3 className="font-bold text-sm text-neutral-900 mb-3">Творець Зустрічі</h3>
+                        <h3 className="font-bold text-sm text-neutral-900 mb-[7px]">Творець Зустрічі</h3>
                         <div className="flex items-center gap-3">
                             <AvatarCustom
                                 photo={photo}
@@ -95,7 +95,7 @@ const PiyachokDetailView: FC<PropsType> = async ({piyachok, page}) => {
 
                     <Card className="p-4 border border-neutral-100 shadow-sm bg-white rounded-2xl">
                         <h3 className="font-bold text-sm">Мета</h3>
-                        <p className="text-xs leading-relaxed whitespace-pre-line max-h-[70px] overflow-y-auto">
+                        <p className="text-xs leading-relaxed whitespace-pre-line h-[70px] overflow-y-auto">
                             {purpose}
                         </p>
                     </Card>

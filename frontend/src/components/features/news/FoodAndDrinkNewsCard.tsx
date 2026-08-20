@@ -34,7 +34,7 @@ const FoodAndDrinkNewsCard: FC<PropsType> = ({news, href = `news`, hasRightToMan
                         <span>{NewsCategoryTranslation[category]}</span>
                     </div>
                     <div className="flex gap-1 items-center">📅 <span>{createdAtLocalDateString}, {createdAtLocalTimeString}</span></div>
-                    <Card.Title className="w-full text-[14px] font-bold">
+                    <Card.Title className="w-full text-[14px] line-clamp-3">
                         {title}
                     </Card.Title>
                 </div>
