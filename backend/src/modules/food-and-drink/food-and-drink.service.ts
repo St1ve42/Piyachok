@@ -151,6 +151,9 @@ export class FoodAndDrinkService {
             relations['topCategories'] = true;
             delete order['rating'];
         }
+        if (search.tag) {
+            delete order['rating'];
+        }
         if (
             sortBy &&
             sortBy === FoodAndDrinkSortByEnum.DISTANCE &&
@@ -201,16 +204,23 @@ export class FoodAndDrinkService {
             search.isTop === undefined &&
             filter.topCategories === undefined
         ) {
+            const { tags, topCategories, ...restFilter } = filter;
+            let qb = this.foodAndDrinkRepository
+                .createQueryBuilder('fad')
+                .select(`fad`)
+                .addSelect(
+                    `IF(customRating is NULL, rating, customRating)`,
+                    'rat',
+                )
+                .innerJoinAndSelect('fad.city', 'city')
+                .where(restFilter);
+            if (search.tag) {
+                qb = qb
+                    .innerJoin('fad.tags', 'tag')
+                    .andWhere('tag.name = :tagName', { tagName: search.tag });
+            }
             return [
-                await this.foodAndDrinkRepository
-                    .createQueryBuilder('fad')
-                    .select(`fad`)
-                    .addSelect(
-                        `IF(customRating is NULL, rating, customRating)`,
-                        'rat',
-                    )
-                    .innerJoinAndSelect('fad.city', 'city')
-                    .where(filter)
+                await qb
                     .orderBy(
                         'rat',
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
